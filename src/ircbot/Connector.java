@@ -25,34 +25,28 @@ import java.io.*;
 
 public class Connector {
 	private Logger log;
+	private Config config;
 
 	private Socket socket;
 	private BufferedReader in_stream;
 	private PrintStream out_stream;
 
-	private final static String hostname = "irc.freenode.net";
-	private final static int port = 6667;
-	private final static String bot_name = "[flos_bot]";
-	private final static String bot_realname = "Flo's Bot";
-	private final static String bot_password = "<PASSWORD>";
-	private final static String channel = "#unichannel";
-	private final static String owner_name = "[flo]";
-
-	public Connector(Logger log) {
+	public Connector(Logger log, Config config) {
 		this.log = log;
+		this.config = config;
 	}
 
 	public void connect() {
 		try {
-			log.print(LOG_TYPE.DEBUG, "Connector.java", "connecting to " + hostname + "on port #" + port);
-			socket = new Socket(hostname, port);
+			log.print(LOG_TYPE.DEBUG, "Connector.java", "connecting to " + config.getHostname() + "on port #" + config.getPort());
+			socket = new Socket(config.getHostname(), config.getPort());
 			socket.setTcpNoDelay(true);
 			out_stream = new PrintStream(socket.getOutputStream());
 			in_stream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-			send("NICK " + bot_name);
-			send("USER " + bot_name + " 0 * " + bot_realname);
-			send("JOIN " + channel);
+			send("NICK " + config.getBotName());
+			send("USER " + config.getBotName() + " 0 * " + config.getBotRealname());
+			joinChannel();
 		} catch (IOException e) {
 			System.err.println(e);
 
@@ -88,7 +82,7 @@ public class Connector {
 	}
 
 	public void sendChannelMsg(String msg) {
-		send("PRIVMSG " + channel + " :" + msg);
+		send("PRIVMSG " + config.getChannel() + " :" + msg);
 	}
 
 	public void sendPrivMsg(String where, String msg) {
@@ -96,7 +90,7 @@ public class Connector {
 	}
 
 	public void sendKick(String who, String reason) {
-		send("KICK " + channel + " " + who + " :" + reason);
+		send("KICK " + config.getChannel() + " " + who + " :" + reason);
 	}
 
 	public void sendQuit() {
@@ -104,24 +98,12 @@ public class Connector {
 		send("QUIT");
 	}
 
-	public String getHostname() {
-		return hostname;
-	}
-
-	public String getChannel() {
-		return channel;
-	}
-
-	public String getOwnerName() {
-		return owner_name;
-	}
-
 	public void identify() {
-		sendPrivMsg("NickServ", "identify " + bot_password);
+		sendPrivMsg("NickServ", "identify " + config.getBotPassword());
 	}
 
-	public String getBotName() {
-		return bot_name;
+	public void joinChannel() {
+		send("JOIN " + config.getChannel());
 	}
 
 }

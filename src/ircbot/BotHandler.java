@@ -27,6 +27,7 @@ import java.net.*;
 public class BotHandler {
 
 	private Logger log;
+	private Config config;
 	private Connector connection;
 	private BotStates bot_states;
 	private String data;
@@ -35,7 +36,6 @@ public class BotHandler {
 	private long start_time;
 
 	private enum IRC_COMMAND {
-
 		NONE,
 		ADMIN,
 		AWAY,
@@ -146,8 +146,9 @@ public class BotHandler {
 		"372"
 	};
 
-	public BotHandler(Logger log, Connector connection, BotStates bot_states) {
+	public BotHandler(Logger log, Config config, Connector connection, BotStates bot_states) {
 		this.log = log;
+		this.config = config;
 		this.connection = connection;
 		this.bot_states = bot_states;
 
@@ -162,8 +163,29 @@ public class BotHandler {
 		}
 
 		// handle the data
+		// cmd_tokens:
+		// [0]: sender
+		// [1]: command
+		// [2]: location
+		// [3+]: data
 		current_cmd = parseIRCCmd(data);
 		String[] cmd_tokens = data.split(" ");
+
+		String cmd_sender = "", cmd_command = "", cmd_location = "", cmd_data = "", cmd_data2 = "", cmd_joined_data = "";
+		if(cmd_tokens.length > 0) cmd_sender = cmd_tokens[0];
+		if(cmd_tokens.length > 1) cmd_command = cmd_tokens[1];
+		if(cmd_tokens.length > 2) cmd_location = cmd_tokens[2];
+		if(cmd_tokens.length > 3) {
+			cmd_data = cmd_tokens[3];
+			cmd_joined_data = cmd_data;
+		}
+		if(cmd_tokens.length > 4) cmd_data2 = cmd_tokens[4];
+		if(cmd_tokens.length > 4) {
+			for(int i = 4; i < cmd_tokens.length; i++) {
+				cmd_joined_data += " " + cmd_tokens[i]; // TODO: is there a better way in java to do this?
+			}
+		}
+
 		switch(current_cmd) {
 			case NONE:
 				// ignore
@@ -174,36 +196,68 @@ public class BotHandler {
 				connection.identify();
 				break;
 			case CMD_004:
-				servername = cmd_tokens[3];
+				servername = cmd_data;
 				log.print(LOG_TYPE.DEBUG, "BotHandler.java", "server name is: " + servername);
 				break;
 			case PING:
 				connection.send("PONG " + servername);
-				log.print(LOG_TYPE.DEBUG, "BotHandler.java", "Pong!");
+				log.print(LOG_TYPE.DEBUG, "BotHandler.java", "PONG!");
 				break;
 			case JOIN:
-				// TODO: this is currently executed each time a user joins the channel,
-				// add a user check (if bot then setjoined(true) else "hi there, $user")
-				log.print(LOG_TYPE.DEBUG, "BotHandler.java", "joined the channel");
-				bot_states.setJoined(true);
-				connection.sendChannelMsg("hi there ;)");
+				// if the bot joined the channel, set the flag and send a "hi there ;)" message
+				if(stripUser(cmd_sender).equals(config.getBotName())) {
+					log.print(LOG_TYPE.DEBUG, "BotHandler.java", "joined the channel");
+					bot_states.setJoined(true);
+					connection.sendChannelMsg("hi there ;)");
+				}
+				// if another user joined the channel, greet him
+				else {
+					connection.sendChannelMsg("hi there, " + stripUser(cmd_sender));
+				}
 				break;
 			case NOTICE:
-				String notice = cmd_tokens[3].substring(1);
-				for(int i = 4; i < cmd_tokens.length; i++) notice += " " + cmd_tokens[i]; // TODO: maybe there is a better java function?
-
-				if(notice.contains("You are now identified for") && notice.contains(connection.getBotName())) {
+				if(cmd_joined_data.contains("You are now identified for") && cmd_joined_data.contains(config.getBotName())) {
 					bot_states.setIdentified(true);
 				}
 				break;
 			case PRIVMSG:
 				// handle the message (also trim the leading ':')
-				String msg = cmd_tokens[3].substring(1);
-				for(int i = 4; i < cmd_tokens.length; i++) msg += " " + cmd_tokens[i]; // TODO: maybe there is a better java function?
-				handleMessage(cmd_tokens[0], cmd_tokens[2], msg);
+				handleMessage(cmd_sender, cmd_location, cmd_joined_data.substring(1));
 				break;
 			case MODE:
-				// TODO: check for +o and set op
+				// only handle mode stuff in the bots host channel
+				if(cmd_location.equals(config.getChannel())) {
+					// mode for the bot was set
+					if(cmd_data2.equals(config.getBotName())) {
+						// bot was given op
+						if(cmd_data.equals("+o")) {
+							bot_states.setOp(true);
+						}
+						// op was taken from bot
+						if(cmd_data.equals("-o")) {
+							bot_states.setOp(false);
+						}
+					}
+				}
+				break;
+			case KICK:
+				// check if bot was kicked
+				if(cmd_data.equals(config.getBotName())) {
+					// check if the user who kicked the bot is the owner
+					if(!cmd_data2.substring(1).equals(config.getOwnerName())) {
+						// if not, rejoin the channel and kick the user who kicked the bot
+						connection.joinChannel();
+						
+						// random kick message
+						String[] kick_messages = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!" };
+						try {
+							// wait for 3 seconds before kicking the user
+							Thread.sleep(3000);
+						}
+						catch(InterruptedException e) { /* nothing */ }
+						connection.sendKick(cmd_data2.substring(1), kick_messages[(int)(Math.random() * kick_messages.length)]);
+					}
+				}
 				break;
 			case TOPIC:
 				break;
@@ -251,17 +305,18 @@ public class BotHandler {
 
 	private void handleMessage(String sender, String location, String msg) throws IOException {
 		// all bot commands have to start with '!'
-		if(location.equals(connection.getChannel()) && msg.charAt(0) == '!') {
+		if(location.equals(config.getChannel()) && msg.charAt(0) == '!') {
 			msg = msg.substring(1);
 			
 			// official commands
 			if(msg.equals("help")) {
 				connection.sendChannelMsg("help:");
-				connection.sendChannelMsg("\t !system: the bot's host system");
-				connection.sendChannelMsg("\t !time: local bot time");
-				connection.sendChannelMsg("\t !uptime: time since bot start");
-				connection.sendChannelMsg("\t !who's your daddy?: that would be me!");
-				connection.sendChannelMsg("\t !quit: quits the bot (op only)");
+				connection.sendChannelMsg("    !src: link to unibot source code");
+				connection.sendChannelMsg("    !system: the bot's host system");
+				connection.sendChannelMsg("    !time: local bot time");
+				connection.sendChannelMsg("    !uptime: time since bot start");
+				connection.sendChannelMsg("    !who's your daddy?: that would be me!");
+				connection.sendChannelMsg("    !quit: quits the bot (op only)");
 			}
 			else if(msg.equals("who's your daddy?")) {
 				// TODO: add support for non-unix (aka windows) platforms?
@@ -313,14 +368,19 @@ public class BotHandler {
 				connection.sendChannelMsg(uptime_str);
 			}
 			else if(msg.equals("quit")) {
-				if(sender.substring(1, sender.indexOf("!n=")).equals(connection.getOwnerName())) {
+				if(stripUser(sender).equals(config.getOwnerName())) {
 					connection.sendQuit();
 					bot_states.setQuit(true);
 				}
 				else {
-					// TODO: check for bot_states.isOp()
-					connection.sendKick(sender.substring(1, sender.indexOf("!n=")), "you're not " + connection.getOwnerName() + "!");
+					if(bot_states.isOp()) {
+						connection.sendKick(stripUser(sender), "you're not " + config.getOwnerName() + "!");
+					}
 				}
+			}
+			else if(msg.equals("src")) {
+				connection.sendChannelMsg("git : git clone git://git.assembla.com/unibot.git");
+				connection.sendChannelMsg("trac: http://trac-git.assembla.com/unibot");
 			}
 			// ... and the rest ;)
 			else if(msg.equals("spec")) {
@@ -330,5 +390,9 @@ public class BotHandler {
 				connection.sendChannelMsg("42");
 			}
 		}
+	}
+
+	private String stripUser(String str) {
+		return str.substring(1, str.indexOf("!n="));
 	}
 }

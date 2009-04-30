@@ -28,6 +28,7 @@ import java.io.IOException;
  */
 public class Main {
 	private static Logger log;
+	private static Config config;
 	private static Connector connection;
 	private static BotHandler bot;
 	private static BotStates bot_states;
@@ -40,11 +41,13 @@ public class Main {
 		log = new Logger();
 		log.print(LOG_TYPE.DEBUG, "ircbot.java", "> IRC-Bot Start!");
 
-		connection = new Connector(log);
+		config = new Config(log);
+
+		connection = new Connector(log, config);
 		connection.connect();
 
-		bot_states = new BotStates(log);
-		bot = new BotHandler(log, connection, bot_states);
+		bot_states = new BotStates(log, config);
+		bot = new BotHandler(log, config, connection, bot_states);
 
 		while(true) {
 			if(bot_states.isQuit()) break;

@@ -24,6 +24,7 @@ package ircbot;
  */
 public class BotStates {
 	private Logger log;
+	private Config config;
 
 	// bot states:
 	private boolean connected;
@@ -32,8 +33,9 @@ public class BotStates {
 	private boolean quit;
 	private boolean identified;
 
-	public BotStates(Logger log) {
+	public BotStates(Logger log, Config config) {
 		this.log = log;
+		this.config = config;
 
 		connected = false;
 		joined = false;
