@@ -341,6 +341,8 @@ public class BotHandler {
 				connection.sendChannelMsg("    !time: local bot time");
 				connection.sendChannelMsg("    !uptime: time since bot start");
 				connection.sendChannelMsg("    !who's your daddy?: that would be me!");
+				connection.sendChannelMsg("    !users: user list");
+				connection.sendChannelMsg("    !wiki / !wikien: generates link to german / english wiki");
 				connection.sendChannelMsg("    !quit: quits the bot (op only)");
 			}
 			else if(msg.equals("who's your daddy?")) {
