@@ -18,6 +18,10 @@
 
 package ircbot;
 
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  *
  * @author flo
@@ -32,10 +36,13 @@ public class BotStates {
 	private boolean op;
 	private boolean quit;
 	private boolean identified;
+	private ArrayList<String> userList;
 
 	public BotStates(Logger log, Config config) {
 		this.log = log;
 		this.config = config;
+
+		userList = new ArrayList<String>();
 
 		connected = false;
 		joined = false;
@@ -82,6 +89,30 @@ public class BotStates {
 
 	public void setIdentified(boolean identified) {
 		this.identified = identified;
+	}
+
+	public void addUser(String name) {
+		userList.add(name);
+	}
+
+	public void deleteUser(String name) {
+		if(userList.contains(name)) {
+			userList.remove(name);
+		}
+	}
+
+	public void updateUser(String from, String to) {
+		if(userList.contains(from)) {
+			userList.set(userList.indexOf(from), to);
+		}
+	}
+
+	public void deleteAllUsers() {
+		userList.clear();
+	}
+
+	public String[] getUsers() {
+		return (String[])userList.toArray(new String[0]);
 	}
 
 }

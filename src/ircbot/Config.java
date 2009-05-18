@@ -57,8 +57,8 @@ public class Config {
 		
 		hostname = prefs.get("hostname", "irc.freenode.net");
 		port = prefs.getInt("port", 6667);
-		bot_name = prefs.get("bot_name", "[flos_bot]");
-		bot_realname = prefs.get("bot_realname", "Flo's Bot");
+		bot_name = prefs.get("bot_name", "[unibot]");
+		bot_realname = prefs.get("bot_realname", "UniBot");
 		bot_password = prefs.get("bot_password", "<PASSWORD>");
 		channel = prefs.get("channel", "#unichannel");
 		owner_name = prefs.get("owner_name", "[flo]");

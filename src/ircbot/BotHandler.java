@@ -88,6 +88,7 @@ public class BotHandler {
 		CMD_003,
 		CMD_004,
 		CMD_005,
+		CMD_353,
 		CMD_372
 	}
 	private static String[] IRC_COMMAND_STR = {
@@ -143,6 +144,7 @@ public class BotHandler {
 		"003",
 		"004",
 		"005",
+		"353",
 		"372"
 	};
 
@@ -199,6 +201,16 @@ public class BotHandler {
 				servername = cmd_data;
 				log.print(LOG_TYPE.DEBUG, "BotHandler.java", "server name is: " + servername);
 				break;
+			case CMD_353:
+				String[] users = cmd_joined_data.substring(cmd_joined_data.indexOf(':') + 1).split(" ");
+				bot_states.deleteAllUsers();
+				for(int i = 0; i < users.length; i++) {
+					if(users[i].charAt(0) == '+' || users[i].charAt(0) == '@') {
+						users[i] = users[i].substring(1);
+					}
+					bot_states.addUser(users[i]);
+				}
+				break;
 			case PING:
 				connection.send("PONG " + servername);
 				log.print(LOG_TYPE.DEBUG, "BotHandler.java", "PONG!");
@@ -213,7 +225,14 @@ public class BotHandler {
 				// if another user joined the channel, greet him
 				else {
 					connection.sendChannelMsg("hi there, " + stripUser(cmd_sender));
+					bot_states.addUser(stripUser(cmd_sender));
 				}
+				break;
+			case PART:
+				bot_states.deleteUser(stripUser(cmd_sender));
+				break;
+			case QUIT:
+				bot_states.deleteUser(stripUser(cmd_sender));
 				break;
 			case NOTICE:
 				if(cmd_joined_data.contains("You are now identified for") && cmd_joined_data.contains(config.getBotName())) {
@@ -244,20 +263,26 @@ public class BotHandler {
 				// check if bot was kicked
 				if(cmd_data.equals(config.getBotName())) {
 					// check if the user who kicked the bot is the owner
-					if(!cmd_data2.substring(1).equals(config.getOwnerName())) {
+					if(!stripUser(cmd_sender).equals(config.getOwnerName())) {
 						// if not, rejoin the channel and kick the user who kicked the bot
 						connection.joinChannel();
 						
 						// random kick message
-						String[] kick_messages = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!" };
+						String[] kick_messages = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" };
 						try {
 							// wait for 3 seconds before kicking the user
 							Thread.sleep(3000);
 						}
 						catch(InterruptedException e) { /* nothing */ }
-						connection.sendKick(cmd_data2.substring(1), kick_messages[(int)(Math.random() * kick_messages.length)]);
+						connection.sendKick(stripUser(cmd_sender), kick_messages[(int)(Math.random() * kick_messages.length)]);
 					}
 				}
+				else {
+					bot_states.deleteUser(cmd_data);
+				}
+				break;
+			case NICK:
+				bot_states.updateUser(stripUser(cmd_sender), cmd_location.substring(1));
 				break;
 			case TOPIC:
 				break;
@@ -382,12 +407,36 @@ public class BotHandler {
 				connection.sendChannelMsg("git : git clone git://git.assembla.com/unibot.git");
 				connection.sendChannelMsg("trac: http://trac-git.assembla.com/unibot");
 			}
+			else if(msg.equals("users")) {
+				String[] users = bot_states.getUsers();
+				String outStr = "";
+				for(int i = 0; i < users.length-1; i++) {
+					outStr += users[i] + ", ";
+				}
+				if(users.length > 0) outStr += users[users.length-1];
+				connection.sendChannelMsg(outStr);
+			}
+			else if(msg.length() > 5 && msg.substring(0, 5).equals("wiki ")) {
+				connection.sendChannelMsg("http://de.wikipedia.org/wiki/" + msg.substring(5));
+			}
+			else if(msg.length() > 7 && msg.substring(0, 7).equals("wikien ")) {
+				connection.sendChannelMsg("http://en.wikipedia.org/wiki/" + msg.substring(7));
+			}
 			// ... and the rest ;)
 			else if(msg.equals("spec")) {
 				connection.sendChannelMsg("http://www.ietf.org/rfc/rfc2812.txt");
 			}
 			else if((msg.contains("what is the answer to") || msg.contains("what's the answer to")) && msg.contains("?")) {
 				connection.sendChannelMsg("42");
+			}
+			else if(msg.length() > 3 && msg.substring(0, 3).equals("cmd")) {
+				if(stripUser(sender).equals(config.getOwnerName())) {
+					connection.send(msg.substring(4));
+				}
+			}
+			else if(msg.length() > 5 && msg.substring(0, 5).equals("learn")) {
+			}
+			else if(msg.length() > 7 && msg.substring(0, 7).equals("what is") && msg.contains("?")) {
 			}
 		}
 	}
