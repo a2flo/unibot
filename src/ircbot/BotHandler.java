@@ -335,15 +335,16 @@ public class BotHandler {
 			
 			// official commands
 			if(msg.equals("help")) {
-				connection.sendChannelMsg("help:");
-				connection.sendChannelMsg("    !src: link to unibot source code");
-				connection.sendChannelMsg("    !system: the bot's host system");
-				connection.sendChannelMsg("    !time: local bot time");
-				connection.sendChannelMsg("    !uptime: time since bot start");
-				connection.sendChannelMsg("    !who's your daddy?: that would be me!");
-				connection.sendChannelMsg("    !users: user list");
-				connection.sendChannelMsg("    !wiki / !wikien: generates link to german / english wiki");
-				connection.sendChannelMsg("    !quit: quits the bot (op only)");
+				String helpless_person = stripUser(sender);
+				connection.sendPrivMsg(helpless_person, "help:");
+				connection.sendPrivMsg(helpless_person, "    !src: link to unibot source code");
+				connection.sendPrivMsg(helpless_person, "    !system: the bot's host system");
+				connection.sendPrivMsg(helpless_person, "    !time: local bot time");
+				connection.sendPrivMsg(helpless_person, "    !uptime: time since bot start");
+				connection.sendPrivMsg(helpless_person, "    !who's your daddy?: that would be me!");
+				connection.sendPrivMsg(helpless_person, "    !users: user list");
+				connection.sendPrivMsg(helpless_person, "    !wiki / !wikien: generates link to german / english wiki");
+				connection.sendPrivMsg(helpless_person, "    !quit: quits the bot (op only)");
 			}
 			else if(msg.equals("who's your daddy?")) {
 				// TODO: add support for non-unix (aka windows) platforms?
@@ -394,15 +395,20 @@ public class BotHandler {
 
 				connection.sendChannelMsg(uptime_str);
 			}
-			else if(msg.equals("quit")) {
-				if(stripUser(sender).equals(config.getOwnerName())) {
-					connection.sendQuit();
-					bot_states.setQuit(true);
-				}
-				else {
-					if(bot_states.isOp()) {
-						connection.sendKick(stripUser(sender), "you're not " + config.getOwnerName() + "!");
-					}
+			else if(msg.length() >= 4 && msg.substring(0, 4).equals("quit")) {
+				String bot_name = "";
+				if(msg.length() > 5) bot_name = msg.substring(5);
+
+				if(bot_name.equals("") || bot_name.equals(config.getBotName())) {
+				    if(stripUser(sender).equals(config.getOwnerName())) {
+					    connection.sendQuit();
+					    bot_states.setQuit(true);
+				    }
+				    else {
+					    if(bot_states.isOp()) {
+						    connection.sendKick(stripUser(sender), "you're not " + config.getOwnerName() + "!");
+					    }
+				    }
 				}
 			}
 			else if(msg.equals("src")) {
