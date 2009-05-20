@@ -330,7 +330,7 @@ public class BotHandler {
 
 	private void handleMessage(String sender, String location, String msg) throws IOException {
 		// all bot commands have to start with '!'
-		if(location.equals(config.getChannel()) && msg.charAt(0) == '!') {
+		if((location.equals(config.getChannel()) || stripUser(sender).equals(config.getOwnerName()))&& msg.charAt(0) == '!') {
 			msg = msg.substring(1);
 			
 			// official commands
@@ -345,6 +345,11 @@ public class BotHandler {
 				connection.sendPrivMsg(helpless_person, "    !users: user list");
 				connection.sendPrivMsg(helpless_person, "    !wiki / !wikien: generates link to german / english wiki");
 				connection.sendPrivMsg(helpless_person, "    !quit: quits the bot (op only)");
+				connection.sendPrivMsg(helpless_person, "    !dict: generates link to dict.cc (german and english translations)");
+				connection.sendPrivMsg(helpless_person, "    !g: generates link to google");
+				connection.sendPrivMsg(helpless_person, "    !happa: generates link to MensaSpeiseplan for the next day");
+				connection.sendPrivMsg(helpless_person, "    !mensa: generates link to MensaSpeiseplan for the whole week");
+				connection.sendPrivMsg(helpless_person, "    !wa: generates link to wolframalpha");
 			}
 			else if(msg.equals("who's your daddy?")) {
 				// TODO: add support for non-unix (aka windows) platforms?
@@ -430,6 +435,26 @@ public class BotHandler {
 			else if(msg.length() > 7 && msg.substring(0, 7).equals("wikien ")) {
 				connection.sendChannelMsg("http://en.wikipedia.org/wiki/" + msg.substring(7));
 			}
+			else if(msg.length() > 5 && msg.substring(0, 5).equals("dict ")) {
+				connection.sendChannelMsg("http://www.dict.cc/?s=" + msg.substring(5));
+			}
+			else if(msg.length() > 2 && msg.substring(0, 2).equals("g ")) {
+				connection.sendChannelMsg("http://www.google.de/search?q=" + msg.substring(2));
+			}
+			else if(msg.equals("happa")) {
+				connection.sendChannelMsg("http://happa.dfki.de/");
+			}
+			else if(msg.equals("mensa")) {
+				String[] days = new String[] { "montag", "dienstag", "mittwoch", "donnerstag", "freitag" };
+				int currentDay = (new GregorianCalendar()).get(Calendar.DAY_OF_WEEK);
+				if(currentDay >= Calendar.MONDAY && currentDay <= Calendar.FRIDAY) {
+					connection.sendChannelMsg("http://www.studentenwerk-saarland.de/seiten/verpflegung/speiseplan_sbr/" + days[currentDay-2] + ".htm");
+				}
+				else connection.sendChannelMsg("Heute ist die Mensa geschlossen...");
+			}
+			else if(msg.length() > 3 && msg.substring(0, 3).equals("wa ")) {
+				connection.sendChannelMsg("http://www.wolframalpha.com/input/?i=" + msg.substring(3));
+			}
 			// ... and the rest ;)
 			else if(msg.equals("spec")) {
 				connection.sendChannelMsg("http://www.ietf.org/rfc/rfc2812.txt");
@@ -450,6 +475,9 @@ public class BotHandler {
 	}
 
 	private String stripUser(String str) {
+		// ":name!n=..." -> name
+		if(str.length() < 5) return "";
+		if(str.indexOf("!n=") < 1) return "";
 		return str.substring(1, str.indexOf("!n="));
 	}
 }
