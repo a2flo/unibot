@@ -348,7 +348,7 @@ public class BotHandler {
 				connection.sendPrivMsg(helpless_person, "    !dict: generates link to dict.cc (german and english translations)");
 				connection.sendPrivMsg(helpless_person, "    !g: generates link to google");
 				connection.sendPrivMsg(helpless_person, "    !happa: generates link to MensaSpeiseplan for the next day");
-				connection.sendPrivMsg(helpless_person, "    !mensa: generates link to MensaSpeiseplan for the whole week");
+				connection.sendPrivMsg(helpless_person, "    !mensa: generates link to MensaSpeiseplan for the current day");
 				connection.sendPrivMsg(helpless_person, "    !wa: generates link to wolframalpha");
 			}
 			else if(msg.equals("who's your daddy?")) {
@@ -475,9 +475,9 @@ public class BotHandler {
 	}
 
 	private String stripUser(String str) {
-		// ":name!n=..." -> name
+		// ":name!..." -> name
 		if(str.length() < 5) return "";
-		if(str.indexOf("!n=") < 1) return "";
-		return str.substring(1, str.indexOf("!n="));
+		if(str.indexOf("!") < 1) return "";
+		return str.substring(1, str.indexOf("!"));
 	}
 }
