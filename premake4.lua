@@ -11,7 +11,7 @@ project "unibot"
 
 	if(not os.is("windows")) then
 		includedirs { "/usr/include", "/usr/local/include" }
-		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -mdynamic-no-pic -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize" }
+		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize" }
 		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden -fopenmp" }
 		linkoptions { "-fopenmp" }
 	end
@@ -25,7 +25,7 @@ project "unibot"
 	
 	if(os.is("macosx")) then
 		files { "osx/**.h", "osx/**.cpp", "osx/**.m", "osx/**.mm" }
-		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -msse4.1 -mmacosx-version-min=10.6 -gdwarf-2" }
+		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -msse4.1 -mmacosx-version-min=10.6 -gdwarf-2 -fpascal-strings -fasm-blocks -mdynamic-no-pic" }
 		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework Cocoa -framework AppKit -framework Foundation" }
 	end
 
