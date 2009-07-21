@@ -79,6 +79,7 @@ bot_handler::bot_handler(net<TCP_protocol>* n, bot_states* states, config* conf)
 	servername = "";
 	
 	start_time = SDL_GetTicks();
+	keep_msg_count = 10;
 	
 	unsigned int cmd_size = sizeof(IRC_COMMAND_STR) / sizeof(const char*);
 	for(unsigned int i = 0; i < cmd_size; i++) {
@@ -134,8 +135,7 @@ void bot_handler::handle() {
 				case CMD_353: {
 					if(cmd_joined_data.find(':') == string::npos) break;
 					// strip ':' and last ' ' (if there is one)
-					string user_str = cmd_joined_data.substr(cmd_joined_data.find(':') + 1,
-															 cmd_joined_data.length() - cmd_joined_data.find(':') - (cmd_joined_data[cmd_joined_data.length()-1] == ' ' ? 2 : 1));
+					string user_str = trim(cmd_joined_data.substr(cmd_joined_data.find(':') + 1, cmd_joined_data.length() - cmd_joined_data.find(':') - 1));
 					vector<string> users;
 					tokenize(users, user_str, ' ');
 					states->delete_all_users();
@@ -196,6 +196,13 @@ void bot_handler::handle() {
 					// handle the message (also trim the leading ':')
 					handle_message(cmd_sender, cmd_location, cmd_joined_data.substr(1, cmd_joined_data.length()-1));
 					if(cmd_location == conf->get_channel()) {
+						// update msg store
+						if(msg_store.size() > keep_msg_count) {
+							msg_store.pop_front();
+						}
+						msg_store.push_back(strip_special_chars(cmd_joined_data));
+						
+						// update user info
 						states->update_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
 					}
 					break;
@@ -423,17 +430,25 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 			n->send_channel_msg(out.str());
 		}
-		else if(msg.find("wiki ") == 0) {
-			n->send_channel_msg("http://de.wikipedia.org/wiki/" + encode_url(msg.substr(5, msg.length()-5).c_str()));
+		else if(msg.find("wiki ") == 0 || (msg.length() == 4 && msg.find("wiki") == 0)) {
+			msg = handle_args_chronological(msg, 5);
+			n->send_channel_msg("http://de.wikipedia.org/wiki/" + encode_url(msg));
 		}
-		else if(msg.find("wikien ") == 0) {
-			n->send_channel_msg("http://en.wikipedia.org/wiki/" + encode_url(msg.substr(7, msg.length()-7).c_str()));
+		else if(msg.find("wikien ") == 0 || (msg.length() == 6 && msg.find("wikien") == 0)) {
+			msg = handle_args_chronological(msg, 7);
+			n->send_channel_msg("http://en.wikipedia.org/wiki/" + encode_url(msg));
 		}
-		else if(msg.find("dict ") == 0) {
-			n->send_channel_msg("http://www.dict.cc/?s=" + encode_url(msg.substr(5, msg.length()-5).c_str()));
+		else if(msg.find("dict ") == 0 || (msg.length() == 4 && msg.find("dict") == 0)) {
+			msg = handle_args_chronological(msg, 5);
+			n->send_channel_msg("http://www.dict.cc/?s=" + encode_url(msg));
 		}
-		else if(msg.find("g ") == 0) {
-			n->send_channel_msg("http://www.google.de/search?q=" + encode_url(msg.substr(2, msg.length()-2).c_str()));
+		else if(msg.find("g ") == 0 || (msg.length() == 1 && msg.find("g") == 0)) {
+			msg = handle_args_chronological(msg, 2);
+			n->send_channel_msg("http://www.google.de/search?q=" + encode_url(msg));
+		}
+		else if(msg.find("wa ") == 0 || (msg.length() == 2 && msg.find("wa") == 0)) {
+			msg = handle_args_chronological(msg, 3);
+			n->send_channel_msg("http://www.wolframalpha.com/input/?i=" + encode_url(msg));
 		}
 		else if(msg == "happa") {
 			n->send_channel_msg("http://happa.dfki.de/");
@@ -448,9 +463,6 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				n->send_channel_msg("http://www.studentenwerk-saarland.de/seiten/verpflegung/speiseplan_sbr/" + string(days[current_day-1]) + ".htm");
 			}
 			else n->send_channel_msg("Heute ist die Mensa geschlossen ...");
-		}
-		else if(msg.find("wa ") == 0) {
-			n->send_channel_msg("http://www.wolframalpha.com/input/?i=" + encode_url(msg.substr(3, msg.length()-3).c_str()));
 		}
 		else if(msg == "unikram") {
 			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/?n=u&s=unikram");
@@ -483,4 +495,62 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_channel_msg("42");
 		}
 	}
+}
+
+string bot_handler::handle_args_chronological(string msg, unsigned int offset) {
+	if(msg.length() > offset) {
+		string args = msg.substr(offset, msg.length()-offset);
+		vector<string> arg_tokens;
+		tokenize(arg_tokens, args, ' ');
+		int msg_offset = 0, word_offset = 0;
+		if(arg_tokens.size() > 0) msg_offset = strtoul(arg_tokens[0].c_str(), NULL, 10);
+		if(arg_tokens.size() > 1) word_offset = strtoul(arg_tokens[1].c_str(), NULL, 10);
+		
+		if(msg_offset != 0) {
+			msg = extract_word(msg_offset, word_offset);
+		}
+		if(msg_offset == 0 || msg == "") msg = args;
+	}
+	else {
+		// get longest word of last message
+		vector<string> last_msg_tokens;
+		tokenize(last_msg_tokens, msg_store.back(), ' ');
+		msg = "";
+		for(vector<string>::iterator str_iter = last_msg_tokens.begin(); str_iter != last_msg_tokens.end(); str_iter++) {
+			if(str_iter->length() > msg.length()) msg = *str_iter;
+		}
+	}
+	return msg;
+}
+
+string bot_handler::extract_word(int msg_offset, int word_offset) {
+	msg_offset = abs(msg_offset);
+	int abs_word_offset = abs(word_offset);
+	
+	int msg_number = msg_store.size() - msg_offset;
+	if(msg_number >= 0 && msg_number < msg_store.size()) {
+		string msg = msg_store[msg_number];
+		
+		if(word_offset == 0) return msg;
+		
+		vector<string> msg_tokens;
+		tokenize(msg_tokens, msg, ' ');
+		
+		if(word_offset > (int)msg_tokens.size()) return msg_tokens.back();
+		if(abs_word_offset > msg_tokens.size()) return msg_tokens[0];
+		
+		int word_number = word_offset > 0 ? word_offset-1 : (msg_tokens.size() + word_offset);
+		return msg_tokens[word_number];
+	}
+	
+	return "";
+}
+
+string bot_handler::strip_special_chars(string str) {
+	string special_chars = ",.;:!?=*^<>\"\'";
+	string new_str = "";
+	for(string::iterator citer = str.begin(); citer != str.end(); citer++) {
+		if(special_chars.find(*citer) == string::npos) new_str += *citer;
+	}
+	return new_str;
 }

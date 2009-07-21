@@ -100,11 +100,18 @@ protected:
 	string servername;
 	unsigned long int start_time;
 	
+	deque<string> msg_store;
+	unsigned int keep_msg_count;
+	
 	IRC_COMMAND parse_irc_cmd(string cmd);
 	string strip_user(string str);
 	string strip_user_realname(string str);
 	string strip_user_host(string str);
 	void handle_message(string sender, string location, string msg);
+	
+	string handle_args_chronological(string msg, unsigned int offset);
+	string extract_word(int msg_offset, int word_offset);
+	string strip_special_chars(string str);
 	
 };
 
