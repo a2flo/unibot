@@ -206,7 +206,7 @@ void bot_handler::handle() {
 						states->update_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
 						
 						// log msg
-						logger::log(logger::LT_MSG, "bot_handler.cpp", msg.c_str());
+						logger::log(logger::LT_MSG, "bot_handler.cpp", string(strip_user(cmd_sender) + ": " + msg).c_str());
 					}
 				}
 				break;
