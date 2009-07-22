@@ -97,16 +97,21 @@ template <class protocol_policy> bool net<protocol_policy>::connect_to_server(co
 		return false;
 	}
 	
+	// currently useless for an irc bot ...
+#if 0
 	if(SDLNet_ResolveHost(&local_ip, NULL, local_port) == -1) {
 		logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(client): ") + string(SDLNet_GetError())).c_str());
 		return false;
 	}
+#endif
 	
 	// create server socket
 	if(!protocol.open_server_socket(server_ip)) return false;
 	
+#if 0
 	// create client socket
 	if(!protocol.open_client_socket(local_ip)) return false;
+#endif
 	
 	// connection created - data transfer is now possible
 	logger::log(logger::LT_DEBUG, "net.h", "connect_to_server(): successfully connected to server!");

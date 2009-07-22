@@ -148,6 +148,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "unibot" */;
 			buildPhases = (
+				5C5CC7CF1016980D002CA8CC /* ShellScript */,
 				8DD76F640486A84900D96B5E /* Sources */,
 				8DD76F660486A84900D96B5E /* Frameworks */,
 				8DD76F690486A84900D96B5E /* CopyFiles */,
@@ -178,6 +179,22 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5C5CC7CF1016980D002CA8CC /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cat build_version | awk '{system(\"echo `expr \" $1 \" + 1` > build_version\");}'\ncat build_version | awk '{system(\"echo \\\"#define UNIBOT_BUILD_VERSION \" $1 \"\\\" > build_version.h\");}'";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DD76F640486A84900D96B5E /* Sources */ = {
@@ -214,8 +231,10 @@
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = unibot_d;
+				SDKROOT = macosx10.5;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
 				VALID_ARCHS = "i386 x86_64";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
@@ -238,6 +257,7 @@
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = unibot;
+				SDKROOT = macosx10.5;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
 				VALID_ARCHS = "i386 x86_64";
 			};

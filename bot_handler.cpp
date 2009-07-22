@@ -112,11 +112,10 @@ void bot_handler::handle() {
 				cmd_data = cmd_tokens[3];
 				cmd_joined_data = cmd_data;
 			}
-			if(cmd_tokens.size() > 4) cmd_data2 = cmd_tokens[4];
 			if(cmd_tokens.size() > 4) {
-				for(unsigned int i = 4; i < cmd_tokens.size(); i++) {
-					cmd_joined_data += " " + cmd_tokens[i]; // TODO: is there a better way in java to do this?
-				}
+				cmd_data2 = cmd_tokens[4];
+				unsigned int pos = cmd_tokens[0].length()+cmd_tokens[1].length()+cmd_tokens[2].length()+3;
+				cmd_joined_data = data_iter->substr(pos, data_iter->length()-pos);
 			}
 			
 			switch(current_cmd) {
@@ -192,9 +191,10 @@ void bot_handler::handle() {
 				case QUIT:
 					states->delete_user(strip_user(cmd_sender));
 					break;
-				case PRIVMSG:
+				case PRIVMSG: {
 					// handle the message (also trim the leading ':')
-					handle_message(cmd_sender, cmd_location, cmd_joined_data.substr(1, cmd_joined_data.length()-1));
+					string msg = cmd_joined_data.substr(1, cmd_joined_data.length()-1);
+					handle_message(cmd_sender, cmd_location, msg);
 					if(cmd_location == conf->get_channel()) {
 						// update msg store
 						if(msg_store.size() > keep_msg_count) {
@@ -204,8 +204,12 @@ void bot_handler::handle() {
 						
 						// update user info
 						states->update_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
+						
+						// log msg
+						logger::log(logger::LT_MSG, "bot_handler.cpp", msg.c_str());
 					}
-					break;
+				}
+				break;
 				case MODE:
 					// only handle mode stuff in the bots host channel
 					if(cmd_location == conf->get_channel()) {
@@ -252,7 +256,7 @@ void bot_handler::handle() {
 				n->quit();
 			}
 			
-			logger::log(logger::LT_MSG, "bot_handler.cpp", string(string(string(">>>") + string(*data_iter)) + string("<<<")).c_str());
+			logger::log(logger::LT_DEBUG, "bot_handler.cpp", string(*data_iter).c_str());
 		}
 		n->clear_received_data();
 	}
@@ -326,13 +330,16 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_private_msg(helpless_person, "    !uptime: time since bot start");
 			n->send_private_msg(helpless_person, "    !who's your daddy?: that would be me!");
 			n->send_private_msg(helpless_person, "    !users: user list");
-			n->send_private_msg(helpless_person, "    !wiki / !wikien: generates link to german / english wiki");
-			n->send_private_msg(helpless_person, "    !quit: quits the bot (op only)");
-			n->send_private_msg(helpless_person, "    !dict: generates link to dict.cc (german and english translations)");
-			n->send_private_msg(helpless_person, "    !g: generates link to google");
+			n->send_private_msg(helpless_person, "    !quit: quits the bot (owner only)");
 			n->send_private_msg(helpless_person, "    !happa: generates link to MensaSpeiseplan for the next day");
 			n->send_private_msg(helpless_person, "    !mensa: generates link to MensaSpeiseplan for the current day");
-			n->send_private_msg(helpless_person, "    !wa: generates link to wolfram alpha");
+			n->send_private_msg(helpless_person, "    !version: prints out the unibot version");
+			n->send_private_msg(helpless_person, "    !wiki / !wikien <args1>: generates link to german / english wiki");
+			n->send_private_msg(helpless_person, "    !dict <args1>: generates link to dict.cc (german and english translations)");
+			n->send_private_msg(helpless_person, "    !g <args1>: generates link to google");
+			n->send_private_msg(helpless_person, "    !wa <args1>: generates link to wolfram alpha");
+			n->send_private_msg(helpless_person, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
+								"of the msg specified by message offset (in reverse)");
 		}
 		else if(msg == "who\'s your daddy?") {
 			stringstream out;
@@ -478,6 +485,20 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				//connection.send(msg.substring(4));
 			}
 		}
+		else if(msg.find("kick ") == 0) {
+			if(conf->is_owner(strip_user(sender)) && msg.length() > 5) {
+				n->send_kick(msg.substr(5, msg.length()-5), "cause i can!");
+			}
+		}
+		else if(msg.find("roulette ") == 0) {
+			if(conf->is_owner(strip_user(sender)) && msg.length() > 9) {
+				if((rand() % 42) <= 6) n->send_kick(msg.substr(9, msg.length()-9), "bad luck!");
+			}
+		}
+		else if(msg.find("version") == 0) {
+			n->send_channel_msg("UniBot v"+to_str(UNIBOT_MAJOR_VERSION)+"."+to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+
+								" ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+")");
+		}
 		// ... and the rest ;)
 		else if(msg == "spec") {
 			n->send_channel_msg("http://www.ietf.org/rfc/rfc2812.txt");
@@ -547,7 +568,8 @@ string bot_handler::extract_word(int msg_offset, int word_offset) {
 }
 
 string bot_handler::strip_special_chars(string str) {
-	string special_chars = ",.;:!?=*^<>\"\'";
+	//string special_chars = ",.;:!?=*^<>\"\'";
+	string special_chars = ",.;:!?^\"\'";
 	string new_str = "";
 	for(string::iterator citer = str.begin(); citer != str.end(); citer++) {
 		if(special_chars.find(*citer) == string::npos) new_str += *citer;

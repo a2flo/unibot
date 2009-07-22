@@ -45,7 +45,9 @@ namespace logger {
 	protected:
 		unsigned long int error_counter;
 		string log_filename;
+		string msg_filename;
 		fstream* log_file;
+		fstream* msg_file;
 		
 		const char* type_to_str(LOG_TYPE type) {
 			switch (type) {
