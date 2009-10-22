@@ -1,0 +1,162 @@
+DEBUG (net.h): net initialized!
+DEBUG (net.h): connect_to_server(): successfully connected to server!
+DEBUG (bot_handler.cpp): NOTICE AUTH :*** Looking up your hostname...
+DEBUG (bot_handler.cpp): NOTICE AUTH :*** Checking ident
+DEBUG (bot_handler.cpp): NOTICE AUTH :*** No identd (auth) response
+DEBUG (bot_handler.cpp): NOTICE AUTH :*** Found your hostname
+DEBUG (bot_handler.cpp): successfully connected to the server!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 001 maid3n_bot :Welcome to the freenode IRC Network maid3n_bot
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 002 maid3n_bot :Your host is wolfe.freenode.net[wolfe.freenode.net/6667], running version hyperion-1.0.2b
+DEBUG (bot_handler.cpp): NOTICE maid3n_bot :*** Your host is wolfe.freenode.net[wolfe.freenode.net/6667], running version hyperion-1.0.2b
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 003 maid3n_bot :This server was created Tue Apr 15 01:19:44 UTC 2008
+DEBUG (bot_handler.cpp): server name is: wolfe.freenode.net
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 004 maid3n_bot wolfe.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 005 maid3n_bot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 005 maid3n_bot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 251 maid3n_bot :There are 32863 listed and 25041 unlisted users on 38 servers
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 252 maid3n_bot 53 :flagged staff members
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 254 maid3n_bot 27898 :channels formed
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 255 maid3n_bot :I have 3585 clients and 0 servers
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 265 maid3n_bot :Current local  users: 3585  Max: 7259
+DEBUG (bot_handler.cpp): successfully connected to the server!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 001 maid3n_bot :Welcome to the freenode IRC Network maid3n_bot
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 002 maid3n_bot :Your host is wolfe.freenode.net[wolfe.freenode.net/6667], running version hyperion-1.0.2b
+DEBUG (bot_handler.cpp): NOTICE maid3n_bot :*** Your host is wolfe.freenode.net[wolfe.freenode.net/6667], running version hyperion-1.0.2b
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 003 maid3n_bot :This server was created Tue Apr 15 01:19:44 UTC 2008
+DEBUG (bot_handler.cpp): server name is: wolfe.freenode.net
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 004 maid3n_bot wolfe.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 005 maid3n_bot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 005 maid3n_bot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 251 maid3n_bot :There are 32863 listed and 25041 unlisted users on 38 servers
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 252 maid3n_bot 53 :flagged staff members
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 254 maid3n_bot 27898 :channels formed
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 255 maid3n_bot :I have 3585 clients and 0 servers
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 265 maid3n_bot :Current local  users: 3585  Max: 7259
+DEBUG (bot_handler.cpp): ot :Current global users: 57904  Max: 60237
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 250 maid3n_bot :Highest connection count: 7261 (7259 clients) (2413231 since server was (re)started)
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 375 maid3n_bot :- wolfe.freenode.net Message of the Day - 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Bytemark Computer Consulting Ltd.  (www.bytemark.co.uk) for sponsoring
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- this server!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- WOLFE, GENE [1931-].  Prolific writer of short stories and
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- novels. His best-known work is the multi-volume novel The
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Book of the New Sun. He has won multiple awards including
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- the Nebula Award, the World Fantasy Award, The Campell
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Memorial Award and the Locus Award. He was awarded the World
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Fantasy Award for lifetime achievement in 1996.
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- You're using freenode, a service of Peer-Directed Projects
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Center Ltd (http://freenode.net/pdpc.shtml).
+DEBUG (bot_handler.cpp): ot :Current global users: 57904  Max: 60237
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 250 maid3n_bot :Highest connection count: 7261 (7259 clients) (2413231 since server was (re)started)
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 375 maid3n_bot :- wolfe.freenode.net Message of the Day - 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Bytemark Computer Consulting Ltd.  (www.bytemark.co.uk) for sponsoring
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- this server!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- WOLFE, GENE [1931-].  Prolific writer of short stories and
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- novels. His best-known work is the multi-volume novel The
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Book of the New Sun. He has won multiple awards including
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- the Nebula Award, the World Fantasy Award, The Campell
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Memorial Award and the Locus Award. He was awarded the World
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Fantasy Award for lifetime achievement in 1996.
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- You're using freenode, a service of Peer-Directed Projects
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Center Ltd (http://freenode.net/pdpc.shtml).
+DEBUG (bot_handler.cpp): net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Thanks to everyone who helped us make the 2008/2009 fundraiser 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- a success, indivdual donors, hardware and bandwith sponsors and 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- our corporate sponsor Canonical Ltd (http://www.canonical.com).
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- By connecting to freenode you indicate that you have read 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- and agree to adhere to our policies and procedures as per 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- the website (http://freenode.net). We would like to remind 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- you that unauthorized public logging of channels on the 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- network is prohibited. Public channel logging should only 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- take place where the channel owner(s) has requested this 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- and users of the channel are all made aware (if you are 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- publically logging your channel, you may wish to keep a 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- notice in topic and perhaps as a on-join message).
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Thanks to everyone who helped us make the 2008/2009 fundraiser 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- a success, indivdual donors, hardware and bandwith sponsors and 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- our corporate sponsor Canonical Ltd (http://www.canonical.com).
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- By connecting to freenode you indicate that you have read 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- and agree to adhere to our policies and procedures as per 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- the website (http://freenode.net). We would like to remind 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- you that unauthorized public logging of channels on the 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- network is prohibited. Public channel logging should only 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- take place where the channel owner(s) has requested this 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- and users of the channel are all made aware (if you are 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- publically logging your channel, you may wish to keep a 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- notice in topic and perhaps as a on-join message).
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): gree that you 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- are 13 years of age, or older. For more information about the 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Children's Online Privacy Protection Act please see their 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- website at (http://www.coppa.org).
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- freenode runs an open proxy scanner. Your use of the network
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- indicates your acceptance of this policy. For details on
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- freenode network policy, please take a look at our policy
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- page (http://freenode.net/policy.shtml). Thank you for using
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- the network!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- The PDPC and freenode now do a fortnightly podcast, which you 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- can find over at http://podcast.freenode.net and throughout the 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- summer months we will be arranging geeknics - Picnics for Geeks 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- across the globe! More information can be found over at 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- http://www.geeknic.org
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): gree that you 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- are 13 years of age, or older. For more information about the 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Children's Online Privacy Protection Act please see their 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- website at (http://www.coppa.org).
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- freenode runs an open proxy scanner. Your use of the network
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- indicates your acceptance of this policy. For details on
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- freenode network policy, please take a look at our policy
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- page (http://freenode.net/policy.shtml). Thank you for using
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- the network!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- The PDPC and freenode now do a fortnightly podcast, which you 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- can find over at http://podcast.freenode.net and throughout the 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- summer months we will be arranging geeknics - Picnics for Geeks 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- across the globe! More information can be found over at 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- http://www.geeknic.org
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): e is a service of Peer-Directed Projects Center Ltd, 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- a not for profit organisation registered in England and Wales.
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Our 2009/2010 fundraiser will be starting soon, more information 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- will be available here and on the website! If you wish to donate 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- you can help out over at http://freenode.net/pdpc_donations.shtml
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- Thank you for using freenode!
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 372 maid3n_bot :- 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 376 maid3n_bot :End of /MOTD command.
+DEBUG (bot_handler.cpp): :NickServ!NickServ@services. NOTICE maid3n_bot :This nickname is registered. Please choose a different nickname, or identify via /msg NickServ identify <password>.
+DEBUG (bot_handler.cpp): :NickServ!NickServ@services. NOTICE maid3n_bot :You are now identified for maid3n_bot.
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 901 maid3n_bot maid3n_bot n=maid3n_b rb053.stw.stud.uni-saarland.de :You are now logged in. (id maid3n_bot, username n=maid3n_b, hostname rb053.stw.stud.uni-saarland.de)
+DEBUG (bot_handler.cpp): :services. MODE maid3n_bot :+e
+DEBUG (bot_handler.cpp): :NickServ!NickServ@services. NOTICE maid3n_bot :You are already logged in as maid3n_bot.
+DEBUG (bot_handler.cpp): joined the channel
+DEBUG (bot_handler.cpp): :maid3n_bot!n=maid3n_b@rb053.stw.stud.uni-saarland.de JOIN :#testwiese
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 353 maid3n_bot @ #testwiese :maid3n_bot maid3n 
+DEBUG (bot_handler.cpp): :wolfe.freenode.net 366 maid3n_bot #testwiese :End of /NAMES list.
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG #testwiese :!rev bla
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG #testwiese :!mensa
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG #testwiese :!help
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG #testwiese :!system
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG maid3n_bot :!system
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG maid3n_bot :!rev 
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG maid3n_bot :!rev 3 1
+DEBUG (bot_handler.cpp): :maid3n!n=maid3n@rb053.stw.stud.uni-saarland.de PRIVMSG maid3n_bot :!quit
+DEBUG (bot_handler.cpp): :maid3n_bot!n=maid3n_b@rb053.stw.stud.uni-saarland.de PART #testwiese :"EOL"
+DEBUG (bot_handler.cpp): ERROR :Closing Link: rb053.stw.stud.uni-saarland.de (Client Quit)
+ERROR (net.h): receive_packet(): invalid data received!
+DEBUG (net.h): net deleted!
+DEBUG (main.cpp): >> eol

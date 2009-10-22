@@ -1,0 +1,4 @@
+maid3n: !rev bla
+maid3n: !mensa
+maid3n: !help
+maid3n: !system

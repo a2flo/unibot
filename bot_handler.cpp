@@ -547,7 +547,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		}
                 else if(msg.find("rev ") == 0) {
                         msg = handle_args_chronological(msg, 4);
-                        n->send_private_msg(origin, rev(msg));
+                        n->send_private_msg(target, rev(msg));
                 }
 	}
 }
