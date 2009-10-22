@@ -78,16 +78,6 @@ string trim(string str) {
 	return str;
 }
 
-void rev(string& str)
-// postcondition: characters with the string str have been reversed in
-//   order
-{
-   int k, lng = str.length();
-   char c;
-   
-   for (k = 0; k < lng/2; k++) {
-	c = str[k];
-	str[k] = str[lng - k - 1];
-	str[lng - k - 1] = c;
-   }
+void rev(string& str) {
+	reverse(str.begin(), str.end());
 }

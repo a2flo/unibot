@@ -114,7 +114,7 @@ void bot_handler::handle() {
 			}
 			if(cmd_tokens.size() > 4) {
 				cmd_data2 = cmd_tokens[4];
-				unsigned int pos = cmd_tokens[0].length()+cmd_tokens[1].length()+cmd_tokens[2].length()+3;
+				unsigned int pos = (unsigned int)(cmd_tokens[0].length()+cmd_tokens[1].length()+cmd_tokens[2].length()+3);
 				cmd_joined_data = data_iter->substr(pos, data_iter->length()-pos);
 			}
 			
@@ -162,7 +162,7 @@ void bot_handler::handle() {
 					if(strip_user(cmd_sender) == conf->get_bot_name()) {
 						logger::log(logger::LT_DEBUG, "bot_handler.cpp", "joined the channel");
 						states->set_joined(true);
-						n->send_channel_msg("hey :)");
+						n->send_channel_msg("hi there ;)");
 						
 						// check if bot got kicked
 						if(states->is_kicked()) {
@@ -290,7 +290,7 @@ bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {
 	}
 	else if(cmd_tokens.size() > 1 && cmd_tokens[1].length() == 3) {
 		// check for numbered irc command
-		unsigned int num = strtoul(cmd_tokens[1].c_str(), NULL, 10);
+		unsigned int num = (unsigned int)strtoul(cmd_tokens[1].c_str(), NULL, 10);
 		if(num >= 0 && num <= 999) {
 			irc_cmd = irc_commands[cmd_tokens[1]];
 		}
@@ -554,8 +554,8 @@ string bot_handler::handle_args_chronological(string msg, unsigned int offset) {
 		vector<string> arg_tokens;
 		tokenize(arg_tokens, args, ' ');
 		int msg_offset = 0, word_offset = 0;
-		if(arg_tokens.size() > 0) msg_offset = strtoul(arg_tokens[0].c_str(), NULL, 10);
-		if(arg_tokens.size() > 1) word_offset = strtoul(arg_tokens[1].c_str(), NULL, 10);
+		if(arg_tokens.size() > 0) msg_offset = (unsigned int)strtoul(arg_tokens[0].c_str(), NULL, 10);
+		if(arg_tokens.size() > 1) word_offset = (unsigned int)strtoul(arg_tokens[1].c_str(), NULL, 10);
 		
 		if(msg_offset != 0) {
 			msg = extract_word(msg_offset, word_offset);
@@ -576,10 +576,10 @@ string bot_handler::handle_args_chronological(string msg, unsigned int offset) {
 
 string bot_handler::extract_word(int msg_offset, int word_offset) {
 	msg_offset = abs(msg_offset);
-	int abs_word_offset = abs(word_offset);
+	unsigned int abs_word_offset = abs(word_offset);
 	
-	int msg_number = msg_store.size() - msg_offset;
-	if(msg_number >= 0 && msg_number < msg_store.size()) {
+	int msg_number = (int)msg_store.size() - msg_offset;
+	if(msg_number >= 0 && msg_number < (int)msg_store.size()) {
 		string msg = msg_store[msg_number];
 		
 		if(word_offset == 0) return msg;
@@ -590,7 +590,7 @@ string bot_handler::extract_word(int msg_offset, int word_offset) {
 		if(word_offset > (int)msg_tokens.size()) return msg_tokens.back();
 		if(abs_word_offset > msg_tokens.size()) return msg_tokens[0];
 		
-		int word_number = word_offset > 0 ? word_offset-1 : (msg_tokens.size() + word_offset);
+		int word_number = word_offset > 0 ? word_offset-1 : ((int)msg_tokens.size() + word_offset);
 		return msg_tokens[word_number];
 	}
 	

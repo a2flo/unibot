@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 	
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	
 	// initialize net
 	net<TCP_protocol>* n = new net<TCP_protocol>(conf);

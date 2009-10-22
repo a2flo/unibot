@@ -36,7 +36,7 @@ void config::load_config() {
 	// get file data
 	stringstream data_str;
 	file.seekg(0, ios::end);
-	unsigned int size = file.tellg();
+	unsigned int size = (unsigned int)file.tellg();
 	file.seekg(0, ios::beg);
 	char* data = new char[size+1];
 	memset(data, 0, size+1);

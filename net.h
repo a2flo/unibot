@@ -136,7 +136,7 @@ template <class protocol_policy> bool net<protocol_policy>::run() {
 				string data = receive_data;
 				if(last_packet_remains.length() > 0) {
 					data = last_packet_remains + data;
-					len += last_packet_remains.length();
+					len += (int)last_packet_remains.length();
 					last_packet_remains = "";
 				}
 				//cout << "received " << len << endl;
@@ -166,7 +166,7 @@ template <class protocol_policy> bool net<protocol_policy>::run() {
 	// send data - if possible
 	if(!send_store.empty()) {
 		for(deque<string>::iterator send_iter = send_store.begin(); send_iter != send_store.end(); send_iter++) {
-			send_packet(send_iter->c_str(), send_iter->length());
+			send_packet(send_iter->c_str(), (int)send_iter->length());
 		}
 		send_store.clear();
 	}
@@ -200,7 +200,7 @@ template <class protocol_policy> int net<protocol_policy>::process_packet(const 
 	}
 	//cout << "end " << old_pos << endl;
 	
-	return old_pos;
+	return (int)old_pos;
 }
 
 template <class protocol_policy> void net<protocol_policy>::send_packet(const char* data, const unsigned int len) {
