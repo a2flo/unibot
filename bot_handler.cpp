@@ -366,7 +366,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_private_msg(origin, "Use '!help <command>' to get further information about this command. // coming soon");
 			n->send_private_msg(origin, "    Links:       wd, we, wa, uw, ae, ad, uu, g, dict");
 			n->send_private_msg(origin, "    Bot/Channel: who's your daddy?, system, time, uptime, src, spec, users, quit, roulette, version, kick");
-			n->send_private_msg(origin, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses, sysarch");
+			n->send_private_msg(origin, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses");
 			n->send_private_msg(origin, "    Misc:        learn, rev, ?");
 			n->send_private_msg(origin, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
 								"of the msg specified by message offset (in reverse)");
@@ -487,6 +487,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			msg = handle_args_chronological(msg, 3);
 			n->send_private_msg(target, "http://www.wolframalpha.com/input/?i=" + encode_url(msg));
 		}
+		// Unikram
 		else if(msg == "happa") {
 			n->send_private_msg(target, "http://happa.dfki.de/");
 		}
@@ -510,6 +511,29 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg == "paste") {
 			n->send_private_msg(target, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=ps");
 		}
+		else if(msg == "mfi") {
+			n->send_private_msg(target, "http://www.math.uni-sb.de/ag/schreyer/LEHRE/0910_MfI3/index.html");
+		}
+		else if(msg == "prog") {
+			n->send_private_msg(target, "https://depend.cs.uni-sb.de/cms/login.php");
+		}
+		else if(msg == "coli") {
+			n->send_private_msg(target, "Psycho: http://www.coli.uni-saarland.de/~berryc/courses/vl_psycholing_ws0910/vl_psycholing_ws0910.html");
+			n->send_private_msg(target, "Einfuehrung: http://www.coli.uni-saarland.de/courses/I2CL-09/page.php?id=index");
+		}
+		else if (msg == "theoinf") {
+			n->send_private_msg(target, "http://www-cc.cs.uni-saarland.de/teaching/course.php?CourseId=16");
+		}
+		else if (msg == "algodat") {
+			n->send_private_msg(target, "http://www-tcs.cs.uni-sb.de/Veranstaltungen/vorlesung.php?CourseId=40");
+		}
+		else if (msg == "courses") {
+			n->send_private_msg(target, "http://www.prog.uni-saarland.de/teaching/ckurs/2009/");
+		}
+//		else if (msg == "sysarch") {
+//			n->send_private_msg(target, "");
+//		}
+		// Unikram End
 		else if(msg == "quote") {
 			if(conf->is_owner(origin)) {
 				//connection.send(msg.substring(4));
