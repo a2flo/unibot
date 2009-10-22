@@ -329,42 +329,43 @@ void bot_handler::quit_bot() {
 }
 
 void bot_handler::handle_message(string sender, string location, string msg) {
+	string origin = strip_user(sender);
 	// all bot commands have to start with '!'
-	if((location == conf->get_channel() || conf->is_owner(strip_user(sender))) && msg[0] == '!') {
+	// only accept messages originating from the channel or from a user inside the channel
+	if((location == conf->get_channel() || states->is_user(origin)) && msg[0] == '!') {
 		msg = msg.substr(1, msg.length()-1);
 		cout << "msg: " << msg << "<<<" << endl;
 		
 		// official commands
 		if(msg == "help") {
-			string helpless_person = strip_user(sender);
 			/*
-			n->send_private_msg(helpless_person, "help:");
-			n->send_private_msg(helpless_person, "    !src: link to unibot source code");
-			n->send_private_msg(helpless_person, "    !system: the bot's host system");
-			n->send_private_msg(helpless_person, "    !time: local bot time");
-			n->send_private_msg(helpless_person, "    !uptime: time since bot start");
-			n->send_private_msg(helpless_person, "    !who's your daddy?: that would be me!");
-			n->send_private_msg(helpless_person, "    !users: user list");
-			n->send_private_msg(helpless_person, "    !quit: quits the bot (owner only)");
-			n->send_private_msg(helpless_person, "    !happa: generates link to MensaSpeiseplan for the next day");
-			n->send_private_msg(helpless_person, "    !mensa: generates link to MensaSpeiseplan for the current day");
-			n->send_private_msg(helpless_person, "    !version: prints out the unibot version");
-			n->send_private_msg(helpless_person, "    !wd / !we <args1>: generates link to german / english wikipedia");
-			n->send_private_msg(helpless_person, "    !dict <args1>: generates link to dict.cc (german and english translations)");
-			n->send_private_msg(helpless_person, "    !g <args1>: generates link to google");
-			n->send_private_msg(helpless_person, "    !wa <args1>: generates link to wolfram alpha");
-			n->send_private_msg(helpless_person, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
+			n->send_private_msg(origin, "help:");
+			n->send_private_msg(origin, "    !src: link to unibot source code");
+			n->send_private_msg(origin, "    !system: the bot's host system");
+			n->send_private_msg(origin, "    !time: local bot time");
+			n->send_private_msg(origin, "    !uptime: time since bot start");
+			n->send_private_msg(origin, "    !who's your daddy?: that would be me!");
+			n->send_private_msg(origin, "    !users: user list");
+			n->send_private_msg(origin, "    !quit: quits the bot (owner only)");
+			n->send_private_msg(origin, "    !happa: generates link to MensaSpeiseplan for the next day");
+			n->send_private_msg(origin, "    !mensa: generates link to MensaSpeiseplan for the current day");
+			n->send_private_msg(origin, "    !version: prints out the unibot version");
+			n->send_private_msg(origin, "    !wd / !we <args1>: generates link to german / english wikipedia");
+			n->send_private_msg(origin, "    !dict <args1>: generates link to dict.cc (german and english translations)");
+			n->send_private_msg(origin, "    !g <args1>: generates link to google");
+			n->send_private_msg(origin, "    !wa <args1>: generates link to wolfram alpha");
+			n->send_private_msg(origin, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
 								"of the msg specified by message offset (in reverse)");
 			*/
 //			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/unibot");
 
-			n->send_private_msg(helpless_person, "Help (add a ! to use a command):");
-			n->send_private_msg(helpless_person, "Use '!help <command>' to get further information about this command. // coming soon");
-			n->send_private_msg(helpless_person, "    Links:       wd, we, wa, uw, ae, ad, uu, g, dict");
-			n->send_private_msg(helpless_person, "    Bot/Channel: who's your daddy?, system, time, uptime, src, spec, users, quit, roulette, version, kick");
-			n->send_private_msg(helpless_person, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses, sysarch");
-			n->send_private_msg(helpless_person, "    Misc:        learn, rev, ?");
-			n->send_private_msg(helpless_person, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
+			n->send_private_msg(origin, "Help (add a ! to use a command):");
+			n->send_private_msg(origin, "Use '!help <command>' to get further information about this command. // coming soon");
+			n->send_private_msg(origin, "    Links:       wd, we, wa, uw, ae, ad, uu, g, dict");
+			n->send_private_msg(origin, "    Bot/Channel: who's your daddy?, system, time, uptime, src, spec, users, quit, roulette, version, kick");
+			n->send_private_msg(origin, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses, sysarch");
+			n->send_private_msg(origin, "    Misc:        learn, rev, ?");
+			n->send_private_msg(origin, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
                                                                 "of the msg specified by message offset (in reverse)");
 		}
 		else if(msg == "who\'s your daddy?") {
@@ -383,7 +384,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				if(owner_iter+1 != owner_names.end()) out << ", ";
 			}
 
-			n->send_channel_msg(out.str());
+			n->send_private_msg(origin, out.str());
 		}
 		else if(msg == "system") {
 			// TODO: add support for non-unix (aka windows) platforms?
@@ -397,7 +398,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 			pclose(sys_pipe);
 			
-			n->send_channel_msg(system_out);
+			n->send_private_msg(origin, system_out);
 		}
 		else if(msg == "time") {
 			stringstream local_time;
@@ -406,7 +407,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			time(&timestamp);	
 			const char* pattern = "%H:%M:%S %Z %d.%m.%Y";
 			tmput.put(local_time, local_time, ' ', localtime(&timestamp), pattern, pattern+strlen(pattern));
-			n->send_channel_msg(local_time.str());
+			n->send_private_msg(origin, local_time.str());
 		}
 		else if(msg == "uptime") {
 			unsigned long int uptime = SDL_GetTicks() - start_time;
@@ -426,27 +427,27 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			uptime_str += to_str(uptime / t_second) + "s";
 			uptime %= t_second;
 			
-			n->send_channel_msg(uptime_str);
+			n->send_private_msg(origin, uptime_str);
 		}
 		else if(msg.find("quit") == 0) {
 			string in_bot_name = "";
 			if(msg.length() > 5) in_bot_name = msg.substr(5, msg.length()-5);
 			
 			if(in_bot_name == "" || in_bot_name == conf->get_bot_name()) {
-				if(conf->is_owner(strip_user(sender))) {
+				if(conf->is_owner(origin)) {
 					quit_bot();
 					states->set_quit(true);
 				}
 				else {
 					if(states->is_op()) {
-						n->send_kick(strip_user(sender), "you're no bot owner!");
+						n->send_kick(origin, "you're no bot owner!");
 					}
 				}
 			}
 		}
 		else if(msg == "src") {
-			n->send_channel_msg("git : git clone git://git.assembla.com/unibot.git");
-			n->send_channel_msg("trac: http://trac-git.assembla.com/unibot");
+			n->send_private_msg(origin, "git : git clone git://git.assembla.com/unibot.git");
+			n->send_private_msg(origin, "trac: http://trac-git.assembla.com/unibot");
 		}
 		else if(msg == "users") {
 			map<string, pair<string, string> >* users = states->get_users();
@@ -461,30 +462,30 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				}
 				if(++user_iter != users->end()) out << ", ";
 			}
-			n->send_channel_msg(out.str());
+			n->send_private_msg(origin, out.str());
 		}
 		else if(msg.find("wd ") == 0 || (msg.length() == 2 && msg.find("wiki") == 0)) {
 			msg = handle_args_chronological(msg, 3);
-			n->send_channel_msg("http://de.wikipedia.org/wiki/" + encode_url(msg));
+			n->send_private_msg(origin, "http://de.wikipedia.org/wiki/" + encode_url(msg));
 		}
 		else if(msg.find("we ") == 0 || (msg.length() == 2 && msg.find("wikien") == 0)) {
 			msg = handle_args_chronological(msg, 3);
-			n->send_channel_msg("http://en.wikipedia.org/wiki/" + encode_url(msg));
+			n->send_private_msg(origin, "http://en.wikipedia.org/wiki/" + encode_url(msg));
 		}
 		else if(msg.find("dict ") == 0 || (msg.length() == 4 && msg.find("dict") == 0)) {
 			msg = handle_args_chronological(msg, 5);
-			n->send_channel_msg("http://www.dict.cc/?s=" + encode_url(msg));
+			n->send_private_msg(origin, "http://www.dict.cc/?s=" + encode_url(msg));
 		}
 		else if(msg.find("g ") == 0 || (msg.length() == 1 && msg.find("g") == 0)) {
 			msg = handle_args_chronological(msg, 2);
-			n->send_channel_msg("http://www.google.de/search?q=" + encode_url(msg));
+			n->send_private_msg(origin, "http://www.google.de/search?q=" + encode_url(msg));
 		}
 		else if(msg.find("wa ") == 0 || (msg.length() == 2 && msg.find("wa") == 0)) {
 			msg = handle_args_chronological(msg, 3);
-			n->send_channel_msg("http://www.wolframalpha.com/input/?i=" + encode_url(msg));
+			n->send_private_msg(origin, "http://www.wolframalpha.com/input/?i=" + encode_url(msg));
 		}
 		else if(msg == "happa") {
-			n->send_channel_msg("http://happa.dfki.de/");
+			n->send_private_msg(origin, "http://happa.dfki.de/");
 		}
 		else if(msg == "mensa") {
 			time_t cur_time;
@@ -493,44 +494,44 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			const char* days[] = { "montag", "dienstag", "mittwoch", "donnerstag", "freitag" };
 			int current_day = time_info->tm_wday;
 			if(current_day >= 1 && current_day <= 5) {
-				n->send_channel_msg("http://www.studentenwerk-saarland.de/seiten/verpflegung/speiseplan_sbr/" + string(days[current_day-1]) + ".htm");
+				n->send_private_msg(origin, "http://www.studentenwerk-saarland.de/seiten/verpflegung/speiseplan_sbr/" + string(days[current_day-1]) + ".htm");
 			}
-			else n->send_channel_msg("Heute ist die Mensa geschlossen ...");
+			else n->send_private_msg(origin, "Heute ist die Mensa geschlossen ...");
 		}
 		else if(msg == "unikram") {
-			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/?n=u&s=unikram");
+			n->send_private_msg(origin, "https://pure-project.ssl.goneo.de/tdw/?n=u&s=unikram");
 		}
 		else if(msg == "upload") {
-			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/?n=c&s=uls");
+			n->send_private_msg(origin, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=uls");
 		}
 		else if(msg == "paste") {
-			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/?n=c&s=ps");
+			n->send_private_msg(origin, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=ps");
 		}
 		else if(msg == "quote") {
-			if(conf->is_owner(strip_user(sender))) {
+			if(conf->is_owner(origin)) {
 				//connection.send(msg.substring(4));
 			}
 		}
 		else if(msg.find("kick ") == 0) {
-			if(conf->is_owner(strip_user(sender)) && msg.length() > 5) {
+			if(conf->is_owner(origin) && msg.length() > 5) {
 				n->send_kick(msg.substr(5, msg.length()-5), "cause i can!");
 			}
 		}
 		else if(msg.find("roulette ") == 0) {
-			if(conf->is_owner(strip_user(sender)) && msg.length() > 9) {
+			if(conf->is_owner(origin) && msg.length() > 9) {
 				if((rand() % 42) <= 6) n->send_kick(msg.substr(9, msg.length()-9), "bad luck!");
 			}
 		}
 		else if(msg.find("version") == 0) {
-			n->send_channel_msg("UniBot v"+to_str(UNIBOT_MAJOR_VERSION)+"."+to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+
+			n->send_private_msg(origin, "UniBot v"+to_str(UNIBOT_MAJOR_VERSION)+"."+to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+
 								" ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+")");
 		}
 		// ... and the rest ;)
 		else if(msg == "spec") {
-			n->send_channel_msg("http://www.ietf.org/rfc/rfc2812.txt");
+			n->send_private_msg(origin, "http://www.ietf.org/rfc/rfc2812.txt");
 		}
 		else if(msg.find("cmd ") == 0) {
-			if(conf->is_owner(strip_user(sender))) {
+			if(conf->is_owner(origin)) {
 				n->send(msg.substr(4, msg.length() - 4));
 			}
 		}
@@ -539,11 +540,11 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("what is ") == 0 && msg.find("?") != string::npos) {
 		}
 		else if(msg.find("what is the answer to") != string::npos || msg.find("what\'s the answer to") != string::npos || msg.find("?") != string::npos) {
-			n->send_channel_msg("42");
+			n->send_private_msg(origin, "42");
 		}
 //		else if(msg.find("rev ") == 0 && msg.length > 4) {
 //			string reverse = msg.substr(4, msg.length()-4);
-//			n->send_channel_msg(rev(reverse));
+//			n->send_private_msg(origin, rev(reverse));
 //		}
 	}
 }

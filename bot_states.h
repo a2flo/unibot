@@ -49,6 +49,7 @@ public:
 	void delete_all_users();
 	map<string, pair<string, string> >* get_users();
 	pair<string, string> get_user(string name);
+	bool is_user(string name);
 	
 protected:
 	bool connected;

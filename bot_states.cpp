@@ -137,3 +137,7 @@ pair<string, string> bot_states::get_user(string name) {
 	if(user_list.count(name) == 0) return pair<string, string>("", "");
 	return user_list[name];
 }
+
+bool bot_states::is_user(string name) {
+	return (user_list.count(name) > 0);
+}
