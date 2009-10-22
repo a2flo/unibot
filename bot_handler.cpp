@@ -330,6 +330,7 @@ void bot_handler::quit_bot() {
 
 void bot_handler::handle_message(string sender, string location, string msg) {
 	string origin = strip_user(sender);
+	string target = (location == conf->get_bot_name() ? origin : location);
 	// all bot commands have to start with '!'
 	// only accept messages originating from the channel or from a user inside the channel
 	if((location == conf->get_channel() || states->is_user(origin)) && msg[0] == '!') {
@@ -338,6 +339,8 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		
 		// official commands
 		if(msg == "help") {
+			// always send help info directly to the user/origin (privmsg)
+			
 			/*
 			n->send_private_msg(origin, "help:");
 			n->send_private_msg(origin, "    !src: link to unibot source code");
@@ -366,7 +369,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_private_msg(origin, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses, sysarch");
 			n->send_private_msg(origin, "    Misc:        learn, rev, ?");
 			n->send_private_msg(origin, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
-                                                                "of the msg specified by message offset (in reverse)");
+								"of the msg specified by message offset (in reverse)");
 		}
 		else if(msg == "who\'s your daddy?") {
 			stringstream out;
@@ -384,7 +387,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				if(owner_iter+1 != owner_names.end()) out << ", ";
 			}
 
-			n->send_private_msg(origin, out.str());
+			n->send_private_msg(target, out.str());
 		}
 		else if(msg == "system") {
 			// TODO: add support for non-unix (aka windows) platforms?
@@ -398,7 +401,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 			pclose(sys_pipe);
 			
-			n->send_private_msg(origin, system_out);
+			n->send_private_msg(target, system_out);
 		}
 		else if(msg == "time") {
 			stringstream local_time;
@@ -407,7 +410,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			time(&timestamp);	
 			const char* pattern = "%H:%M:%S %Z %d.%m.%Y";
 			tmput.put(local_time, local_time, ' ', localtime(&timestamp), pattern, pattern+strlen(pattern));
-			n->send_private_msg(origin, local_time.str());
+			n->send_private_msg(target, local_time.str());
 		}
 		else if(msg == "uptime") {
 			unsigned long int uptime = SDL_GetTicks() - start_time;
@@ -427,7 +430,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			uptime_str += to_str(uptime / t_second) + "s";
 			uptime %= t_second;
 			
-			n->send_private_msg(origin, uptime_str);
+			n->send_private_msg(target, uptime_str);
 		}
 		else if(msg.find("quit") == 0) {
 			string in_bot_name = "";
@@ -446,8 +449,8 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 		}
 		else if(msg == "src") {
-			n->send_private_msg(origin, "git : git clone git://git.assembla.com/unibot.git");
-			n->send_private_msg(origin, "trac: http://trac-git.assembla.com/unibot");
+			n->send_private_msg(target, "git : git clone git://git.assembla.com/unibot.git");
+			n->send_private_msg(target, "trac: http://trac-git.assembla.com/unibot");
 		}
 		else if(msg == "users") {
 			map<string, pair<string, string> >* users = states->get_users();
@@ -462,30 +465,30 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				}
 				if(++user_iter != users->end()) out << ", ";
 			}
-			n->send_private_msg(origin, out.str());
+			n->send_private_msg(target, out.str());
 		}
 		else if(msg.find("wd ") == 0 || (msg.length() == 2 && msg.find("wiki") == 0)) {
 			msg = handle_args_chronological(msg, 3);
-			n->send_private_msg(origin, "http://de.wikipedia.org/wiki/" + encode_url(msg));
+			n->send_private_msg(target, "http://de.wikipedia.org/wiki/" + encode_url(msg));
 		}
 		else if(msg.find("we ") == 0 || (msg.length() == 2 && msg.find("wikien") == 0)) {
 			msg = handle_args_chronological(msg, 3);
-			n->send_private_msg(origin, "http://en.wikipedia.org/wiki/" + encode_url(msg));
+			n->send_private_msg(target, "http://en.wikipedia.org/wiki/" + encode_url(msg));
 		}
 		else if(msg.find("dict ") == 0 || (msg.length() == 4 && msg.find("dict") == 0)) {
 			msg = handle_args_chronological(msg, 5);
-			n->send_private_msg(origin, "http://www.dict.cc/?s=" + encode_url(msg));
+			n->send_private_msg(target, "http://www.dict.cc/?s=" + encode_url(msg));
 		}
 		else if(msg.find("g ") == 0 || (msg.length() == 1 && msg.find("g") == 0)) {
 			msg = handle_args_chronological(msg, 2);
-			n->send_private_msg(origin, "http://www.google.de/search?q=" + encode_url(msg));
+			n->send_private_msg(target, "http://www.google.de/search?q=" + encode_url(msg));
 		}
 		else if(msg.find("wa ") == 0 || (msg.length() == 2 && msg.find("wa") == 0)) {
 			msg = handle_args_chronological(msg, 3);
-			n->send_private_msg(origin, "http://www.wolframalpha.com/input/?i=" + encode_url(msg));
+			n->send_private_msg(target, "http://www.wolframalpha.com/input/?i=" + encode_url(msg));
 		}
 		else if(msg == "happa") {
-			n->send_private_msg(origin, "http://happa.dfki.de/");
+			n->send_private_msg(target, "http://happa.dfki.de/");
 		}
 		else if(msg == "mensa") {
 			time_t cur_time;
@@ -494,18 +497,18 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			const char* days[] = { "montag", "dienstag", "mittwoch", "donnerstag", "freitag" };
 			int current_day = time_info->tm_wday;
 			if(current_day >= 1 && current_day <= 5) {
-				n->send_private_msg(origin, "http://www.studentenwerk-saarland.de/seiten/verpflegung/speiseplan_sbr/" + string(days[current_day-1]) + ".htm");
+				n->send_private_msg(target, "http://www.studentenwerk-saarland.de/seiten/verpflegung/speiseplan_sbr/" + string(days[current_day-1]) + ".htm");
 			}
-			else n->send_private_msg(origin, "Heute ist die Mensa geschlossen ...");
+			else n->send_private_msg(target, "Heute ist die Mensa geschlossen ...");
 		}
 		else if(msg == "unikram") {
-			n->send_private_msg(origin, "https://pure-project.ssl.goneo.de/tdw/?n=u&s=unikram");
+			n->send_private_msg(target, "https://pure-project.ssl.goneo.de/tdw/?n=u&s=unikram");
 		}
 		else if(msg == "upload") {
-			n->send_private_msg(origin, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=uls");
+			n->send_private_msg(target, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=uls");
 		}
 		else if(msg == "paste") {
-			n->send_private_msg(origin, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=ps");
+			n->send_private_msg(target, "https://pure-project.ssl.goneo.de/tdw/?n=c&s=ps");
 		}
 		else if(msg == "quote") {
 			if(conf->is_owner(origin)) {
@@ -523,12 +526,12 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 		}
 		else if(msg.find("version") == 0) {
-			n->send_private_msg(origin, "UniBot v"+to_str(UNIBOT_MAJOR_VERSION)+"."+to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+
+			n->send_private_msg(target, "UniBot v"+to_str(UNIBOT_MAJOR_VERSION)+"."+to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+
 								" ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+")");
 		}
 		// ... and the rest ;)
 		else if(msg == "spec") {
-			n->send_private_msg(origin, "http://www.ietf.org/rfc/rfc2812.txt");
+			n->send_private_msg(target, "http://www.ietf.org/rfc/rfc2812.txt");
 		}
 		else if(msg.find("cmd ") == 0) {
 			if(conf->is_owner(origin)) {
@@ -540,11 +543,11 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("what is ") == 0 && msg.find("?") != string::npos) {
 		}
 		else if(msg.find("what is the answer to") != string::npos || msg.find("what\'s the answer to") != string::npos || msg.find("?") != string::npos) {
-			n->send_private_msg(origin, "42");
+			n->send_private_msg(target, "42");
 		}
 //		else if(msg.find("rev ") == 0 && msg.length > 4) {
 //			string reverse = msg.substr(4, msg.length()-4);
-//			n->send_private_msg(origin, rev(reverse));
+//			n->send_private_msg(target, rev(reverse));
 //		}
 	}
 }
