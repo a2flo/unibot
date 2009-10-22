@@ -78,6 +78,7 @@ string trim(string str) {
 	return str;
 }
 
-void rev(string& str) {
+string rev(string& str) {
 	reverse(str.begin(), str.end());
+	return str;
 }

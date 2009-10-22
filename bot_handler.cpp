@@ -545,10 +545,10 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("what is the answer to") != string::npos || msg.find("what\'s the answer to") != string::npos || msg.find("?") != string::npos) {
 			n->send_private_msg(target, "42");
 		}
-//		else if(msg.find("rev ") == 0 && msg.length > 4) {
-//			string reverse = msg.substr(4, msg.length()-4);
-//			n->send_private_msg(target, rev(reverse));
-//		}
+                else if(msg.find("rev ") == 0) {
+                        msg = handle_args_chronological(msg, 4);
+                        n->send_private_msg(origin, rev(msg));
+                }
 	}
 }
 
