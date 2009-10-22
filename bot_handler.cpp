@@ -162,7 +162,7 @@ void bot_handler::handle() {
 					if(strip_user(cmd_sender) == conf->get_bot_name()) {
 						logger::log(logger::LT_DEBUG, "bot_handler.cpp", "joined the channel");
 						states->set_joined(true);
-						n->send_channel_msg("hi there ;)");
+						n->send_channel_msg("hey :)");
 						
 						// check if bot got kicked
 						if(states->is_kicked()) {
@@ -178,9 +178,11 @@ void bot_handler::handle() {
 					}
 					// if another user joined the channel, greet him
 					else {
-						n->send_channel_msg("hi there, " + strip_user(cmd_sender));
+						n->send_channel_msg("hey, " + strip_user(cmd_sender));
 						states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
 					}
+					// Nimda!
+					//n->send_private_msg("Nimda","Let\'s reverse something");
 					break;
 				case PART:
 					states->delete_user(strip_user(cmd_sender));
@@ -208,6 +210,18 @@ void bot_handler::handle() {
 						// log msg
 						logger::log(logger::LT_MSG, "bot_handler.cpp", string(strip_user(cmd_sender) + ": " + msg).c_str());
 					}
+					// URL - Title
+					//if (msg.find("http") == 0) {
+					//	n->send_channel_msg(msg);
+					//}
+					// Reverse
+					//if (msg.find("Send back") == 0) {
+					//	string reverse = msg.substr(11,20);
+					//	rev(reverse);
+					//	n->send_private_msg("Nimda",reverse);
+					//}
+					// Caeser
+					// Vignere
 				}
 				break;
 				case MODE:
@@ -323,6 +337,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		// official commands
 		if(msg == "help") {
 			string helpless_person = strip_user(sender);
+			/*
 			n->send_private_msg(helpless_person, "help:");
 			n->send_private_msg(helpless_person, "    !src: link to unibot source code");
 			n->send_private_msg(helpless_person, "    !system: the bot's host system");
@@ -334,12 +349,23 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_private_msg(helpless_person, "    !happa: generates link to MensaSpeiseplan for the next day");
 			n->send_private_msg(helpless_person, "    !mensa: generates link to MensaSpeiseplan for the current day");
 			n->send_private_msg(helpless_person, "    !version: prints out the unibot version");
-			n->send_private_msg(helpless_person, "    !wiki / !wikien <args1>: generates link to german / english wiki");
+			n->send_private_msg(helpless_person, "    !wd / !we <args1>: generates link to german / english wikipedia");
 			n->send_private_msg(helpless_person, "    !dict <args1>: generates link to dict.cc (german and english translations)");
 			n->send_private_msg(helpless_person, "    !g <args1>: generates link to google");
 			n->send_private_msg(helpless_person, "    !wa <args1>: generates link to wolfram alpha");
 			n->send_private_msg(helpless_person, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
 								"of the msg specified by message offset (in reverse)");
+			*/
+//			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/unibot");
+
+			n->send_private_msg(helpless_person, "Help (add a ! to use a command):");
+			n->send_private_msg(helpless_person, "Use '!help <command>' to get further information about this command. // coming soon");
+			n->send_private_msg(helpless_person, "    Links:       wd, we, wa, uw, ae, ad, uu, g, dict");
+			n->send_private_msg(helpless_person, "    Bot/Channel: who's your daddy?, system, time, uptime, src, spec, users, quit, roulette, version, kick");
+			n->send_private_msg(helpless_person, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses, sysarch");
+			n->send_private_msg(helpless_person, "    Misc:        learn, rev, ?");
+			n->send_private_msg(helpless_person, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
+                                                                "of the msg specified by message offset (in reverse)");
 		}
 		else if(msg == "who\'s your daddy?") {
 			stringstream out;
@@ -437,12 +463,12 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 			n->send_channel_msg(out.str());
 		}
-		else if(msg.find("wiki ") == 0 || (msg.length() == 4 && msg.find("wiki") == 0)) {
-			msg = handle_args_chronological(msg, 5);
+		else if(msg.find("wd ") == 0 || (msg.length() == 2 && msg.find("wiki") == 0)) {
+			msg = handle_args_chronological(msg, 3);
 			n->send_channel_msg("http://de.wikipedia.org/wiki/" + encode_url(msg));
 		}
-		else if(msg.find("wikien ") == 0 || (msg.length() == 6 && msg.find("wikien") == 0)) {
-			msg = handle_args_chronological(msg, 7);
+		else if(msg.find("we ") == 0 || (msg.length() == 2 && msg.find("wikien") == 0)) {
+			msg = handle_args_chronological(msg, 3);
 			n->send_channel_msg("http://en.wikipedia.org/wiki/" + encode_url(msg));
 		}
 		else if(msg.find("dict ") == 0 || (msg.length() == 4 && msg.find("dict") == 0)) {
@@ -478,7 +504,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/?n=c&s=uls");
 		}
 		else if(msg == "paste") {
-			n->send_channel_msg("http://pastebin.com");
+			n->send_channel_msg("https://pure-project.ssl.goneo.de/tdw/?n=c&s=ps");
 		}
 		else if(msg == "quote") {
 			if(conf->is_owner(strip_user(sender))) {
@@ -515,6 +541,10 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("what is the answer to") != string::npos || msg.find("what\'s the answer to") != string::npos || msg.find("?") != string::npos) {
 			n->send_channel_msg("42");
 		}
+//		else if(msg.find("rev ") == 0 && msg.length > 4) {
+//			string reverse = msg.substr(4, msg.length()-4);
+//			n->send_channel_msg(rev(reverse));
+//		}
 	}
 }
 

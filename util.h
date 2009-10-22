@@ -38,5 +38,6 @@ string trim(string str);
 void tokenize(vector<string>& dst, const string& src, const char delim);
 string encode_url(string& url);
 string encode_url(const char* url);
+void rev(string& str);
 
 #endif
