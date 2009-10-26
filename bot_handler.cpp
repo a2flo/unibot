@@ -467,11 +467,11 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 			n->send_private_msg(target, out.str());
 		}
-		else if(msg.find("wd ") == 0 || (msg.length() == 2 && msg.find("wiki") == 0)) {
+		else if(msg.find("wd ") == 0 || (msg.length() == 2 && msg.find("wd") == 0)) {
 			msg = handle_args_chronological(msg, 3);
 			n->send_private_msg(target, "http://de.wikipedia.org/wiki/" + encode_url(msg));
 		}
-		else if(msg.find("we ") == 0 || (msg.length() == 2 && msg.find("wikien") == 0)) {
+		else if(msg.find("we ") == 0 || (msg.length() == 2 && msg.find("we") == 0)) {
 			msg = handle_args_chronological(msg, 3);
 			n->send_private_msg(target, "http://en.wikipedia.org/wiki/" + encode_url(msg));
 		}
@@ -569,10 +569,10 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("what is the answer to") != string::npos || msg.find("what\'s the answer to") != string::npos || msg.find("?") != string::npos) {
 			n->send_private_msg(target, "42");
 		}
-                else if(msg.find("rev ") == 0) {
-                        msg = handle_args_chronological(msg, 4);
-                        n->send_private_msg(target, rev(msg));
-                }
+		else if(msg.find("rev ") == 0) {
+			msg = handle_args_chronological(msg, 4);
+			n->send_private_msg(target, rev(msg));
+		}
 	}
 }
 
