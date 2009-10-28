@@ -546,7 +546,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		}
 		else if(msg.find("roulette ") == 0) {
 			if(conf->is_owner(origin) && msg.length() > 9) {
-				if((rand() % 42) <= 6) n->send_kick(msg.substr(9, msg.length()-9), "bad luck!");
+				if((rand() % 42) <= 21) n->send_kick(msg.substr(9, msg.length()-9), "bad luck!");
 			}
 		}
 		else if(msg.find("version") == 0) {
