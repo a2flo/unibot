@@ -27,7 +27,7 @@ bot_states::bot_states() {
 	kicked = false;
 	identified = false;
 	kick_user = "";
-	silenced = false;
+	silenced = true;
 }
 
 bot_states::~bot_states() {

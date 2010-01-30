@@ -179,11 +179,7 @@ void bot_handler::handle() {
 					// if another user joined the channel, greet him
 					else {
 						if(!(states->is_silenced())) {
-	                                                if(strip_user(cmd_sender) == "borschty") {
-        	                                                n->send_channel_msg("ahoy, " + strip_user(cmd_sender));
-                	                                } else {
-                        	                                n->send_channel_msg("hey, " + strip_user(cmd_sender));
-                                	                }
+                        	                        n->send_channel_msg("hey, " + strip_user(cmd_sender));
                                         	        states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
 						}
 					}
@@ -551,11 +547,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		}
 		else if(msg.find("silence") == 0) {
 			if(conf->is_owner(origin)) {
-				if(states->is_silenced()) {
-					states->set_silenced(false);
-				} else {
-					states->set_silenced(true);
-				}
+				states->set_silenced(states->is_silenced() ^ true);
 			}	
 		}
 		// ... and the rest ;)
