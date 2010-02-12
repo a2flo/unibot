@@ -16,7 +16,6 @@
 		5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4AB100E514F00CEA98D /* Cocoa.framework */; };
 		5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4B1100E519700CEA98D /* AppKit.framework */; };
 		5CFAD4B4100E519700CEA98D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4B3100E519700CEA98D /* Foundation.framework */; };
-		5CFAD629100E542C00CEA98D /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD499100E512F00CEA98D /* SDLMain.m */; };
 		5CFF82E910100058002C85DF /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFF82E810100058002C85DF /* util.cpp */; };
 		8DD76F650486A84900D96B5E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.cpp */; settings = {ATTRIBUTES = (); }; };
 /* End PBXBuildFile section */
@@ -51,8 +50,6 @@
 		5CFAD2CA100E361800CEA98D /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
 		5CFAD304100E374800CEA98D /* SDL_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_net.framework; path = /Library/Frameworks/SDL_net.framework; sourceTree = "<absolute>"; };
 		5CFAD44B100E503B00CEA98D /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
-		5CFAD499100E512F00CEA98D /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = osx/SDLMain.m; sourceTree = "<group>"; };
-		5CFAD49A100E512F00CEA98D /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = osx/SDLMain.h; sourceTree = "<group>"; };
 		5CFAD4AB100E514F00CEA98D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		5CFAD4B1100E519700CEA98D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		5CFAD4B3100E519700CEA98D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -82,7 +79,6 @@
 			children = (
 				5C9369B810125A0B0059AF48 /* premake4.lua */,
 				08FB7795FE84155DC02AAC07 /* Source */,
-				5CFAD498100E512200CEA98D /* osx */,
 				5CFAD475100E504500CEA98D /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
@@ -130,15 +126,6 @@
 				5CFAD4AB100E514F00CEA98D /* Cocoa.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5CFAD498100E512200CEA98D /* osx */ = {
-			isa = PBXGroup;
-			children = (
-				5CFAD499100E512F00CEA98D /* SDLMain.m */,
-				5CFAD49A100E512F00CEA98D /* SDLMain.h */,
-			);
-			name = osx;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,7 +193,6 @@
 				5CFAD2C3100E35FD00CEA98D /* bot_handler.cpp in Sources */,
 				5CFAD2C6100E360400CEA98D /* bot_states.cpp in Sources */,
 				5CFAD2C9100E360E00CEA98D /* config.cpp in Sources */,
-				5CFAD629100E542C00CEA98D /* SDLMain.m in Sources */,
 				5CFF82E910100058002C85DF /* util.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
