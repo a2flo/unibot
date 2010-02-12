@@ -32,6 +32,7 @@ void tokenize(vector<string>& dst, const string& src, const char delim) {
 }
 
 string encode_url(string& url) {
+	// TODO: replace '+' by %2B
 	stringstream result;
 	for(string::iterator citer = url.begin(); citer != url.end(); citer++) {
 		switch(*citer) {
