@@ -144,9 +144,9 @@ bool bot_states::is_user(string name) {
 }
 
 bool bot_states::is_silenced() {
-        return silenced;
+	return silenced;
 }
 
 void bot_states::set_silenced(bool silenced) {
-        this->silenced = silenced;
+	this->silenced = silenced;
 }

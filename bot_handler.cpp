@@ -179,8 +179,8 @@ void bot_handler::handle() {
 					// if another user joined the channel, greet him
 					else {
 						if(!(states->is_silenced())) {
-                        	                        n->send_channel_msg("hey, " + strip_user(cmd_sender));
-                                        	        states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
+							n->send_channel_msg("hey, " + strip_user(cmd_sender));
+							states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
 						}
 					}
 					break;
