@@ -178,11 +178,11 @@ void bot_handler::handle() {
 					}
 					// if another user joined the channel, greet him
 					else {
-						n->send_channel_msg("hey, " + strip_user(cmd_sender));
-						states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
+						if(!(states->is_silenced())) {
+                        	                        n->send_channel_msg("hey, " + strip_user(cmd_sender));
+                                        	        states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
+						}
 					}
-					// Nimda!
-					//n->send_private_msg("Nimda","Let\'s reverse something");
 					break;
 				case PART:
 					states->delete_user(strip_user(cmd_sender));
@@ -214,14 +214,6 @@ void bot_handler::handle() {
 					//if (msg.find("http") == 0) {
 					//	n->send_channel_msg(msg);
 					//}
-					// Reverse
-					//if (msg.find("Send back") == 0) {
-					//	string reverse = msg.substr(11,20);
-					//	rev(reverse);
-					//	n->send_private_msg("Nimda",reverse);
-					//}
-					// Caeser
-					// Vignere
 				}
 				break;
 				case MODE:
@@ -365,7 +357,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_private_msg(origin, "Help (add a ! to use a command):");
 			n->send_private_msg(origin, "Use '!help <command>' to get further information about this command. // coming soon");
 			n->send_private_msg(origin, "    Links:       wd, we, wa, uw, ae, ad, uu, g, dict");
-			n->send_private_msg(origin, "    Bot/Channel: who's your daddy?, system, time, uptime, src, spec, users, quit, roulette, version, kick");
+			n->send_private_msg(origin, "    Bot/Channel: who's your daddy?, system, time, uptime, src, spec, users, quit, roulette, version, kick, silence");
 			n->send_private_msg(origin, "    Uni:         unikram, paste, upload, mensa, happa, mfi, prog, coli, theoinf, algodat, courses");
 			n->send_private_msg(origin, "    Misc:        learn, rev, ?");
 			n->send_private_msg(origin, "    <args1>: <message offset> <word offset>: extracts the word (given by word offset) or whole msg (if no word offset) " \
@@ -522,10 +514,10 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			n->send_private_msg(target, "Einfuehrung: http://www.coli.uni-saarland.de/courses/I2CL-09/page.php?id=index");
 		}
 		else if (msg == "theoinf") {
-			n->send_private_msg(target, "http://www-cc.cs.uni-saarland.de/teaching/course.php?CourseId=16");
+			n->send_private_msg(target, "http://www-tcs.cs.uni-sb.de/Veranstaltungen/vorlesung.php?CourseId=40");
 		}
 		else if (msg == "algodat") {
-			n->send_private_msg(target, "http://www-tcs.cs.uni-sb.de/Veranstaltungen/vorlesung.php?CourseId=40");
+			n->send_private_msg(target, "http://www-cc.cs.uni-saarland.de/teaching/course.php?CourseId=16");
 		}
 		else if (msg == "courses") {
 			n->send_private_msg(target, "http://www.prog.uni-saarland.de/teaching/ckurs/2009/");
@@ -552,6 +544,11 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("version") == 0) {
 			n->send_private_msg(target, "UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+
 								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+")");
+		}
+		else if(msg.find("silence") == 0) {
+			if(conf->is_owner(origin)) {
+				states->set_silenced(states->is_silenced() ^ true);
+			}	
 		}
 		// ... and the rest ;)
 		else if(msg == "spec") {

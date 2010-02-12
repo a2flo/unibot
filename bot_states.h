@@ -50,6 +50,8 @@ public:
 	map<string, pair<string, string> >* get_users();
 	pair<string, string> get_user(string name);
 	bool is_user(string name);
+	bool is_silenced();
+	void set_silenced(bool silenced);
 	
 protected:
 	bool connected;
@@ -59,6 +61,7 @@ protected:
 	bool quit;
 	bool kicked;
 	bool identified;
+	bool silenced;
 	string kick_user;
 	// login name: realname, host
 	map<string, pair<string, string> > user_list;

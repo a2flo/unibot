@@ -27,6 +27,7 @@ bot_states::bot_states() {
 	kicked = false;
 	identified = false;
 	kick_user = "";
+	silenced = true;
 }
 
 bot_states::~bot_states() {
@@ -140,4 +141,12 @@ pair<string, string> bot_states::get_user(string name) {
 
 bool bot_states::is_user(string name) {
 	return (user_list.count(name) > 0);
+}
+
+bool bot_states::is_silenced() {
+        return silenced;
+}
+
+void bot_states::set_silenced(bool silenced) {
+        this->silenced = silenced;
 }
