@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
+		5CA2C5E611258F98007EC336 /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CA2C5E511258F98007EC336 /* lua.cpp */; };
 		5CFAD2C0100E35EF00CEA98D /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD2BF100E35EF00CEA98D /* log.cpp */; };
 		5CFAD2C3100E35FD00CEA98D /* bot_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD2C2100E35FD00CEA98D /* bot_handler.cpp */; };
 		5CFAD2C6100E360400CEA98D /* bot_states.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD2C5100E360400CEA98D /* bot_states.cpp */; };
@@ -36,6 +38,9 @@
 		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		5C97DC25100E7B1000F6741B /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		5CA2C5DE11258F32007EC336 /* lua.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lua.framework; path = Library/Frameworks/lua.framework; sourceTree = SDKROOT; };
+		5CA2C5E411258F98007EC336 /* lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lua.h; sourceTree = "<group>"; };
+		5CA2C5E511258F98007EC336 /* lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua.cpp; sourceTree = "<group>"; };
 		5CA3F8EE100F8244005B3F26 /* net_tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_tcp.h; sourceTree = "<group>"; };
 		5CA3F90B100F8393005B3F26 /* net_protocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_protocol.h; sourceTree = "<group>"; };
 		5CA3FA81100FB210005B3F26 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
@@ -68,6 +73,7 @@
 				5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */,
 				5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */,
 				5CFAD4B4100E519700CEA98D /* Foundation.framework in Frameworks */,
+				5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +109,8 @@
 				5CFAD2C7100E360E00CEA98D /* config.h */,
 				5CFF82E810100058002C85DF /* util.cpp */,
 				5CA3FA81100FB210005B3F26 /* util.h */,
+				5CA2C5E511258F98007EC336 /* lua.cpp */,
+				5CA2C5E411258F98007EC336 /* lua.h */,
 				5C97DC25100E7B1000F6741B /* platform.h */,
 			);
 			name = Source;
@@ -124,6 +132,7 @@
 				5CFAD44B100E503B00CEA98D /* SDL.framework */,
 				5CFAD304100E374800CEA98D /* SDL_net.framework */,
 				5CFAD4AB100E514F00CEA98D /* Cocoa.framework */,
+				5CA2C5DE11258F32007EC336 /* lua.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -194,6 +203,7 @@
 				5CFAD2C6100E360400CEA98D /* bot_states.cpp in Sources */,
 				5CFAD2C9100E360E00CEA98D /* config.cpp in Sources */,
 				5CFF82E910100058002C85DF /* util.cpp in Sources */,
+				5CA2C5E611258F98007EC336 /* lua.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

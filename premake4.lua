@@ -17,7 +17,7 @@ project "unibot"
 	end
 	
 	if(os.is("linux") or os.is("bsd")) then
-		libdirs { os.findlib("SDL"), os.findlib("SDL_net") }
+		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), os.findlib("lua") }
 		links { "SDL", "SDLmain", "SDL_net" }
 		buildoptions { "`sdl-config --cflags`" }
 		linkoptions { "`sdl-config --libs`" }
@@ -26,7 +26,7 @@ project "unibot"
 	if(os.is("macosx")) then
 		files { "osx/**.h", "osx/**.cpp", "osx/**.m", "osx/**.mm" }
 		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -msse4.1 -mmacosx-version-min=10.6 -gdwarf-2 -fpascal-strings -fasm-blocks -mdynamic-no-pic" }
-		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework Cocoa -framework AppKit -framework Foundation" }
+		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework Cocoa -framework AppKit -framework Foundation -framework lua" }
 	end
 
 	configuration "Debug"
