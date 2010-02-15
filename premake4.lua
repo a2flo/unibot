@@ -18,7 +18,7 @@ project "unibot"
 	
 	if(os.is("linux") or os.is("bsd")) then
 		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), os.findlib("lua") }
-		links { "SDL", "SDLmain", "SDL_net" }
+		links { "SDL", "SDLmain", "SDL_net", "lua" }
 		buildoptions { "`sdl-config --cflags`" }
 		linkoptions { "`sdl-config --libs`" }
 	end
