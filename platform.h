@@ -99,6 +99,7 @@ extern "C" {
 #include <cstring>
 #include <cstdarg>
 #include <typeinfo>
+#include <limits>
 
 using namespace std;
 
