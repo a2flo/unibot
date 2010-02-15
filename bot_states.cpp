@@ -18,83 +18,85 @@
 
 #include "bot_states.h"
 
-bot_states::bot_states() {	
-	connected = false;
-	joined = false;
-	parted = false;
-	op = false;
-	quit = false;
-	kicked = false;
-	identified = false;
+bot_states::bot_states() {
+	states["connected"] = false;
+	states["joined"] = false;
+	states["parted"] = false;
+	states["op"] = false;
+	states["quit"] = false;
+	states["kicked"] = false;
+	states["identified"] = false;
+	states["silenced"] = true;
+	states["quit"] = false;
+	
 	kick_user = "";
-	silenced = true;
 }
 
 bot_states::~bot_states() {
 }
 
 bool bot_states::is_connected() {
-	return connected;
+	return states["connected"];
 }
 
 void bot_states::set_connected(bool connected) {
-	this->connected = connected;
+	states["connected"] = connected;
 }
 
 bool bot_states::is_joined() {
-	return joined;
+	return states["joined"];
 }
 
 void bot_states::set_joined(bool joined) {
-	this->joined = joined;
+	states["joined"] = joined;
 }
 
 bool bot_states::is_parted() {
-	if(parted) {
-		parted = false;
+	if(states["parted"]) {
+		states["parted"] = false;
 		return true;
 	}
 	return false;
 }
 
 void bot_states::set_parted(bool parted) {
-	this->parted = parted;
+	states["parted"] = parted;
 }
 
 bool bot_states::is_kicked() {
-	if(kicked) {
-		kicked = false;
+	if(states["kicked"]) {
+		states["kicked"] = false;
 		return true;
 	}
 	return false;
 }
 
 void bot_states::set_kicked(bool kicked) {
-	this->kicked = kicked;
+	states["kicked"] = kicked;
 }
 
 bool bot_states::is_op() {
-	return op;
+	return states["op"];
 }
 
 void bot_states::set_op(bool op) {
-	this->op = op;
+	states["op"] = op;
 }
 
 bool bot_states::is_quit() {
-	return quit;
+	return states["quit"];
 }
 
 void bot_states::set_quit(bool quit) {
-	this->quit = quit;
+	states["quit"] = quit;
 }
 
 bool bot_states::is_identified() {
-	return identified;
+	return states["identified"];
 }
 
 void bot_states::set_identified(bool identified) {
-	this->identified = identified;
+	states["identified"] = identified;
 }
 
 void bot_states::add_user(string name, string real_name, string host) {
@@ -144,9 +146,25 @@ bool bot_states::is_user(string name) {
 }
 
 bool bot_states::is_silenced() {
-	return silenced;
+	return states["silenced"];
 }
 
 void bot_states::set_silenced(bool silenced) {
-	this->silenced = silenced;
+	states["silenced"] = silenced;
+}
+
+bool bot_states::is(const string& state_name) {
+	if(states.count(state_name) == 0) {
+		logger::log(logger::LT_ERROR, "bot_states.cpp", string("is(): unknown state name \""+state_name+"\"!").c_str());
+		return false;
+	}
+	return states[state_name];
+}
+
+void bot_states::set(const string& state_name, bool new_state) {
+	if(states.count(state_name) == 0) {
+		logger::log(logger::LT_ERROR, "bot_states.cpp", string("set(): unknown state name \""+state_name+"\"!").c_str());
+		return;
+	}
+	states[state_name] = new_state;
 }

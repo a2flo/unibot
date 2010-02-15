@@ -53,15 +53,23 @@ public:
 	bool is_silenced();
 	void set_silenced(bool silenced);
 	
+	bool is(const string& state_name);
+	void set(const string& state_name, bool new_state);
+	
 protected:
-	bool connected;
-	bool joined;
-	bool parted;
-	bool op;
-	bool quit;
-	bool kicked;
-	bool identified;
-	bool silenced;
+	/* available bot states:
+	 * connected
+	 * joined
+	 * parted
+	 * op
+	 * quit
+	 * kicked
+	 * identified
+	 * silenced
+	 */
+	// state name, state
+	map<string, bool> states;
+	
 	string kick_user;
 	// login name: realname, host
 	map<string, pair<string, string> > user_list;

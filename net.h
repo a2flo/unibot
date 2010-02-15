@@ -42,7 +42,7 @@ public:
 	bool is_received_data();
 	deque<string>* get_received_data();
 	void clear_received_data();
-		
+	
 	void send(string data);
 	void send_channel_msg(string msg);
 	void send_private_msg(string where, string msg);

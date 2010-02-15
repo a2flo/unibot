@@ -26,11 +26,12 @@
 #include "build_version.h"
 
 #define UNIBOT_MAJOR_VERSION 0
-#define UNIBOT_MINOR_VERSION 1
+#define UNIBOT_MINOR_VERSION 2
 #define UNIBOT_REVISION_VERSION 0
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
+class lua;
 class bot_handler {
 public:
 	bot_handler(net<TCP_protocol>* n, bot_states* states, config* conf);
@@ -97,6 +98,10 @@ public:
 	void handle();
 	void quit_bot();
 	
+	string get_prev_msg(const size_t& offset);
+	string handle_args_chronological(const string& msg, const size_t& offset);
+	string strip_special_chars(const string& str);
+	
 protected:
 	net<TCP_protocol>* n;
 	map<string, IRC_COMMAND> irc_commands;
@@ -104,11 +109,13 @@ protected:
 	config* conf;
 	locale loc;
 	
+	lua* lua_obj;
+	
 	string servername;
 	unsigned long int start_time;
 	
 	deque<string> msg_store;
-	unsigned int keep_msg_count;
+	size_t keep_msg_count;
 	
 	IRC_COMMAND parse_irc_cmd(string cmd);
 	string strip_user(string str);
@@ -116,9 +123,7 @@ protected:
 	string strip_user_host(string str);
 	void handle_message(string sender, string location, string msg);
 	
-	string handle_args_chronological(string msg, unsigned int offset);
-	string extract_word(int msg_offset, int word_offset);
-	string strip_special_chars(string str);
+	string extract_word(ssize_t msg_offset, ssize_t word_offset);
 	
 };
 

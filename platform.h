@@ -61,11 +61,23 @@
 #include <SDL/SDL_thread.h>
 #include <SDL/SDL_cpuinfo.h>
 #include <SDL_net/SDL_net.h>
-#else
+
+extern "C" {
+#include <lua/lua.hpp>
+#include <lua/lualib.h>
+#include <lua/lauxlib.h>
+}
+#else // unix/linux/windows
 #include <SDL.h>
 #include <SDL_thread.h>
 #include <SDL_cpuinfo.h>
 #include <SDL_net.h>
+
+extern "C" {
+#include <lua.hpp>
+#include <lualib.h>
+#include <lauxlib.h>
+}
 #endif // __APPLE__
 #include <omp.h>
 

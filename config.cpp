@@ -122,6 +122,14 @@ string config::get_channel() {
 	return config_data["channel"];
 }
 
+string config::get_config_entry(const string& name) {
+	if(config_data.count(name) == 0) {
+		logger::log(logger::LT_ERROR, "config.cpp", string("get_config_entry(): unknown config entry name \""+name+"\"!").c_str());
+		return "";
+	}
+	return config_data[name];
+}
+
 bool config::is_owner(string user) {
 	for(vector<string>::iterator owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
 		if(*owner_iter == user) return true;

@@ -29,6 +29,7 @@ public:
 	void load_config();
 	void load_config(const char* config_file);
 	
+	string get_config_entry(const string& name);
 	string get_bot_name();
 	string get_bot_realname();
 	string get_bot_password();
@@ -43,6 +44,14 @@ protected:
 	fstream file;
 	string config_file;
 	
+	/* available config settings:
+	 * bot_name
+	 * bot_realname
+	 * owner_names
+	 * hostname
+	 * port
+	 * channel
+	 */
 	map<string, string> config_data;
 	vector<string> owner_names;
 	string bot_password;
