@@ -98,6 +98,7 @@ extern "C" {
 #include <ctime>
 #include <cstring>
 #include <cstdarg>
+#include <typeinfo>
 
 using namespace std;
 
