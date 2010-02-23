@@ -10,7 +10,7 @@ function handle_message(origin, target, cmd, parameters)
 		local channel = get_config_entry("channel")
 		
 		-- net
-		send("PRIVMSG "..target" :send test")
+		send("PRIVMSG "..target.." :send test")
 		send_channel_msg("send_channel_msg test")
 		send_private_msg(target, "send_private_msg test")
 		send_kick("tester", "42")
