@@ -31,6 +31,18 @@
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
+#if defined(_MSC_VER)
+#define UNIBOT_COMPILER "VC++ "+to_str(_MSC_VER)
+#elif (defined(__GNUC__) && !defined(__llvm__) && !defined(__clang__))
+#define UNIBOT_COMPILER "GCC "+to_str(__VERSION__)
+#elif (defined(__GNUC__) && defined(__llvm__) && !defined(__clang__))
+#define UNIBOT_COMPILER "LLVM-GCC "+to_str(__VERSION__)
+#elif defined(__clang__)
+#define UNIBOT_COMPILER "Clang "+to_str(__VERSION__)
+#else
+#define UNIBOT_COMPILER "unknown compiler"
+#endif
+
 class lua;
 class bot_handler {
 public:

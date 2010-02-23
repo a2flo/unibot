@@ -27,6 +27,14 @@
 #include <algorithm>
 using namespace std;
 
+template<int i> struct int2type {
+	enum { value = i };
+};
+
+template<typename T> struct type2type {
+	typedef T orig_type;
+};
+
 template<typename T> string to_str(const T& var) {
 	stringstream buffer;
 	buffer.precision(7);

@@ -12,11 +12,11 @@ project "unibot"
 	if(not os.is("windows")) then
 		includedirs { "/usr/include", "/usr/local/include" }
 		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize" }
-		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden -fopenmp" }
-		linkoptions { "-fopenmp" }
+		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
 	end
 	
 	if(os.is("linux") or os.is("bsd")) then
+		defines { "_GLIBCXX__PTHREADS" }
 		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), os.findlib("lua") }
 		links { "SDL", "SDLmain", "SDL_net", "lua" }
 		buildoptions { "`sdl-config --cflags`" }

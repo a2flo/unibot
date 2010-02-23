@@ -79,7 +79,6 @@ extern "C" {
 #include <lauxlib.h>
 }
 #endif // __APPLE__
-#include <omp.h>
 
 // some c/c++ headers
 #include <iostream>
@@ -108,3 +107,7 @@ using namespace std;
 //using namespace logger;
 
 #include "util.h"
+
+#ifndef __has_feature
+#define __has_feature(x) 0
+#endif

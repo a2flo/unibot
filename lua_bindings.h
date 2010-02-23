@@ -26,9 +26,6 @@
 #include "config.h"
 #include "util.h"
 
-#include <tr1/tuple>
-using namespace tr1;
-
 #define __LUA_FUNCTION_BINDINGS(F) \
 /* net.h bindings */ \
 F(send) \

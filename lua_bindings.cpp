@@ -18,6 +18,15 @@
 
 #include "lua_bindings.h"
 
+#if __has_feature(cxx_variadic_templates) || !defined(__clang__)
+#include <tr1/tuple>
+#else
+// really nasty clang++ tuple/variadic template workaround
+#include "tuple/tr1/tuple"
+#endif
+
+using namespace tr1;
+
 /////////////////////////////////////////////////////
 // helper functions
 

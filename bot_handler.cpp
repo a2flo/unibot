@@ -374,7 +374,8 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		}
 		else if(msg == "version") {
 			n->send_private_msg(target, "UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+
-								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+")");
+								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+
+								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER);
 		}
 		else if(msg == "reload_scripts") {
 			lua_obj->reload_scripts();
