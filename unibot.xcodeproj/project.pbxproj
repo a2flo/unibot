@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CA2C5E611258F98007EC336 /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CA2C5E511258F98007EC336 /* lua.cpp */; };
+		5CDDFABF113474C800B501B5 /* env.lua in Sources */ = {isa = PBXBuildFile; fileRef = 5CDDFABE113474C800B501B5 /* env.lua */; };
 		5CFAD2C0100E35EF00CEA98D /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD2BF100E35EF00CEA98D /* log.cpp */; };
 		5CFAD2C3100E35FD00CEA98D /* bot_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD2C2100E35FD00CEA98D /* bot_handler.cpp */; };
 		5CFAD2C6100E360400CEA98D /* bot_states.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CFAD2C5100E360400CEA98D /* bot_states.cpp */; };
@@ -49,6 +50,7 @@
 		5CA3F90B100F8393005B3F26 /* net_protocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_protocol.h; sourceTree = "<group>"; };
 		5CA3FA81100FB210005B3F26 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		5CC3E5D711288E8A00B4395E /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = bindings_test.lua; sourceTree = "<group>"; };
+		5CDDFABE113474C800B501B5 /* env.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = env.lua; sourceTree = "<group>"; };
 		5CFAD2BE100E35EF00CEA98D /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 		5CFAD2BF100E35EF00CEA98D /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
 		5CFAD2C1100E35FD00CEA98D /* bot_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bot_handler.h; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				5C749B691125BBEF0079A57A /* system.lua */,
 				5C749B6A1125BBEF0079A57A /* time.lua */,
 				5CA2C60B112592C9007EC336 /* help.lua */,
+				5CDDFABE113474C800B501B5 /* env.lua */,
 			);
 			path = scripts;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				5CFF82E910100058002C85DF /* util.cpp in Sources */,
 				5CA2C5E611258F98007EC336 /* lua.cpp in Sources */,
 				5CFD59B011271710001065D4 /* lua_bindings.cpp in Sources */,
+				5CDDFABF113474C800B501B5 /* env.lua in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
