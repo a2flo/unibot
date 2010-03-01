@@ -24,11 +24,11 @@ ifeq ($(config),debug)
   TARGETDIR  = .
   TARGET     = $(TARGETDIR)/unibot
   DEFINES   += -D_GLIBCXX__PTHREADS -DDEBUG
-  INCLUDES  += -I../../usr/include -I../../usr/local/include
+  INCLUDES  += -I../../../usr/include -I../../../usr/local/include
   CPPFLAGS  += -MMD $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -g -Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize -msse3 -fvisibility=hidden -fvisibility-inlines-hidden `sdl-config --cflags`
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += `sdl-config --libs` -L../../usr/lib -L../../usr/lib -L../../usr/lib
+  LDFLAGS   += `sdl-config --libs` -L../../../usr/lib -L../../../usr/lib -L../../../usr/lib
   LIBS      += -lSDL -lSDLmain -lSDL_net -llua
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -46,11 +46,11 @@ ifeq ($(config),release)
   TARGETDIR  = .
   TARGET     = $(TARGETDIR)/unibot
   DEFINES   += -D_GLIBCXX__PTHREADS -DNDEBUG
-  INCLUDES  += -I../../usr/include -I../../usr/local/include
+  INCLUDES  += -I../../../usr/include -I../../../usr/local/include
   CPPFLAGS  += -MMD $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize -msse3 -fvisibility=hidden -fvisibility-inlines-hidden `sdl-config --cflags` -O3
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s `sdl-config --libs` -L../../usr/lib -L../../usr/lib -L../../usr/lib
+  LDFLAGS   += -s `sdl-config --libs` -L../../../usr/lib -L../../../usr/lib -L../../../usr/lib
   LIBS      += -lSDL -lSDLmain -lSDL_net -llua
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -68,11 +68,11 @@ ifeq ($(config),debug32)
   TARGETDIR  = .
   TARGET     = $(TARGETDIR)/unibot
   DEFINES   += -D_GLIBCXX__PTHREADS -DDEBUG
-  INCLUDES  += -I../../usr/include -I../../usr/local/include
+  INCLUDES  += -I../../../usr/include -I../../../usr/local/include
   CPPFLAGS  += -MMD $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m32 -Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize -msse3 -fvisibility=hidden -fvisibility-inlines-hidden `sdl-config --cflags`
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32 `sdl-config --libs` -L../../usr/lib -L../../usr/lib -L../../usr/lib
+  LDFLAGS   += -m32 -L/usr/lib32 `sdl-config --libs` -L../../../usr/lib -L../../../usr/lib -L../../../usr/lib
   LIBS      += -lSDL -lSDLmain -lSDL_net -llua
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -90,11 +90,11 @@ ifeq ($(config),release32)
   TARGETDIR  = .
   TARGET     = $(TARGETDIR)/unibot
   DEFINES   += -D_GLIBCXX__PTHREADS -DNDEBUG
-  INCLUDES  += -I../../usr/include -I../../usr/local/include
+  INCLUDES  += -I../../../usr/include -I../../../usr/local/include
   CPPFLAGS  += -MMD $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -m32 -Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize -msse3 -fvisibility=hidden -fvisibility-inlines-hidden `sdl-config --cflags` -O3
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32 `sdl-config --libs` -L../../usr/lib -L../../usr/lib -L../../usr/lib
+  LDFLAGS   += -s -m32 -L/usr/lib32 `sdl-config --libs` -L../../../usr/lib -L../../../usr/lib -L../../../usr/lib
   LIBS      += -lSDL -lSDLmain -lSDL_net -llua
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -112,11 +112,11 @@ ifeq ($(config),debug64)
   TARGETDIR  = .
   TARGET     = $(TARGETDIR)/unibot
   DEFINES   += -D_GLIBCXX__PTHREADS -DDEBUG
-  INCLUDES  += -I../../usr/include -I../../usr/local/include
+  INCLUDES  += -I../../../usr/include -I../../../usr/local/include
   CPPFLAGS  += -MMD $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m64 -Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize -msse3 -fvisibility=hidden -fvisibility-inlines-hidden `sdl-config --cflags`
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64 `sdl-config --libs` -L../../usr/lib -L../../usr/lib -L../../usr/lib
+  LDFLAGS   += -m64 -L/usr/lib64 `sdl-config --libs` -L../../../usr/lib -L../../../usr/lib -L../../../usr/lib
   LIBS      += -lSDL -lSDLmain -lSDL_net -llua
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -134,11 +134,11 @@ ifeq ($(config),release64)
   TARGETDIR  = .
   TARGET     = $(TARGETDIR)/unibot
   DEFINES   += -D_GLIBCXX__PTHREADS -DNDEBUG
-  INCLUDES  += -I../../usr/include -I../../usr/local/include
+  INCLUDES  += -I../../../usr/include -I../../../usr/local/include
   CPPFLAGS  += -MMD $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -O2 -m64 -Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize -msse3 -fvisibility=hidden -fvisibility-inlines-hidden `sdl-config --cflags` -O3
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64 `sdl-config --libs` -L../../usr/lib -L../../usr/lib -L../../usr/lib
+  LDFLAGS   += -s -m64 -L/usr/lib64 `sdl-config --libs` -L../../../usr/lib -L../../../usr/lib -L../../../usr/lib
   LIBS      += -lSDL -lSDLmain -lSDL_net -llua
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -152,14 +152,14 @@ ifeq ($(config),release64)
 endif
 
 OBJECTS := \
-	$(OBJDIR)/bot_handler.o \
-	$(OBJDIR)/bot_states.o \
-	$(OBJDIR)/config.o \
-	$(OBJDIR)/log.o \
-	$(OBJDIR)/lua.o \
 	$(OBJDIR)/lua_bindings.o \
+	$(OBJDIR)/bot_states.o \
 	$(OBJDIR)/main.o \
 	$(OBJDIR)/util.o \
+	$(OBJDIR)/bot_handler.o \
+	$(OBJDIR)/lua.o \
+	$(OBJDIR)/log.o \
+	$(OBJDIR)/config.o \
 
 RESOURCES := \
 
@@ -218,28 +218,28 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 endif
 
-$(OBJDIR)/bot_handler.o: bot_handler.cpp
+$(OBJDIR)/lua_bindings.o: lua_bindings.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 $(OBJDIR)/bot_states.o: bot_states.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/config.o: config.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/log.o: log.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/lua.o: lua.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/lua_bindings.o: lua_bindings.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 $(OBJDIR)/main.o: main.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 $(OBJDIR)/util.o: util.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+$(OBJDIR)/bot_handler.o: bot_handler.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+$(OBJDIR)/lua.o: lua.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+$(OBJDIR)/log.o: log.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+$(OBJDIR)/config.o: config.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
