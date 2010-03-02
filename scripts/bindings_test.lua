@@ -1,12 +1,10 @@
 
 -- lua bindings test
 
-function xor(b1, b2)
-	return (b1 or b2) and (not (b1 and b2))
-end
+dofile ("scripts/include/global.lua")
 
 function handle_message(origin, target, cmd, parameters)
-	if cmd == "test" then
+	if is_owner(origin) and cmd == "bindings_test" then
 		local channel = get_config_entry("channel")
 		
 		-- net

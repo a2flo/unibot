@@ -332,7 +332,9 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		lua_obj->handle_message(origin, target, msg);
 		
 		// official commands
-		if(msg == "uptime") {
+		size_t cmd_end = msg.find(' ', 0);
+		string cmd = (cmd_end != string::npos ? msg.substr(0, cmd_end) : msg);
+		if(cmd == "uptime") {
 			unsigned long int uptime = SDL_GetTicks() - start_time;
 			string uptime_str = "";
 			
@@ -348,7 +350,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			uptime_str += to_str(uptime / t_minute) + "m ";
 			uptime %= t_minute;
 			uptime_str += to_str(uptime / t_second) + "s";
-			uptime %= t_second;
+			//uptime %= t_second;
 			
 			n->send_private_msg(target, uptime_str);
 		}
@@ -368,16 +370,12 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				}
 			}
 		}
-		else if(msg == "src") {
-			n->send_private_msg(target, "git : git clone git://git.assembla.com/unibot.git");
-			n->send_private_msg(target, "trac: http://trac-git.assembla.com/unibot");
-		}
-		else if(msg == "version") {
+		else if(cmd == "version") {
 			n->send_private_msg(target, "UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+
 								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+
 								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER);
 		}
-		else if(msg == "reload_scripts") {
+		else if(cmd == "reload_scripts") {
 			lua_obj->reload_scripts();
 		}
 		else if(msg.find("reload_script ") == 0 && msg.length() > 14) {

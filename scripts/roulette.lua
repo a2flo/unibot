@@ -7,7 +7,7 @@ function handle_message(origin, target, cmd, parameters)
 		-- alternative: if name is owner and origin no owner, then the origin will be kicked.
 		if is_owner(origin) then
 			send_private_msg(target, "Fire!")
-			if ((math.mod(math.random(0,1000),42)) <= 21) then
+			if ((math.mod(math.random(0, 1000), 42)) <= 21) then
 				send_private_msg(target, "Boom!")
 				-- TODO random message
 				send_kick(name, "Bad luck!")
