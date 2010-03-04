@@ -26,7 +26,7 @@ function handle_message(origin, target, cmd, parameters)
 			"slaps "..name.." around a bit with a slimy wet noodle",
 			"sneaks in and reformats "..name.."\'s c drive",
 			"slaps "..name.." with a James Brown single",
-			"slaps "..name.." with a great big, wet, 100%% rubber DUCK",
+			"slaps "..name.." with a great big, wet, 100% rubber DUCK",
 			"slaps "..name.." around a bit with a Texas Striper",
 			"thinks "..name.." is the lamest thing that has ever walked the IRC!",
 			"slaps "..name.." with an old used popup",
