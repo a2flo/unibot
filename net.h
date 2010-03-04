@@ -46,6 +46,7 @@ public:
 	void send(string data);
 	void send_channel_msg(string msg);
 	void send_private_msg(string where, string msg);
+	void send_action_msg(string where, string msg);
 	void send_kick(string who, string reason);
 	void send_connect(string name, string real_name);
 	void send_identify(string password);
@@ -233,6 +234,10 @@ template <class protocol_policy> void net<protocol_policy>::clear_received_data(
 
 template <class protocol_policy> void net<protocol_policy>::send_private_msg(string where, string msg) {
 	send("PRIVMSG " + where + " :" + msg);
+}
+
+template <class protocol_policy> void net<protocol_policy>::send_action_msg(string where, string msg) {
+	send("PRIVMSG " + where + " :" + (char)0x01 + "ACTION " + msg + (char)0x01);
 }
 
 template <class protocol_policy> void net<protocol_policy>::send_identify(string password) {

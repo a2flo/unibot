@@ -31,6 +31,7 @@
 F(send) \
 F(send_channel_msg) \
 F(send_private_msg) \
+F(send_action_msg) \
 F(send_kick) \
 F(get_local_ip) \
 F(get_server_ip) \

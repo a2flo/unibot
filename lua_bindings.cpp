@@ -174,6 +174,15 @@ int lua_bindings::send_private_msg(lua_State* state) {
 	return 0;
 }
 
+int lua_bindings::send_action_msg(lua_State* state) {
+	try {
+		tuple<string, string> args = get_lua_args<string, string>(state);
+		n->send_action_msg(get<0>(args), get<1>(args));
+	}
+	HANDLE_LUA_BINDINGS_EXCEPTION;
+	return 0;
+}
+
 int lua_bindings::send_kick(lua_State* state) {
 	try {
 		tuple<string, string> args = get_lua_args<string, string>(state);
