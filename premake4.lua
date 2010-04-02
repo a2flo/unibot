@@ -31,7 +31,7 @@ project "unibot"
 	kind "ConsoleApp"
 	language "C++"
 	files { "*.h", "*.cpp" }
-	platforms { "native", "x32", "x64" }
+	platforms { "x32", "x64" }
 
 	if(not os.is("windows")) then
 		includedirs { "/usr/include", "/usr/local/include" }
@@ -40,11 +40,18 @@ project "unibot"
 	end
 	
 	if(os.is("linux") or os.is("bsd")) then
-		defines { "_GLIBCXX__PTHREADS" }
-		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), os.findlib("lua") }
-		links { "SDL", "SDLmain", "SDL_net", "lua" }
+		local lua_lib = { name = "lua", dir = nil }
+		lua_lib.dir = os.findlib(lua_lib.name)
+		if(lua_lib.dir == nil) then
+			lua_lib.name = "lua5.1"
+			lua_lib.dir = os.findlib(lua_lib.name)
+		end
+		
+		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), lua_lib.dir }
+		links { "SDL", "SDLmain", "SDL_net", lua_lib.name }
 		buildoptions { "`sdl-config --cflags`" }
 		linkoptions { "`sdl-config --libs`" }
+		defines { "_GLIBCXX__PTHREADS" }
 		
 		-- find all necessary headers (in case they aren't in /usr/include)
 		local include_files = { "SDL.h", "SDL_net.h", "lua.h" }
@@ -62,6 +69,12 @@ project "unibot"
 		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -msse4.1 -mmacosx-version-min=10.6 -gdwarf-2 -mdynamic-no-pic" }
 		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework lua -framework Cocoa -framework AppKit -framework Foundation" }
 	end
+	
+	configuration { "x32" }
+		defines { "PLATFORM_X86" }
+	
+	configuration { "x64" }
+		defines { "PLATFORM_X64" }
 
 	configuration "Debug"
 		defines { "DEBUG" }
