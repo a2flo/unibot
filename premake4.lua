@@ -1,4 +1,28 @@
 
+-- this function returns the first result of "find basepath -name filename", this is needed on some platforms to determine the include path of a library
+function find_include(filename, base_path)
+	if(os.is("windows")) then
+		return ""
+	end
+	
+	local proc = io.popen("find "..base_path.." -name \""..filename.."\"", "r")
+	local path_names = proc:read("*a")
+	proc:close()
+	
+	if(string.len(path_names) == 0) then
+		return ""
+	end
+	
+	local newline = string.find(path_names, "\n")
+	if newline == nil then
+		return ""
+	end
+	
+	return string.sub(path_names, 0, newline-1)
+end
+
+
+-- actual premake info
 solution "unibot"
 	configurations { "Debug", "Release" }
 
@@ -21,12 +45,22 @@ project "unibot"
 		links { "SDL", "SDLmain", "SDL_net", "lua" }
 		buildoptions { "`sdl-config --cflags`" }
 		linkoptions { "`sdl-config --libs`" }
+		
+		-- find all necessary headers (in case they aren't in /usr/include)
+		local include_files = { "SDL.h", "SDL_net.h", "lua.h" }
+		for i = 1, table.maxn(include_files) do
+			if(not os.isfile("/usr/include/"..include_files[i])) then
+				local include_path = find_include(include_files[i], "/usr/include/")
+				if(include_path ~= "") then
+					includedirs { path.getdirectory(include_path) }
+				end
+			end
+		end
 	end
 	
 	if(os.is("macosx")) then
-		files { "osx/**.h", "osx/**.cpp", "osx/**.m", "osx/**.mm" }
-		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -msse4.1 -mmacosx-version-min=10.6 -gdwarf-2 -fpascal-strings -fasm-blocks -mdynamic-no-pic" }
-		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework Cocoa -framework AppKit -framework Foundation -framework lua" }
+		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -msse4.1 -mmacosx-version-min=10.6 -gdwarf-2 -mdynamic-no-pic" }
+		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework lua -framework Cocoa -framework AppKit -framework Foundation" }
 	end
 
 	configuration "Debug"
