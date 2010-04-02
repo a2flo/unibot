@@ -253,7 +253,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cat build_version | awk '{system(\"echo `expr \" $1 \" + 1` > build_version\");}'\ncat build_version | awk '{system(\"echo \\\"#define UNIBOT_BUILD_VERSION \" $1 \"\\\" > build_version.h\");}'";
+			shellScript = "./build_version.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

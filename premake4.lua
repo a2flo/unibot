@@ -37,6 +37,7 @@ project "unibot"
 		includedirs { "/usr/include", "/usr/local/include" }
 		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize" }
 		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
+		prebuildcommands { "./build_version.sh" }
 	end
 	
 	if(os.is("linux") or os.is("bsd")) then
