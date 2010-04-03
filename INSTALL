@@ -1,0 +1,6 @@
+
+ * install premake4 (http://industriousone.com/premake/download)
+ * execute premake.sh to generate platform specific makefile
+ * dependent on your platform this will tell you to either use config=release32 or config=release64
+ * build unibot via: make config=release$YOUR_ARCH
+
