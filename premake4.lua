@@ -41,11 +41,15 @@ project "unibot"
 	end
 	
 	if(os.is("linux") or os.is("bsd")) then
-		local lua_lib = { name = "lua", dir = nil }
-		lua_lib.dir = os.findlib(lua_lib.name)
-		if(lua_lib.dir == nil) then
-			lua_lib.name = "lua5.1"
+		-- find lua lib (try different lib names)
+		local lua_lib_names = { "lua", "lua5.1", "lua-5.1" }
+		local lua_lib = { name = nil, dir = nil }
+		for i = 1, table.maxn(lua_lib_names) do
+			lua_lib.name = lua_lib_names[i]
 			lua_lib.dir = os.findlib(lua_lib.name)
+			if(lua_lib.dir ~= nil) then
+				break
+			end
 		end
 		
 		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), lua_lib.dir }
@@ -57,8 +61,14 @@ project "unibot"
 		-- find all necessary headers (in case they aren't in /usr/include)
 		local include_files = { "SDL.h", "SDL_net.h", "lua.h" }
 		for i = 1, table.maxn(include_files) do
-			if(not os.isfile("/usr/include/"..include_files[i])) then
+			if((not os.isfile("/usr/include/"..include_files[i])) and
+			   (not os.isfile("/usr/local/include/"..include_files[i]))) then
+			   -- search in /usr/include and /usr/local/include
 				local include_path = find_include(include_files[i], "/usr/include/")
+				if(include_path == "") then
+					include_path = find_include(include_files[i], "/usr/local/include/")
+				end
+				
 				if(include_path ~= "") then
 					includedirs { path.getdirectory(include_path) }
 				end

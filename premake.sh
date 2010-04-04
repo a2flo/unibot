@@ -2,6 +2,7 @@
 
 UNIBOT_OS="unknown"
 UNIBOT_PLATFORM="x32"
+UNIBOT_MAKE="make"
 UNIBOT_MAKE_PLATFORM="32"
 
 case $( uname ) in
@@ -13,6 +14,7 @@ case $( uname ) in
 		;;
 	[a-zA-Z0-9]*"BSD")
 		UNIBOT_OS="bsd"
+		UNIBOT_MAKE ="gmake"
 		;;
 	*)
 		echo "unknown operating system - exiting"
@@ -40,8 +42,10 @@ echo "using: premake4 --cc=gcc --os="${UNIBOT_OS}" gmake"
 
 premake4 --cc=gcc --os=${UNIBOT_OS} gmake
 
+chmod +x build_version.sh
+
 echo ""
 echo "###################################################"
-echo "# NOTE: use 'make config=release"${UNIBOT_MAKE_PLATFORM}"' to build unibot"
+echo "# NOTE: use '"${UNIBOT_MAKE}" config=release"${UNIBOT_MAKE_PLATFORM}"' to build unibot"
 echo "###################################################"
 echo ""
