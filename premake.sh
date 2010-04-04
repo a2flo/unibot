@@ -14,7 +14,7 @@ case $( uname ) in
 		;;
 	[a-zA-Z0-9]*"BSD")
 		UNIBOT_OS="bsd"
-		UNIBOT_MAKE ="gmake"
+		UNIBOT_MAKE="gmake"
 		;;
 	*)
 		echo "unknown operating system - exiting"
