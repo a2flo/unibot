@@ -69,7 +69,7 @@ function handle_message(origin, target, cmd, parameters)
 		}
 
 		local rand = math.random(1, table.maxn(random_quotes))
-		send_action_msg(target, random_quotes[rand])
+		send_action_msg(get_config_entry("channel"), random_quotes[rand])
 	end
 	return 0
 end
