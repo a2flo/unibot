@@ -140,12 +140,17 @@ net<TCP_protocol>* lua_bindings::n = NULL;
 bot_handler* lua_bindings::handler = NULL;
 bot_states* lua_bindings::states = NULL;
 config* lua_bindings::conf = NULL;
+lua* lua_bindings::l = NULL;
+lua_bindings::fp_reload_scripts lua_bindings::lua_reload_scripts = NULL;
 
-lua_bindings::lua_bindings(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf) {
+lua_bindings::lua_bindings(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
 	lua_bindings::n = n;
 	lua_bindings::handler = handler;
 	lua_bindings::states = states;
 	lua_bindings::conf = conf;
+	
+	lua_bindings::l = l;
+	lua_bindings::lua_reload_scripts = lua_reload_scripts;
 }
 
 lua_bindings::~lua_bindings() {
@@ -305,4 +310,21 @@ int lua_bindings::handle_args_chronological(lua_State* state) {
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;
+}
+
+int lua_bindings::reload_scripts(lua_State* state) {
+	try {
+		check_lua_stack(state, 0);
+		
+		// generate an error in the current state to abort script execution
+		lua_error(state);
+	}
+	catch(...) {
+		(l->*lua_reload_scripts)();
+		
+		// since we are currently in a script iteration loop and the scripts store was renewed/reloaded,
+		// all iterators to the old script store are now invalidated (-> break loop)
+		throw invalidate_scripts_exception();
+	}
+	return 0;
 }
