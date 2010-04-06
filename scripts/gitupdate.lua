@@ -28,6 +28,7 @@ function handle_message(origin, target, cmd, parameters)
 			
 			-- everything went well, reload scripts
 			-- note that this effectively kills all lua states and current executions, including this one
+			send_private_msg(target, "git pull successful - reloading scripts")
 			reload_scripts()
 		end
 	end
