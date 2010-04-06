@@ -59,7 +59,7 @@ function handle_message(origin, target, cmd, parameters)
 			"baut sich eine gravity gun und wirft einen Betonlastwagen auf "..name,
 			"lässt "..name.." seine Banane auf den Tisch legen - *klack* - ich hoffe du kennst nen guten Arzt",
 			"slaps "..name.." with a cup of warm honey-milk", 
-			"schlägt "..name.." herum ein wenig mit Gummiente",
+			"schlägt "..name.." ein wenig mit einer Gummiente",
 			"pokes "..name.." in the eye.",
 			"discovered "..name.."\'s picture on uglypeople.com", 
 			"pupst "..name.." an",
