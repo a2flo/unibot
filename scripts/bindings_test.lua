@@ -40,6 +40,8 @@ function handle_message(origin, target, cmd, parameters)
 		send_private_msg(target, "strip_special_chars: "..strip_special_chars(sc_str))
 		
 		send_private_msg(target, "handle_args_chronological: "..handle_args_chronological("-1"))
+		
+		reload_scripts()
 	end
 	return 0
 end
