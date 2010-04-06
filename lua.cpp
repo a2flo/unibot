@@ -20,13 +20,13 @@
 
 #define __REGISTER_FUNCTION(func_name) lua_register(__current_lua_state, #func_name, &lua_bindings::func_name);
 
-#define BIND_CPP_FUNTIONS_TO_LUA(state) {	\
-lua_State* __current_lua_state = state;		\
-__LUA_FUNCTION_BINDINGS(__REGISTER_FUNCTION);	\
+#define BIND_CPP_FUNTIONS_TO_LUA(state) {			\
+	lua_State* __current_lua_state = state;			\
+	__LUA_FUNCTION_BINDINGS(__REGISTER_FUNCTION);	\
 }
 
 lua::lua(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf) : n(n), handler(handler), states(states), conf(conf) {
-	bindings = new lua_bindings(n, handler, states, conf);
+	bindings = new lua_bindings(n, handler, states, conf, this, &lua::reload_scripts);
 	
 	reload_scripts();
 }
@@ -98,21 +98,30 @@ void lua::handle_message(const string& origin, const string& target, const strin
 	
 	check_scripts();
 	
-	for(map<string, lua_script*>::iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
-		lua_getglobal(script_iter->second->state, "handle_message");
-		if(!lua_isfunction(script_iter->second->state, -1)) {
-			lua_pop(script_iter->second->state, 1);
-			logger::log(logger::LT_ERROR, "lua.cpp", string("handle_message is no function in script \""+script_iter->first+string("\"!")).c_str());
-			continue;
-		}
-		
-		lua_pushstring(script_iter->second->state, origin.c_str());
-		lua_pushstring(script_iter->second->state, target.c_str());
-		lua_pushstring(script_iter->second->state, cmd.c_str());
-		lua_pushstring(script_iter->second->state, parameters.c_str());		
-		int err = lua_pcall(script_iter->second->state, 4, 1, -lua_gettop(script_iter->second->state)); // error handler @index #0
-		if(err > 0) {
-			logger::log(logger::LT_ERROR, "lua.cpp", string(string("lua error #") + to_str(err) + string(" while running script \"")+script_iter->first+string("\"!")).c_str());
+	try {
+		for(map<string, lua_script*>::iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
+			lua_getglobal(script_iter->second->state, "handle_message");
+			if(!lua_isfunction(script_iter->second->state, -1)) {
+				lua_pop(script_iter->second->state, 1);
+				logger::log(logger::LT_ERROR, "lua.cpp", string("handle_message is no function in script \""+script_iter->first+string("\"!")).c_str());
+				continue;
+			}
+			
+			lua_pushstring(script_iter->second->state, origin.c_str());
+			lua_pushstring(script_iter->second->state, target.c_str());
+			lua_pushstring(script_iter->second->state, cmd.c_str());
+			lua_pushstring(script_iter->second->state, parameters.c_str());
+			int err = lua_pcall(script_iter->second->state, 4, 1, -lua_gettop(script_iter->second->state)); // error handler @index #0
+			if(err > 0) {
+				logger::log(logger::LT_ERROR, "lua.cpp", string(string("lua error #") + to_str(err) + string(" while running script \"")+script_iter->first+string("\"!")).c_str());
+			}
 		}
 	}
+	catch(invalidate_scripts_exception& e) {
+		// this breaks the scripts iteration loop (-> no more scripts are handled using the now invalidated script iterator)
+	}
+	catch(...) {
+		logger::log(logger::LT_ERROR, "lua.cpp", string("handle_message(): unknown exception while executing lua scripts!").c_str());
+	}
+
 }

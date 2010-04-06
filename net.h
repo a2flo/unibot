@@ -212,7 +212,21 @@ template <class protocol_policy> void net<protocol_policy>::send_packet(const ch
 }
 
 template <class protocol_policy> void net<protocol_policy>::send(string data) {
-	send_store.push_back(data + "\n");
+	if(data.find("\n") != string::npos) {
+		// treat \n as new msg, split string and send each line as new msg (with the same type -> string till first ':')
+		size_t colon_pos = data.find(":");
+		string msg_type = data.substr(0, colon_pos+1);
+		
+		size_t old_newline_pos = colon_pos;
+		size_t newline_pos = 0;
+		while((newline_pos = data.find("\n", old_newline_pos+1)) != string::npos) {
+			string msg = data.substr(old_newline_pos+1, newline_pos-old_newline_pos-1);
+			send_store.push_back(msg_type + msg + "\n");
+			old_newline_pos = newline_pos;
+		}
+	}
+	// just send the msg
+	else send_store.push_back(data + "\n");
 }
 
 template <class protocol_policy> void net<protocol_policy>::send_connect(string name, string real_name) {

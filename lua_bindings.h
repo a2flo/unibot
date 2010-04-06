@@ -46,7 +46,8 @@ F(is_owner) \
 F(url_encode) \
 F(get_prev_msg) \
 F(strip_special_chars) \
-F(handle_args_chronological)
+F(handle_args_chronological) \
+F(reload_scripts)
 
 #define LUA_FUNCTION_DEFINITION(func_name) static int func_name(lua_State* state);
 
@@ -60,10 +61,14 @@ public:
 		return error_str.c_str();
 	}
 };
+class invalidate_scripts_exception : public exception {};
 
+class lua;
 class lua_bindings {
 public:
-	lua_bindings(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf);
+	typedef void (lua::*fp_reload_scripts)();
+	
+	lua_bindings(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts);
 	~lua_bindings();
 	
 	__LUA_FUNCTION_BINDINGS(LUA_FUNCTION_DEFINITION);
@@ -73,6 +78,9 @@ protected:
 	static bot_handler* handler;
 	static bot_states* states;
 	static config* conf;
+	
+	static lua* l;
+	static fp_reload_scripts lua_reload_scripts;
 	
 };
 
