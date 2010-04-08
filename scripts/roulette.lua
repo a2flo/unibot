@@ -12,17 +12,17 @@ function handle_message(origin, target, cmd, parameters)
 		end
                 local wait = {
 			"Das Klicken laesst "..name.." die Luft anhalten...",
-			name.."drueckt ab..."
+			name.." drueckt ab..."
 		}
 		local kill = {
                         "Das Gehirn von "..name.." landet an der Wand!",
-			name.."hinterlaesst eine Sauerei... holt mal jemand schnell die Putzfrau",
+			name.." hinterlaesst eine Sauerei... holt mal jemand schnell die Putzfrau",
 			"und die Kugel toetet "..name..".",
 			"Boom!"
 		}
 		local luck = {
 			"Waffe klemmt.. Glueck gehabt",
-			name.." hat es ueberlebt... er muss einen Schutzengel haben.",
+			name.." hat es ueberlebt... "..name.." muss einen Schutzengel haben.",
 			"und "..name.." hat Glueck!",
 			"nichts passiert.",
 			"Click!"
