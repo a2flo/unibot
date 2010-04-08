@@ -8,7 +8,6 @@ chamber = (math.random(1, 6))
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "roulette" then
 		local name = origin
-		lastuser = origin
 		if is_owner(origin) then
 			name = ( parameters ~= cmd ) and parameters or origin
 		else
@@ -34,6 +33,7 @@ function handle_message(origin, target, cmd, parameters)
 		if lastuser == origin then
 			send_private_msg(target, "You can't pull the trigger twice in a row, dolt!")
 		else
+			lastuser = origin
 			send_private_msg(target, wait[math.random(1, table.maxn(wait))])
 			if bullets == chamber then
 				send_private_msg(target, name..": chamber #"..bullets.." of 6 => +BANG+")
