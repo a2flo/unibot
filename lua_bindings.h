@@ -47,7 +47,8 @@ F(url_encode) \
 F(get_prev_msg) \
 F(strip_special_chars) \
 F(handle_args_chronological) \
-F(reload_scripts)
+F(reload_scripts) \
+F(crand)
 
 #define LUA_FUNCTION_DEFINITION(func_name) static int func_name(lua_State* state);
 
