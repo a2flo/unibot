@@ -4,7 +4,9 @@
 
 bullets = 1
 lastuser = "root"
-chamber = (math.random(1, 6))
+math.randomseed(os.time())
+slots = math.random(100)
+chamber = math.random(slots)
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "roulette" then
 		local name = origin
@@ -21,7 +23,8 @@ function handle_message(origin, target, cmd, parameters)
 			"Das Gehirn von "..name.." landet an der Wand!",
 			name.." hinterlaesst eine Sauerei... holt mal jemand schnell die Putzfrau",
 			"und die Kugel toetet "..name..".",
-			"Boom!"
+			"Boom!",
+			"Headshot!"
 		}
 		local luck = {
 			"Waffe klemmt.. Glueck gehabt",
@@ -36,13 +39,14 @@ function handle_message(origin, target, cmd, parameters)
 			lastuser = origin
 			send_private_msg(target, wait[math.random(1, table.maxn(wait))])
 			if bullets == chamber then
-				send_private_msg(target, name..": chamber #"..bullets.." of 6 => +BANG+")
+				send_private_msg(target, name..": chamber #"..bullets.." of "..slots.." => +BANG+")
 				send_kick(name, kill[math.random(1, table.maxn(kill))])
 				send_action_msg(get_config_entry("channel"), " reloads.")
 				bullets = 1
-				chamber = (math.random(1, 6))
+				slots = math.random(100)
+				chamber = math.random(slots)
 			else
-				send_private_msg(target, name..": chamber #"..bullets.." of 6 => +click+")
+				send_private_msg(target, name..": chamber #"..bullets.." of "..slots.." => +click+")
 				send_private_msg(target, luck[math.random(1, table.maxn(luck))])
 				bullets = (bullets + 1)
 			end
