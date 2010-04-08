@@ -8,6 +8,7 @@ function handle_message(origin, target, cmd, parameters)
 			name = ( parameters ~= cmd ) and parameters or origin
 		else
 			name = origin
+		end
 		-- alternative: if name is owner and origin no owner, then the origin will be kicked.
 		send_private_msg(target, "Fire!")
 		-- if ((math.mod(math.random(0, 1000), 42)) <= 21) then
