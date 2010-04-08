@@ -27,18 +27,26 @@ function handle_message(origin, target, cmd, parameters)
 			"nichts passiert.",
 			"Click!"
 		}
+		local bullets-file = "roulette-bullets"
+		io.open(bullets-file, r)
+		io.input(bullets-file)
+		local bullets = io.read("*n")
+		io.close()
 		send_private_msg(target, wait[math.random(1, table.maxn(wait))])
-		local bullets = 1
 		if (math.random(0, 1000) <= 500) or (bullets == 6) then
 			send_private_msg(target, name..": chamber #"..bullets.." of 6 => +BANG+")
 			send_kick(name, kill[math.random(1, table.maxn(kill))])
-			send_action_msg(get_config_entry("channel"), get_config_entry("bot_name").." reloads.")
+			send_action_msg(get_config_entry("channel"), " reloads.")
 			bullets = 1
 		else
 			send_private_msg(target, name..": chamber #"..bullets.." of 6 => +click+")
 			send_private_msg(target, luck[math.random(1, table.maxn(luck))])
 			bullets = (bullets + 1)
 		end
+		io.open(bullets-file, w)
+		io.output(bullets-file)
+		io.write(bullets)
+		io.close()
 	end
 	return 0
 end
