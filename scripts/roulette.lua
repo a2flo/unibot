@@ -4,6 +4,7 @@
 
 bullets = 1
 lastuser = "root"
+chamber = (math.random(1, 6))
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "roulette" then
 		local name = origin
@@ -13,12 +14,12 @@ function handle_message(origin, target, cmd, parameters)
 		else
 			name = origin
 		end
-                local wait = {
+		local wait = {
 			"Das Klicken laesst "..name.." die Luft anhalten...",
 			name.." drueckt ab..."
 		}
 		local kill = {
-                        "Das Gehirn von "..name.." landet an der Wand!",
+			"Das Gehirn von "..name.." landet an der Wand!",
 			name.." hinterlaesst eine Sauerei... holt mal jemand schnell die Putzfrau",
 			"und die Kugel toetet "..name..".",
 			"Boom!"
@@ -34,11 +35,12 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(target, "You can't pull the trigger twice in a row, dolt!")
 		else
 			send_private_msg(target, wait[math.random(1, table.maxn(wait))])
-			if (math.random(1, 6) == 3) or (bullets == 6) then
+			if bullets == chamber then
 				send_private_msg(target, name..": chamber #"..bullets.." of 6 => +BANG+")
 				send_kick(name, kill[math.random(1, table.maxn(kill))])
 				send_action_msg(get_config_entry("channel"), " reloads.")
 				bullets = 1
+				chamber = (math.random(1, 6))
 			else
 				send_private_msg(target, name..": chamber #"..bullets.." of 6 => +click+")
 				send_private_msg(target, luck[math.random(1, table.maxn(luck))])
