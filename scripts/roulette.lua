@@ -27,11 +27,11 @@ function handle_message(origin, target, cmd, parameters)
 			"nichts passiert.",
 			"Click!"
 		}
-		local bullets-file = "roulette-bullets"
-		io.open(bullets-file, r)
-		io.input(bullets-file)
-		local bullets = io.read("*n")
-		io.close()
+		local bulletsfile = "roulette-bullets"
+		local bullets = 1
+		io.open(bulletsfile, r)
+		io.input(bulletsfile)
+		bullets = io.read() -- "*n"
 		send_private_msg(target, wait[math.random(1, table.maxn(wait))])
 		if (math.random(0, 1000) <= 500) or (bullets == 6) then
 			send_private_msg(target, name..": chamber #"..bullets.." of 6 => +BANG+")
@@ -43,8 +43,8 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(target, luck[math.random(1, table.maxn(luck))])
 			bullets = (bullets + 1)
 		end
-		io.open(bullets-file, w)
-		io.output(bullets-file)
+		io.open(bulletsfile, w)
+		io.output(bulletsfile)
 		io.write(bullets)
 		io.close()
 	end
