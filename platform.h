@@ -16,13 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-/*! @brief platform header
- *  @author flo
- *  @todo -
- *
- *  do/include platform specific stuff here
- */
-
 // Windows
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN

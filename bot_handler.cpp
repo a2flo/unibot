@@ -284,7 +284,7 @@ bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {
 	else if(cmd_tokens.size() > 1 && cmd_tokens[1].length() == 3) {
 		// check for numbered irc command
 		unsigned int num = (unsigned int)strtoul(cmd_tokens[1].c_str(), NULL, 10);
-		if(num >= 0 && num <= 999) {
+		if(num <= 999) {
 			irc_cmd = irc_commands[cmd_tokens[1]];
 		}
 	}

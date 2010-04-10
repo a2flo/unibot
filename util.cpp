@@ -73,7 +73,7 @@ string trim(string str) {
 		str.erase(pos, 1);
 	}
 	pos = str.length()-1;
-	while(pos >= 0 && (str[pos] == ' ' || str[pos] == '\t')) {
+	while(str[pos] == ' ' || str[pos] == '\t') {
 		str.erase(pos, 1);
 	}
 	return str;
