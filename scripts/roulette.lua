@@ -25,10 +25,6 @@ function handle_message(origin, target, cmd, parameters)
 			name = origin
 		end
 		
-		local wait_msg = {
-			"Das Klicken lässt "..name.." die Luft anhalten...",
-			name.." drückt ab..."
-		}
 		local kill_msg = {
 			"Das Gehirn von "..name.." landet an der Wand!",
 			name.." hinterlässt eine Sauerei... holt mal jemand schnell die Putzfrau",
@@ -42,15 +38,19 @@ function handle_message(origin, target, cmd, parameters)
 			name.." hat es überlebt... "..name.." muss einen Schutzengel haben.",
 			"und "..name.." hat Glück!",
 			"nichts passiert.",
-			"Click!"
+			"Click!",
+			"Der Schlagbolzen trifft ins Leere."
+		}
+		local double_msg = {
+			"You can't pull the trigger twice in a row, dolt!",
+			"Lass anderen auch eine Chance!"
 		}
 		
 		local channel = get_config_entry("channel")
 		if lastuser == origin then
-			send_private_msg(target, "You can't pull the trigger twice in a row, dolt!")
+			send_private_msg(target, double_msg[math.random(1, table.maxn(double_msg))])
 		else
 			lastuser = origin
-			send_private_msg(channel, wait_msg[math.random(1, table.maxn(wait_msg))])
 			
 			if bullets == chamber then
 				send_private_msg(channel, name..": chamber #"..bullets.." of "..slots.." => *BANG*")
