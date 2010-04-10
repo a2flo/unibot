@@ -50,6 +50,9 @@ template<> bool check_lua_type<unsigned int>(lua_State* state, const size_t& arg
 template<> bool check_lua_type<size_t>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
+template<> bool check_lua_type<ssize_t>(lua_State* state, const size_t& arg_num) {
+	return (lua_isnumber(state, (int)arg_num) == 1);
+}
 template<> bool check_lua_type<float>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
@@ -80,6 +83,9 @@ template<> unsigned int get_lua_arg<unsigned int>(lua_State* state, const size_t
 #endif
 template<> size_t get_lua_arg<size_t>(lua_State* state, const size_t& arg_num) {
 	return size_t(lua_tointeger(state, (int)arg_num));
+}
+template<> ssize_t get_lua_arg<ssize_t>(lua_State* state, const size_t& arg_num) {
+	return ssize_t(lua_tointeger(state, (int)arg_num));
 }
 template<> float get_lua_arg<float>(lua_State* state, const size_t& arg_num) {
 	return float(lua_tonumber(state, (int)arg_num));
@@ -331,8 +337,8 @@ int lua_bindings::reload_scripts(lua_State* state) {
 
 int lua_bindings::crand(lua_State* state) {
 	try {
-		tuple<size_t> args = get_lua_args<size_t>(state);
-		lua_pushinteger(state, get<0>(args) != 0 ? 1 + (rand() % get<0>(args)) : 0);
+		tuple<ssize_t> args = get_lua_args<ssize_t>(state);
+		lua_pushinteger(state, get<0>(args) != 0 ? 1 + (rand() % std::llabs(get<0>(args))) : 0);
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;
