@@ -351,7 +351,7 @@ int lua_bindings::reload_scripts(lua_State* state) {
 int lua_bindings::crand(lua_State* state) {
 	try {
 		tuple<ssize_t> args = get_lua_args<ssize_t>(state);
-		lua_pushinteger(state, get<0>(args) != 0 ? 1 + (rand() % std::llabs(get<0>(args))) : 0);
+		lua_pushinteger(state, get<0>(args) != 0 ? 1 + (rand() % std::labs(get<0>(args))) : 0);
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;
