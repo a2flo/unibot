@@ -66,6 +66,7 @@
 		5CA3F90B100F8393005B3F26 /* net_protocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net_protocol.h; sourceTree = "<group>"; };
 		5CA3FA81100FB210005B3F26 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		5CBE72D6117105E300A6C740 /* add2file.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = add2file.lua; sourceTree = "<group>"; };
+		5CBE72EE11710CB700A6C740 /* users.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = users.lua; sourceTree = "<group>"; };
 		5CC3E5D711288E8A00B4395E /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = bindings_test.lua; sourceTree = "<group>"; };
 		5CC8E3AE116B845000EFA722 /* dice.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = dice.lua; sourceTree = "<group>"; };
 		5CC8E3AF116B845000EFA722 /* gitupdate.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = gitupdate.lua; sourceTree = "<group>"; };
@@ -191,6 +192,7 @@
 				5C749B6A1125BBEF0079A57A /* time.lua */,
 				5C5F4424113D8663000A2C73 /* unikram.lua */,
 				5C5F4423113D8663000A2C73 /* upload.lua */,
+				5CBE72EE11710CB700A6C740 /* users.lua */,
 				5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */,
 				5C5F4421113D8663000A2C73 /* ws0910.lua */,
 			);

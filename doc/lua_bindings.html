@@ -59,7 +59,7 @@ returns: &lt;integer: host ip&gt; &lt;integer: host port&gt;
 </div>
 <div class="lua_command">
 command: get_server_ip<br />
-returns: &lt;integer: server ip&gt; &lt;integer: server port&gt;
+returns: &lt;integer: server ip&gt; &lt;integer: server port&gt; 
 </div>
 
 <h1>bot state functions</h1>
@@ -73,7 +73,7 @@ returns: -
 </div>
 <div class="lua_command">
 command: get_users<br />
-returns: TBD
+returns: &lt;table: [nick name] = &lt;table: [1] = real name, [2] = host&gt;&gt; &lt;integer: user count&gt;
 </div>
 
 <h1>config functions</h1>
@@ -107,6 +107,11 @@ returns: &lt;string: output string&gt;
 command: reload_scripts<br />
 returns: -<br />
 <em>Note: this aborts all running scripts</em>
+</div>
+<div class="lua_command">
+command: crand &lt;integer: range&gt;<br />
+returns: &lt;integer: random value in [1 - range]&gt;<br />
+<em>Note: crand(0) will return 0; signedness is ignored</em>
 </div>
 
 <div><br /><br /></div>

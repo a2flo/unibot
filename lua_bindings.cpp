@@ -251,17 +251,30 @@ int lua_bindings::get_users(lua_State* state) {
 	try {
 		check_lua_stack(state, 0);
 		map<string, pair<string, string> >* users = states->get_users();
-		lua_createtable(state, (int)users->size(), (int)users->size()); // TODO: rec size?
 		
-		// TODO: table handling!
-		// add users to table
+		// create user table and add all users to it
+		// table format: { nickname = { realname, host }, ... }
+		lua_createtable(state, (int)users->size(), 0);
 		for(map<string, pair<string, string> >::iterator user_iter = users->begin(); user_iter != users->end(); user_iter++) {
+			// key
 			lua_pushstring(state, user_iter->first.c_str());
+			
+			// value (-> new table, containing two strings)
+			lua_createtable(state, 2, 0);
 			lua_pushstring(state, user_iter->second.first.c_str());
+			lua_rawseti(state, -2, 1);
+			lua_pushstring(state, user_iter->second.second.c_str());
+			lua_rawseti(state, -2, 2);
+			
+			// add key + value table to users table
+			lua_settable(state, -3);
 		}
+		
+		// push size of users table
+		lua_pushinteger(state, (int)users->size());
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
-	return 1;
+	return 2;
 }
 
 int lua_bindings::get_config_entry(lua_State* state) {
