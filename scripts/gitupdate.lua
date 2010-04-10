@@ -15,7 +15,8 @@ function handle_message(origin, target, cmd, parameters)
 								string.find(git_output, "command not found", 1, true),
 								string.find(git_output, "Already up-to-date", 1, true),
 								string.find(git_output, "fatal: Not a git repository", 1, true),
-								string.find(git_output, "fatal", 1, true)
+								string.find(git_output, "fatal", 1, true),
+								string.find(git_output, "error", 1, true)
 			}
 			
 			for i = 1, table.maxn(err_strs) do
