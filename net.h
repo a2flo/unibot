@@ -47,6 +47,8 @@ public:
 	void send_channel_msg(string msg);
 	void send_private_msg(string where, string msg);
 	void send_action_msg(string where, string msg);
+	void send_ctcp_msg(string where, string type, string msg);
+	void send_ctcp_request(string where, string type);
 	void send_kick(string who, string reason);
 	void send_connect(string name, string real_name);
 	void send_identify(string password);
@@ -231,7 +233,7 @@ template <class protocol_policy> void net<protocol_policy>::send(string data) {
 
 template <class protocol_policy> void net<protocol_policy>::send_connect(string name, string real_name) {
 	send("NICK " + name);
-	send("USER " + name + " 0 * " + real_name);
+	send("USER " + name + " 0 * :" + real_name);
 }
 
 template <class protocol_policy> bool net<protocol_policy>::is_received_data() {
@@ -252,6 +254,14 @@ template <class protocol_policy> void net<protocol_policy>::send_private_msg(str
 
 template <class protocol_policy> void net<protocol_policy>::send_action_msg(string where, string msg) {
 	send("PRIVMSG " + where + " :" + (char)0x01 + "ACTION " + msg + (char)0x01);
+}
+
+template <class protocol_policy> void net<protocol_policy>::send_ctcp_msg(string where, string type, string msg) {
+	send("NOTICE " + where + " :" + (char)0x01 + type + " " + msg + (char)0x01);
+}
+
+template <class protocol_policy> void net<protocol_policy>::send_ctcp_request(string where, string type) {
+	send("PRIVMSG " + where + " :" + (char)0x01 + type + (char)0x01);
 }
 
 template <class protocol_policy> void net<protocol_policy>::send_identify(string password) {

@@ -18,7 +18,7 @@
 
 #include "bot_states.h"
 
-bot_states::bot_states() {
+bot_states::bot_states(net<TCP_protocol>* n) : n(n) {
 	states["connected"] = false;
 	states["joined"] = false;
 	states["parted"] = false;
@@ -99,24 +99,37 @@ void bot_states::set_identified(bool identified) {
 	states["identified"] = identified;
 }
 
-void bot_states::add_user(string name, string real_name, string host) {
-	user_list[name] = pair<string, string>(real_name, host);
+void bot_states::add_user(string name) {
+	user_list[name] = new user_info(name, "", "", "", "", "");
+	
+	// request user information (WHO and ctcp VERSION)
+	n->send("WHO :"+name);
+	n->send_ctcp_request(name, "VERSION");
 }
 
-void bot_states::update_user(string name, string real_name, string host) {
-	user_list[name] = pair<string, string>(real_name, host);
+void bot_states::update_user_info(string name, string real_name, string host, string host_user, string ctcp_support, string client) {
+	if(user_list.count(name) == 0) return;
+	
+	// only update info if string isn't empty
+	if(name != "") user_list[name]->nick = name;
+	if(real_name != "") user_list[name]->real_name = real_name;
+	if(host != "") user_list[name]->host = host;
+	if(host_user != "") user_list[name]->host_user = host_user;
+	if(ctcp_support != "") user_list[name]->ctcp_support = ctcp_support;
+	if(client != "") user_list[name]->client = client;
+}
+
+void bot_states::update_user_name(string from, string to) {
+	if(user_list.count(from) > 0) {
+		user_list[to] = user_list[from];
+		user_list.erase(user_list.find(from));
+	}
 }
 
 void bot_states::delete_user(string name) {
 	if(user_list.count(name) > 0) {
+		delete user_list[name];
 		user_list.erase(name);
-	}
-}
-
-void bot_states::update_user(string from, string to) {
-	if(user_list.count(from) > 0) {
-		user_list[to] = user_list[from];
-		user_list.erase(user_list.find(from));
 	}
 }
 
@@ -124,7 +137,7 @@ void bot_states::delete_all_users() {
 	user_list.clear();
 }
 
-map<string, pair<string, string> >* bot_states::get_users() {
+map<string, bot_states::user_info*>* bot_states::get_users() {
 	return &user_list;
 }
 
@@ -136,8 +149,8 @@ void bot_states::set_kick_user(string kick_user) {
 	this->kick_user = kick_user;
 }
 
-pair<string, string> bot_states::get_user(string name) {
-	if(user_list.count(name) == 0) return pair<string, string>("", "");
+bot_states::user_info* bot_states::get_user(string name) {
+	if(user_list.count(name) == 0) return NULL;
 	return user_list[name];
 }
 

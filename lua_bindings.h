@@ -32,6 +32,7 @@ F(send) \
 F(send_channel_msg) \
 F(send_private_msg) \
 F(send_action_msg) \
+F(send_ctcp_request) \
 F(send_kick) \
 F(get_local_ip) \
 F(get_server_ip) \
@@ -62,7 +63,7 @@ public:
 		return error_str.c_str();
 	}
 };
-class invalidate_scripts_exception : public exception {};
+class invalidate_scripts_exception : exception {};
 
 class lua;
 class lua_bindings {

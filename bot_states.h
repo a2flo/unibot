@@ -20,11 +20,28 @@
 #define __BOT_STATES_H__
 
 #include "platform.h"
+#include "net.h"
 
 class bot_states {
 public:
-	bot_states();
+	bot_states(net<TCP_protocol>* n);
 	~bot_states();
+	
+	struct user_info {
+		string nick;
+		string real_name;
+		string host;
+		string host_user;
+		
+		string ctcp_support; // == CLIENTINFO, don't rely on this, most clients don't support ctcp CLIENTINFO,
+							 // but react on ctcp VERSION and maybe others as well
+		string client;
+		
+		user_info() : nick(""), real_name(""), host(""), host_user(""), ctcp_support(""), client("") {}
+		user_info(const string& nick_, const string& real_name_, const string& host_, const string& host_user_, const string& ctcp_support_, const string& client_) :
+		nick(nick_), real_name(real_name_), host(host_), host_user(host_user_), ctcp_support(ctcp_support_), client(client_) {}
+		~user_info() {}
+	};
 	
 	bool is_connected();
 	void set_connected(bool connected);
@@ -42,13 +59,13 @@ public:
 	void set_kick_user(string kick_user);
 	bool is_identified();
 	void set_identified(bool identified);
-	void add_user(string name, string real_name, string host);
-	void update_user(string name, string real_name, string host);
+	void add_user(string name);
+	void update_user_info(string name, string real_name = "", string host = "", string host_user = "", string ctcp_support = "", string client = ""); // "" == don't update
+	void update_user_name(string from, string to);
 	void delete_user(string name);
-	void update_user(string from, string to);
 	void delete_all_users();
-	map<string, pair<string, string> >* get_users();
-	pair<string, string> get_user(string name);
+	map<string, user_info*>* get_users();
+	bot_states::user_info* get_user(string name);
 	bool is_user(string name);
 	bool is_silenced();
 	void set_silenced(bool silenced);
@@ -57,6 +74,8 @@ public:
 	void set(const string& state_name, bool new_state);
 	
 protected:
+	net<TCP_protocol>* n;
+	
 	/* available bot states:
 	 * connected
 	 * joined
@@ -71,8 +90,8 @@ protected:
 	map<string, bool> states;
 	
 	string kick_user;
-	// login name: realname, host
-	map<string, pair<string, string> > user_list;
+	// login name, user_info
+	map<string, user_info*> user_list;
 	
 };
 

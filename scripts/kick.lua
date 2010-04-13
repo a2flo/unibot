@@ -10,8 +10,8 @@ function handle_message(origin, target, cmd, parameters)
 
 		-- no params / only name
 		local name = ( parameters ~= cmd ) and parameters or origin
-		-- TODO random message
-		local msg = "Cause I can!"
+		local msgs = { "Cause I can!", "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" }
+		local msg = msgs[math.random(1, table.maxn(msgs))]
 
 		-- name + msg
 		if name ~= origin then

@@ -20,12 +20,18 @@
 
 int main(int argc, char* argv[]) {
 	// config
-	config* conf = new config("/etc/unibot.conf");
+	config* conf;
+	try {
+		conf = new config("/etc/unibot.conf");
+	}
+	catch(...) {
+		exit(-1);
+	}
 	
 	// initialize SDL
 	if(SDL_Init(0) < 0) {
 		logger::log(logger::LT_ERROR, "main.cpp", string(string("couldn't initialize SDL: ") + string(SDL_GetError())).c_str());
-		exit(1);
+		exit(-1);
 	}
 	
 	srand((unsigned int)time(NULL));
@@ -34,7 +40,7 @@ int main(int argc, char* argv[]) {
 	net<TCP_protocol>* n = new net<TCP_protocol>(conf);
 	n->connect_to_server(conf->get_hostname().c_str(), conf->get_port(), conf->get_port());
 	
-	bot_states* states = new bot_states();
+	bot_states* states = new bot_states(n);
 	bot_handler* bot = new bot_handler(n, states, conf);
 	
 	unsigned int status = 0;

@@ -27,7 +27,7 @@
 
 #define UNIBOT_MAJOR_VERSION 0
 #define UNIBOT_MINOR_VERSION 2
-#define UNIBOT_REVISION_VERSION 0
+#define UNIBOT_REVISION_VERSION 2
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
@@ -42,6 +42,12 @@
 #else
 #define UNIBOT_COMPILER "unknown compiler"
 #endif
+
+#define UNIBOT_VERSION_STRING ("UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+ \
+								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+ \
+								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER)
+
+#define UNIBOT_SOURCE_URL "http://www.assembla.com/spaces/unibot"
 
 class lua;
 class bot_handler {
@@ -102,6 +108,7 @@ public:
 		CMD_003,
 		CMD_004,
 		CMD_005,
+		CMD_352,
 		CMD_353,
 		CMD_372
 	};

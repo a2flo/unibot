@@ -18,14 +18,13 @@
 
 #include "lua_bindings.h"
 
+//#if (!defined(__GNUC__) || defined(__clang__)) && (__has_feature(cxx_variadic_templates) || defined(__APPLE__)) // use this when compiling in c++0x mode
 #if __has_feature(cxx_variadic_templates) || !defined(__clang__) || defined(__APPLE__)
 #include <tr1/tuple>
-#else
-// really nasty clang++ tuple/variadic template workaround
-#include "tuple/tr1/tuple"
-#endif
-
 using namespace tr1;
+#endif
+// NOTE: if you want to use clang w/o variadic template support, you have to use libstdc++ 4.2.x
+
 
 /////////////////////////////////////////////////////
 // helper functions
@@ -198,6 +197,15 @@ int lua_bindings::send_action_msg(lua_State* state) {
 	return 0;
 }
 
+int lua_bindings::send_ctcp_request(lua_State* state) {
+	try {
+		tuple<string, string> args = get_lua_args<string, string>(state);
+		n->send_ctcp_request(get<0>(args), get<1>(args));
+	}
+	HANDLE_LUA_BINDINGS_EXCEPTION;
+	return 0;
+}
+
 int lua_bindings::send_kick(lua_State* state) {
 	try {
 		tuple<string, string> args = get_lua_args<string, string>(state);
@@ -250,21 +258,29 @@ int lua_bindings::set_bot_state(lua_State* state) {
 int lua_bindings::get_users(lua_State* state) {
 	try {
 		check_lua_stack(state, 0);
-		map<string, pair<string, string> >* users = states->get_users();
+		map<string, bot_states::user_info*>* users = states->get_users();
 		
 		// create user table and add all users to it
 		// table format: { nickname = { realname, host }, ... }
 		lua_createtable(state, (int)users->size(), 0);
-		for(map<string, pair<string, string> >::iterator user_iter = users->begin(); user_iter != users->end(); user_iter++) {
+		for(map<string, bot_states::user_info*>::iterator user_iter = users->begin(); user_iter != users->end(); user_iter++) {
 			// key
 			lua_pushstring(state, user_iter->first.c_str());
 			
 			// value (-> new table, containing two strings)
 			lua_createtable(state, 2, 0);
-			lua_pushstring(state, user_iter->second.first.c_str());
+			lua_pushstring(state, user_iter->second->nick.c_str());
 			lua_rawseti(state, -2, 1);
-			lua_pushstring(state, user_iter->second.second.c_str());
+			lua_pushstring(state, user_iter->second->real_name.c_str());
 			lua_rawseti(state, -2, 2);
+			lua_pushstring(state, user_iter->second->host.c_str());
+			lua_rawseti(state, -2, 3);
+			lua_pushstring(state, user_iter->second->host_user.c_str());
+			lua_rawseti(state, -2, 4);
+			lua_pushstring(state, user_iter->second->ctcp_support.c_str());
+			lua_rawseti(state, -2, 5);
+			lua_pushstring(state, user_iter->second->client.c_str());
+			lua_rawseti(state, -2, 6);
 			
 			// add key + value table to users table
 			lua_settable(state, -3);

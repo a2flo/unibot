@@ -21,13 +21,17 @@
 
 #include "platform.h"
 
+#define UNIBOT_CONFIG_VERSION 2
+
+class invalid_config_exception : exception {};
+
 class config {
 public:
 	config(const char* config_file);
 	~config();
 	
-	void load_config();
-	void load_config(const char* config_file);
+	bool load_config();
+	bool load_config(const char* config_file);
 	
 	string get_config_entry(const string& name);
 	string get_bot_name();
@@ -45,6 +49,7 @@ protected:
 	string config_file;
 	
 	/* available config settings:
+	 * config_version
 	 * bot_name
 	 * bot_realname
 	 * owner_names

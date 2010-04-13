@@ -19,18 +19,20 @@
 #include "config.h"
 
 config::config(const char* config_file) {
-	load_config(config_file);
+	if(!load_config(config_file)) {
+		throw invalid_config_exception();
+	}
 }
 
 config::~config() {
 }
 
-void config::load_config() {
+bool config::load_config() {
 	file.open(config_file.c_str(), fstream::in);
 	if(!file.is_open()) {
 		file.clear();
 		logger::log(logger::LT_ERROR, "config.cpp", string(string("load_config(): couldn't open config file ")+config_file+string("!")).c_str());
-		return;
+		return false;
 	}
 	
 	// get file data
@@ -54,6 +56,7 @@ void config::load_config() {
 	vector<string> lines;
 	tokenize(lines, data_str.str(), '\n');
 	bool bot_block = false;
+	bool config_version_found = false;
 	size_t assign_pos = 0;
 	for(vector<string>::iterator line_iter = lines.begin(); line_iter != lines.end(); line_iter++) {
 		if(line_iter->find(";") == 0 || line_iter->find("#") == 0 || line_iter->find("//") == 0) continue;
@@ -62,6 +65,15 @@ void config::load_config() {
 		else if(bot_block && (assign_pos = line_iter->find("=")) != string::npos) {
 			string identifier = trim(line_iter->substr(0, assign_pos));
 			string value = trim(line_iter->substr(assign_pos+1, line_iter->length()-assign_pos-1));
+			
+			// check for config version
+			if(identifier == "config_version") {
+				config_version_found = true;
+				if(value != to_str(UNIBOT_CONFIG_VERSION)) {
+					logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): invalid config version "+value+" - current version: "+to_str(UNIBOT_CONFIG_VERSION)+"!").c_str());
+					return false;
+				}
+			}
 			
 			// don't store the password inside the config data ...
 			if(identifier != "bot_password") config_data.insert(pair<string, string>(identifier, value));
@@ -87,11 +99,17 @@ void config::load_config() {
 		}
 	}
 	
+	if(!config_version_found) {
+		logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): no config version specified!").c_str());
+		return false;
+	}
+	
+	return true;
 }
 
-void config::load_config(const char* config_file) {
+bool config::load_config(const char* config_file) {
 	this->config_file = config_file;
-	load_config();
+	return load_config();
 }
 
 string config::get_bot_name() {

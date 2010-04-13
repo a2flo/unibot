@@ -72,6 +72,7 @@ const char* bot_handler::IRC_COMMAND_STR[] = {
 	"003",
 	"004",
 	"005",
+	"352",
 	"353",
 	"372"
 };
@@ -134,6 +135,22 @@ void bot_handler::handle() {
 					servername = cmd_data;
 					logger::log(logger::LT_DEBUG, "bot_handler.cpp", string(string("server name is: ") + servername).c_str());
 					break;
+				case CMD_352:
+					// this might get nasty, catch exceptions, just to be on the safe side
+					try {
+						size_t colon_pos = cmd_joined_data.find(":");
+						if(colon_pos == string::npos) break;
+						
+						size_t space_pos = cmd_joined_data.find(" ", colon_pos);
+						string real_name = (space_pos == string::npos ? cmd_joined_data.substr(colon_pos+1, cmd_joined_data.length()-colon_pos-1) :
+											cmd_joined_data.substr(space_pos+1, cmd_joined_data.length()-space_pos-1));
+						
+						states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "");
+					}
+					catch(...) {
+						logger::log(logger::LT_ERROR, "bot_handler.cpp", string("CMD_352 failed").c_str());
+					}
+					break;
 				case CMD_353: {
 					if(cmd_joined_data.find(':') == string::npos) break;
 					// strip ':' and last ' ' (if there is one)
@@ -146,7 +163,7 @@ void bot_handler::handle() {
 							if((*user_iter)[0] == '+' || (*user_iter)[0] == '@') {
 								*user_iter = user_iter->substr(1, user_iter->length() - 1);
 							}
-							states->add_user(*user_iter, "", "");
+							states->add_user(*user_iter);
 						}
 					}
 				}
@@ -158,6 +175,21 @@ void bot_handler::handle() {
 				case NOTICE:
 					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
 						states->set_identified(true);
+					}
+					// ctcp notice
+					else if(cmd_joined_data.length() >= 2 &&
+							(cmd_joined_data[0] == ':' && cmd_joined_data[1] == 0x01 && cmd_joined_data[cmd_joined_data.length()-1] == 1)) {
+						string ctcp_msg = cmd_joined_data.substr(2, cmd_joined_data.length()-3);
+						
+						size_t space_pos = ctcp_msg.find(" ");
+						if(space_pos != string::npos && space_pos < ctcp_msg.length()-1) {
+							string ctcp_type = ctcp_msg.substr(0, space_pos);
+							string ctcp_info = ctcp_msg.substr(space_pos+1, ctcp_msg.length()-space_pos-1);
+							
+							if(ctcp_type == "VERSION") {
+								states->update_user_info(strip_user(cmd_sender), "", "", "", "yes", ctcp_info);
+							}
+						}
 					}
 					break;
 				case JOIN:
@@ -184,7 +216,7 @@ void bot_handler::handle() {
 						if(!(states->is_silenced())) {
 							n->send_channel_msg("hey, " + strip_user(cmd_sender));
 						}
-						states->add_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
+						states->add_user(strip_user(cmd_sender));
 					}
 					break;
 				case PART:
@@ -208,7 +240,7 @@ void bot_handler::handle() {
 						msg_store.push_back(strip_special_chars(cmd_joined_data));
 						
 						// update user info
-						states->update_user(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender));
+						states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "");
 						
 						// log msg
 						logger::log(logger::LT_MSG, "bot_handler.cpp", string(strip_user(cmd_sender) + ": " + msg).c_str());
@@ -249,7 +281,7 @@ void bot_handler::handle() {
 					}
 					break;
 				case NICK:
-					states->update_user(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
+					states->update_user_name(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
 					break;
 				case TOPIC:
 					break;
@@ -350,7 +382,6 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			uptime_str += to_str(uptime / t_minute) + "m ";
 			uptime %= t_minute;
 			uptime_str += to_str(uptime / t_second) + "s";
-			//uptime %= t_second;
 			
 			n->send_private_msg(target, uptime_str);
 		}
@@ -371,9 +402,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 		}
 		else if(cmd == "version") {
-			n->send_private_msg(target, "UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+
-								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+
-								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER);
+			n->send_private_msg(target, UNIBOT_VERSION_STRING);
 		}
 		else if(cmd == "reload_scripts") {
 			lua_obj->reload_scripts();
@@ -382,6 +411,42 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			string script = msg.substr(14, msg.length()-14);
 			lua_obj->reload_script(script);
 			logger::log(logger::LT_DEBUG, "bot_handler.cpp", ("script "+script+" reloaded!").c_str());
+		}
+	}
+	
+	// handle ctcp messages that start and end with 0x01 (these can come from everywhere)
+	// http://www.irchelp.org/irchelp/rfc/ctcpspec.html
+	if(((unsigned char)msg[0]) == 1 && ((unsigned char)msg[msg.length()-1]) == 1) {
+		// handle VERSION, PING, TIME, FINGER, SOURCE, USERINFO, CLIENTINFO
+		const string stripped_msg = msg.substr(1, msg.length()-2);
+		if(stripped_msg == "VERSION") {
+			n->send_ctcp_msg(target, "VERSION", UNIBOT_VERSION_STRING);
+		}
+		else if(stripped_msg == "PING") {
+			time_t timestamp;
+			time(&timestamp);
+			n->send_ctcp_msg(target, "PING", to_str(timestamp));
+		}
+		else if(stripped_msg == "TIME") {
+			stringstream local_time;
+			const time_put<char>& tmput = use_facet<time_put<char> >(loc);
+			time_t timestamp;
+			time(&timestamp);
+			const char* pattern = "%Y-%m-%d %H:%M:%S %Z";
+			tmput.put(local_time, local_time, ' ', localtime(&timestamp), pattern, pattern+strlen(pattern));
+			n->send_ctcp_msg(target, "TIME", ":"+local_time.str());
+		}
+		else if(stripped_msg == "FINGER") {
+			n->send_ctcp_msg(target, "FINGER", ":"+conf->get_bot_realname());
+		}
+		else if(stripped_msg == "SOURCE") {
+			n->send_ctcp_msg(target, "SOURCE", UNIBOT_SOURCE_URL);
+		}
+		else if(stripped_msg == "USERINFO") {
+			n->send_ctcp_msg(target, "USERINFO", UNIBOT_VERSION_STRING);
+		}
+		else if(stripped_msg == "CLIENTINFO") {
+			n->send_ctcp_msg(target, "CLIENTINFO", "CLIENTINFO VERSION PING TIME FINGER SOURCE USERINFO");
 		}
 	}
 }

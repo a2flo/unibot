@@ -50,6 +50,10 @@ command: send_action_msg &lt;string: user/channel&gt; &lt;string: action&gt;<br 
 returns: -
 </div>
 <div class="lua_command">
+command: send_ctcp_request &lt;string: user&gt; &lt;string: ctcp type&gt;<br />
+returns: -
+</div>
+<div class="lua_command">
 command: send_kick &lt;string: user&gt; &lt;string: kick reason&gt;<br />
 returns: -
 </div>
@@ -73,7 +77,7 @@ returns: -
 </div>
 <div class="lua_command">
 command: get_users<br />
-returns: &lt;table: [nick name] = &lt;table: [1] = real name, [2] = host&gt;&gt; &lt;integer: user count&gt;
+returns: &lt;table: [nick name] = &lt;table: [1] = nick name, [2] = real name, [3] = host, [4] = host user, [5] = ctcp_support, [6] = client/version&gt;&gt; &lt;integer: user count&gt;
 </div>
 
 <h1>config functions</h1>

@@ -1,5 +1,5 @@
 
--- lua $url [search]
+-- !$url [message offset] [word offset]
 
 function create_and_send_url(target, cmd, parameters, urlless, urlmore)
 	local url = ( parameters ~= cmd ) and urlmore..handle_args_chronological(parameters) or urlless
@@ -7,8 +7,6 @@ function create_and_send_url(target, cmd, parameters, urlless, urlmore)
 end
 
 function handle_message(origin, target, cmd, parameters)
-	-- TODO if page exist, then print the first ???
-	
 	local pages = {
 		{ "g", "http://www.google.de", "http://www.google.de/search?q=" },
 		{ "wd", "http://de.wikipedia.org/wiki/Hauptseite", "http://de.wikipedia.org/wiki/" },
