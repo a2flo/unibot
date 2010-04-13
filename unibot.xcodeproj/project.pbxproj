@@ -42,7 +42,6 @@
 		5C5F4421113D8663000A2C73 /* ws0910.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = ws0910.lua; sourceTree = "<group>"; };
 		5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = who_is_your_daddy.lua; sourceTree = "<group>"; };
 		5C5F4423113D8663000A2C73 /* upload.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = upload.lua; sourceTree = "<group>"; };
-		5C5F4424113D8663000A2C73 /* unikram.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = unikram.lua; sourceTree = "<group>"; };
 		5C5F4425113D8663000A2C73 /* ss10.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = ss10.lua; sourceTree = "<group>"; };
 		5C5F4426113D8663000A2C73 /* spec.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = spec.lua; sourceTree = "<group>"; };
 		5C5F4427113D8663000A2C73 /* roulette.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = roulette.lua; sourceTree = "<group>"; };
@@ -190,7 +189,6 @@
 				5C5F4425113D8663000A2C73 /* ss10.lua */,
 				5C749B691125BBEF0079A57A /* system.lua */,
 				5C749B6A1125BBEF0079A57A /* time.lua */,
-				5C5F4424113D8663000A2C73 /* unikram.lua */,
 				5C5F4423113D8663000A2C73 /* upload.lua */,
 				5CBE72EE11710CB700A6C740 /* users.lua */,
 				5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */,

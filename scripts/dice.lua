@@ -1,6 +1,8 @@
 
 -- bot dice [value]
 
+dofile ("scripts/include/global.lua")
+
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "dice" then
 		local name = ( parameters ~= cmd ) and parameters or "6"

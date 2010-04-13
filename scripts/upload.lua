@@ -1,6 +1,8 @@
 
 -- lua upload link
 
+dofile ("scripts/include/global.lua")
+
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "upload" then
 		--send_private_msg(target, "http://www.file-upload.net/")

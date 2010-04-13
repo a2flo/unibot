@@ -1,6 +1,8 @@
 
 -- lua mensa links
 
+dofile ("scripts/include/global.lua")
+
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "mensa" then
 		local day = tonumber(os.date("%w", os.time()))

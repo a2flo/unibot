@@ -1,6 +1,8 @@
 
 -- lua ss10 links
 
+dofile ("scripts/include/global.lua")
+
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "ss10" then
 		send_private_msg(target, "colimathe: http://www.coli.uni-saarland.de/kvv/detailpage.php?id=1577")

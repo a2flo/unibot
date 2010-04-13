@@ -2,6 +2,8 @@
 -- lua roulette [name]
 -- alternative: if name is owner and origin no owner, then the origin will be kicked.
 
+dofile ("scripts/include/global.lua")
+
 bullets = -1
 slots = -1
 chamber = -1

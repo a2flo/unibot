@@ -1,6 +1,8 @@
 
 -- lua ws0910 links
 
+dofile ("scripts/include/global.lua")
+
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "ws0910" then
 		send_private_msg(target, "MfI3:       http://www.math.uni-sb.de/ag/schreyer/LEHRE/0910_MfI3/index.html")

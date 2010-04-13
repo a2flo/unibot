@@ -1,6 +1,8 @@
 
 -- bot slap [name]
 
+dofile ("scripts/include/global.lua")
+
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "slap" then
 		local name = ( parameters ~= cmd ) and parameters or origin
