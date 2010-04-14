@@ -11,7 +11,7 @@ function handle_message(origin, target, cmd, parameters)
 		--send_private_msg(origin, "Use '!help <command>' to get further information about this command.") -- TODO: maid3n!
 		send_private_msg(origin, "* \002Bot Info\002: who's your daddy?, system, time, uptime, src, spec, version, ping")
 		send_private_msg(origin, "* \002Channel\002: users, roulette, slap <user>, dice <range>")
-		send_private_msg(origin, "* \002Uni\002: paste, upload, mensa, happa, ss10")
+		send_private_msg(origin, "* \002Uni\002: unikram, paste, upload, mensa, happa, ws0910, ss10")
 		send_private_msg(origin, "* \002Links\002: we, wd, wa, g, dict")
 		send_private_msg(origin, "  \002+options\002: <message offset> <word offset>, extracts the word (given by word offset) or whole msg (if no word offset) of the msg specified by message offset (in reverse)")
 
