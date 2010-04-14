@@ -53,6 +53,7 @@
 		5C5F442D113D8663000A2C73 /* happa.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = happa.lua; sourceTree = "<group>"; };
 		5C5F4441113D86DF000A2C73 /* global.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = global.lua; sourceTree = "<group>"; };
 		5C5F448A113D8E7F000A2C73 /* src.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = src.lua; sourceTree = "<group>"; };
+		5C713C40117679E7001B6645 /* ticket.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = ticket.lua; sourceTree = "<group>"; };
 		5C749B691125BBEF0079A57A /* system.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = system.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C749B6A1125BBEF0079A57A /* time.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
@@ -188,6 +189,7 @@
 				5C5F448A113D8E7F000A2C73 /* src.lua */,
 				5C5F4425113D8663000A2C73 /* ss10.lua */,
 				5C749B691125BBEF0079A57A /* system.lua */,
+				5C713C40117679E7001B6645 /* ticket.lua */,
 				5C749B6A1125BBEF0079A57A /* time.lua */,
 				5C5F4423113D8663000A2C73 /* upload.lua */,
 				5CBE72EE11710CB700A6C740 /* users.lua */,
