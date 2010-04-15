@@ -18,6 +18,8 @@
 
 #include "util.h"
 
+static string abs_bin_path = "";
+
 void tokenize(vector<string>& dst, const string& src, const char delim) {	
 	size_t pos = 0;
 	size_t old_pos = 0;
@@ -82,4 +84,46 @@ string trim(string str) {
 string rev(string& str) {
 	reverse(str.begin(), str.end());
 	return str;
+}
+
+void set_call_path(const char* path) {
+#ifndef WIN32
+	const char dir_slash = '/';
+#else
+	const char dir_slash = '\\';
+#endif
+	abs_bin_path = path;
+	abs_bin_path = abs_bin_path.substr(0, abs_bin_path.rfind(dir_slash)+1);
+	
+#ifndef WIN32
+	if(abs_bin_path[0] == '.') {
+		// strip leading '.' from datapath if there is one
+		abs_bin_path.erase(0, 1);
+		
+		char working_dir[8192];
+		memset(working_dir, 0, 8192);
+		getcwd(working_dir, 8192);
+		
+		abs_bin_path = working_dir + abs_bin_path;
+	}
+#else
+	char working_dir[8192];
+	memset(working_dir, 0, 8192);
+	getcwd(working_dir, 8192);
+	
+	bool add_bin_path = (working_dir == abs_bin_path.substr(0, abs_bin_path.length()-1)) ? false : true;
+	abs_bin_path = working_dir + string("\\") + (add_bin_path ? abs_bin_path : "");
+#endif
+	
+#ifdef __APPLE__
+	// check if path contains a 'MacOS' string (indicates that the binary is called from within an OS X .app or via complete path from the shell)
+	if(abs_bin_path.find("MacOS") != string::npos) {
+		// if so, add "../../../" to the path, since we have to relocate the path if the binary is inside an .app
+		abs_bin_path.insert(abs_bin_path.find("MacOS")+6, "../../../");
+	}
+#endif
+}
+
+const string& get_absolute_path() {
+	return abs_bin_path;
 }

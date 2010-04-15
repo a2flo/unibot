@@ -49,6 +49,7 @@ protected:
 	struct lua_script;
 	void register_functions(lua_script* script);
 	void check_scripts();
+	const char* lua_script_folder(const string addition = "");
 	
 	template<int level> static int lua_error_handler(lua_State* state) {
 		// get debug info

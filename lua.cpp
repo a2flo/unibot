@@ -51,7 +51,7 @@ void lua::reload_scripts() {
 	
 	struct dirent** namelist;
 	
-	int n = scandir(LUA_SCRIPT_FOLDER ".", &namelist, 0, alphasort);
+	int n = scandir(lua_script_folder("."), &namelist, 0, alphasort);
 	if(n > 0) {
 		for(int j = 1; j < n; j++) {
 			string fname = namelist[j]->d_name;
@@ -70,7 +70,7 @@ void lua::reload_scripts() {
 }
 
 void lua::reload_script(const string& filename) {
-	string script_filename = LUA_SCRIPT_FOLDER+filename;
+	string script_filename = lua_script_folder(filename);
 	if(script_store.count(script_filename) > 0) {
 		// unload/delete script that was already loaded
 		delete script_store[script_filename];
@@ -124,4 +124,9 @@ void lua::handle_message(const string& origin, const string& target, const strin
 		logger::log(logger::LT_ERROR, "lua.cpp", string("handle_message(): unknown exception while executing lua scripts!").c_str());
 	}
 
+}
+
+const char* lua::lua_script_folder(const string addition) {
+	const string script_folder = get_absolute_path() + string(LUA_SCRIPT_FOLDER) + addition;
+	return script_folder.c_str();
 }

@@ -24,5 +24,6 @@
 #include "bot_handler.h"
 #include "bot_states.h"
 #include "config.h"
+#include "lua.h"
 
 #endif

@@ -1,7 +1,7 @@
 
 -- help command, sends an overview of all available commands to the requesting user
 
-dofile ("scripts/include/global.lua")
+dofile (package.path.."include/global.lua")
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "help" then

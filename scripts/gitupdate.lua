@@ -2,7 +2,7 @@
 -- !gitupdate, calls 'git pull origin master' (if possible, if the current bot binary folder also
 -- contains a unibot git checkout) and reloads all scripts
 
-dofile ("scripts/include/global.lua")
+dofile (package.path.."include/global.lua")
 
 function handle_message(origin, target, cmd, parameters)
 	if is_owner(origin) then

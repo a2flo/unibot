@@ -1,7 +1,7 @@
 
 -- lua ss10 links
 
-dofile ("scripts/include/global.lua")
+dofile (package.path.."include/global.lua")
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "ss10" then

@@ -19,6 +19,11 @@
 #include "main.h"
 
 int main(int argc, char* argv[]) {
+	// set call path and get absolute path
+	set_call_path(argv[0]);
+	// set lua script search path
+	setenv("LUA_PATH", (get_absolute_path()+LUA_SCRIPT_FOLDER).c_str(), 1);
+	
 	// config
 	config* conf;
 	try {

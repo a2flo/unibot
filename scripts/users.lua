@@ -1,7 +1,7 @@
 
 -- !users
 
-dofile ("scripts/include/global.lua")
+dofile (package.path.."include/global.lua")
 
 function print_users(target, extended)
 	local users, user_count = get_users()

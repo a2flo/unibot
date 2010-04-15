@@ -1,7 +1,7 @@
 
 -- !$url [message offset] [word offset]
 
-dofile ("scripts/include/global.lua")
+dofile (package.path.."include/global.lua")
 
 function create_and_send_url(target, cmd, parameters, urlless, urlmore)
 	local url = ( parameters ~= cmd ) and urlmore..handle_args_chronological(parameters) or urlless

@@ -49,4 +49,7 @@ string encode_url(string& url);
 string encode_url(const char* url);
 string rev(string& str);
 
+void set_call_path(const char* path);
+const string& get_absolute_path();
+
 #endif

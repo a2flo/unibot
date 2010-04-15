@@ -1,7 +1,7 @@
 
 -- lua ws0910 links
 
-dofile ("scripts/include/global.lua")
+dofile (package.path.."include/global.lua")
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "ws0910" then
