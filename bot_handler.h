@@ -25,9 +25,9 @@
 #include "config.h"
 #include "build_version.h"
 
-#define UNIBOT_MAJOR_VERSION 0
-#define UNIBOT_MINOR_VERSION 2
-#define UNIBOT_REVISION_VERSION 3
+#define UNIBOT_MAJOR_VERSION "0"
+#define UNIBOT_MINOR_VERSION "3"
+#define UNIBOT_REVISION_VERSION "0d"
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
