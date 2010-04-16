@@ -25,6 +25,9 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
 using namespace std;
 
 template<int i> struct int2type {
