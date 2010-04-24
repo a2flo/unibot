@@ -41,6 +41,11 @@ function handle_message(origin, target, cmd, parameters)
 		
 		send_private_msg(target, "handle_args_chronological: "..handle_args_chronological("-1"))
 		
+		-- internal funcs
+		local test_table = { "blah", "blubb", "test", "blah", "hmm", "blah", "blubb", "blubb" }
+		testtable = unique(test_table)
+		send_private_msg(target, "unique: "..table.concat(test_table, ", "))
+		
 		reload_scripts()
 	end
 	return 0

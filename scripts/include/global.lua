@@ -10,6 +10,17 @@ function toboolean(value)
 	return false
 end
 
+function unique(t)
+	table.sort(t)
+	local n = table.maxn(t)
+	for i = 1, n do
+		if t[n-i] == t[n-i+1] then
+			table.remove(t, n-i+1)
+		end
+	end
+	return t
+end
+
 -- executes a system/os command and returns the output
 function execute_command(cmd)
 	local output = ""
