@@ -19,6 +19,11 @@
 #include "config.h"
 
 config::config(const char* config_file) {
+	// default values
+	config_data["verbosity"] = to_str(logger::LT_MSG);
+	
+	logger::set_config(this);
+	
 	if(!load_config(config_file)) {
 		throw invalid_config_exception();
 	}
@@ -76,7 +81,10 @@ bool config::load_config() {
 			}
 			
 			// don't store the password inside the config data ...
-			if(identifier != "bot_password") config_data.insert(pair<string, string>(identifier, value));
+			if(identifier != "bot_password") {
+				config_data.erase(identifier); // erase before insert, this makes the "latest" config setting "active"
+				config_data.insert(pair<string, string>(identifier, value));
+			}
 			else bot_password = value;
 			
 			if(identifier == "owner_names") {
@@ -153,4 +161,8 @@ bool config::is_owner(string user) {
 		if(*owner_iter == user) return true;
 	}
 	return false;
+}
+
+size_t config::get_verbosity() {
+	return strtoul(config_data["verbosity"].c_str(), NULL, 10);
 }

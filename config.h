@@ -41,6 +41,7 @@ public:
 	string get_hostname();
 	unsigned short int get_port();
 	string get_channel();
+	size_t get_verbosity();
 	
 	bool is_owner(string user);
 	
@@ -56,6 +57,7 @@ protected:
 	 * hostname
 	 * port
 	 * channel
+	 * verbosity
 	 */
 	map<string, string> config_data;
 	vector<string> owner_names;

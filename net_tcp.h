@@ -31,7 +31,7 @@ template<> struct std_protocol<TCPsocket> {
 			valid = false;
 		}
 	}
-	~std_protocol<TCPsocket>() {
+	virtual ~std_protocol<TCPsocket>() {
 		if(socketset != NULL) {
 			if(server_socket != NULL) {
 				SDLNet_TCP_DelSocket(socketset, server_socket);

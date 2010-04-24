@@ -42,34 +42,26 @@ int main(int argc, char* argv[]) {
 	srand((unsigned int)time(NULL));
 	
 	// initialize net
-	net<TCP_protocol>* n = new net<TCP_protocol>(conf);
-	n->connect_to_server(conf->get_hostname().c_str(), conf->get_port(), conf->get_port());
+	unibot_irc_net* irc = new unibot_irc_net(conf);
+	irc->connect_to_server(conf->get_hostname().c_str(), conf->get_port());
 	
-	bot_states* states = new bot_states(n);
-	bot_handler* bot = new bot_handler(n, states, conf);
+	bot_states* states = new bot_states(irc);
+	bot_handler* bot = new bot_handler(irc, states, conf);
 	
-	unsigned int status = 0;
-	n->send_connect(conf->get_bot_name(), conf->get_bot_realname());
-	while(n->run()) {
-		bot->handle();
-		
-		if(status == 0 && states->is_identified()) {
-			status = 1;
-			n->join_channel(conf->get_channel());
-		}
-		
-		// reduce system usage ...
-		SDL_Delay(1);
+	irc->send_connect(conf->get_bot_name(), conf->get_bot_realname());
+	
+	while(irc->is_running() || bot->is_running()) {
+		SDL_Delay(100); // no need to be fast here
 	}
 	
 	delete bot;
 	delete states;
-	delete n;
+	delete irc;
 	
 	SDL_Quit();
 
+	logger::log(logger::LT_DEBUG, "main.cpp", ">> eol");
 	delete conf;
 	
-	logger::log(logger::LT_DEBUG, "main.cpp", ">> eol");
 	return 0;
 }

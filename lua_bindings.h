@@ -21,6 +21,7 @@
 
 #include "platform.h"
 #include "net.h"
+#include "irc_net.h"
 #include "bot_states.h"
 #include "bot_handler.h"
 #include "config.h"
@@ -40,6 +41,7 @@ F(get_server_ip) \
 F(get_bot_state) \
 F(set_bot_state) \
 F(get_users) \
+F(is_registered) \
 /* config.h bindings */ \
 F(get_config_entry) \
 F(is_owner) \
@@ -70,13 +72,13 @@ class lua_bindings {
 public:
 	typedef void (lua::*fp_reload_scripts)();
 	
-	lua_bindings(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts);
+	lua_bindings(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts);
 	~lua_bindings();
 	
 	__LUA_FUNCTION_BINDINGS(LUA_FUNCTION_DEFINITION);
 	
 protected:
-	static net<TCP_protocol>* n;
+	static unibot_irc_net* n;
 	static bot_handler* handler;
 	static bot_states* states;
 	static config* conf;

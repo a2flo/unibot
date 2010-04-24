@@ -30,14 +30,15 @@ project "unibot"
 	targetname "unibot"
 	kind "ConsoleApp"
 	language "C++"
-	files { "*.h", "*.cpp" }
+	files { "*.h", "*.cpp", "threading/*.h", "threading/*.cpp" }
 	platforms { "x32", "x64" }
 
 	if(not os.is("windows")) then
-		includedirs { "/usr/include", "/usr/local/include" }
+		includedirs { "/usr/include", "/usr/local/include", "./", "threading/" }
 		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize" }
 		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
 		prebuildcommands { "./build_version.sh" }
+		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
 	end
 	
 	if(os.is("linux") or os.is("bsd")) then

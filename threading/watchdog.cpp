@@ -16,16 +16,5 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#include "watchdog.h"
 
-#include "platform.h"
-#include "net.h"
-#include "irc_net.h"
-#include "http_net.h"
-#include "bot_handler.h"
-#include "bot_states.h"
-#include "config.h"
-#include "lua.h"
-
-#endif

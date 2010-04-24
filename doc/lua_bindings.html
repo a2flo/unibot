@@ -77,7 +77,11 @@ returns: -
 </div>
 <div class="lua_command">
 command: get_users<br />
-returns: &lt;table: [nick name] = &lt;table: [1] = nick name, [2] = real name, [3] = host, [4] = host user, [5] = ctcp_support, [6] = client/version&gt;&gt; &lt;integer: user count&gt;
+returns: &lt;table: [nick name] = &lt;table: [1] = nick name, [2] = real name, [3] = host, [4] = host user, [5] = registered, [6] = ctcp_support, [7] = client/version&gt;&gt; &lt;integer: user count&gt;
+</div>
+<div class="lua_command">
+command: is_registered &lt;string: user name&gt;<br />
+returns: &lt;boolean: registered flag&gt;
 </div>
 
 <h1>config functions</h1>

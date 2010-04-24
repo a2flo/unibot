@@ -17,11 +17,12 @@
  */
 
 #include "log.h"
+#include "config.h"
 
 namespace logger {
 	log_class log_obj;
 	
-	log_class::log_class() : error_counter(0), log_filename("log.txt"), msg_filename("msg.txt") {
+	log_class::log_class() : error_counter(0), log_filename("log.txt"), msg_filename("msg.txt"), conf(NULL) {
 		log_file = new fstream();
 		log_file->open(log_filename.c_str(), fstream::out);
 		
@@ -37,8 +38,17 @@ namespace logger {
 		delete msg_file;
 	}
 	
+	void log_class::set_config(config* conf) {
+		log_class::conf = conf;
+	}
+	
 	void log_class::print(const LOG_TYPE type, const char* filename, const char* str, ...) {
 		// TODO: write a variadic template function to replace vsnprintf and replace "char* ostr" with a stringstream -> variable msg size
+		
+		// check verbosity level and leave or continue accordingly
+		if(conf != NULL && conf->get_verbosity() < (size_t)type) {
+			return;
+		}
 		
 		// log channel messages separately
 		if(type == LT_MSG) {
@@ -74,5 +84,8 @@ namespace logger {
 	
 	void log(const LOG_TYPE type, const char* filename, const char* str, ...) {
 		log_obj.print(type, filename, str);
+	}
+	void set_config(config* conf) {
+		log_obj.set_config(conf);
 	}
 }

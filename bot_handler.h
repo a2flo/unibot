@@ -21,13 +21,15 @@
 
 #include "platform.h"
 #include "net.h"
+#include "irc_net.h"
 #include "bot_states.h"
 #include "config.h"
 #include "build_version.h"
+#include "threading/thread_base.h"
 
 #define UNIBOT_MAJOR_VERSION "0"
 #define UNIBOT_MINOR_VERSION "3"
-#define UNIBOT_REVISION_VERSION "0d"
+#define UNIBOT_REVISION_VERSION "0d1"
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
@@ -50,9 +52,9 @@
 #define UNIBOT_SOURCE_URL "http://www.assembla.com/spaces/unibot"
 
 class lua;
-class bot_handler {
+class bot_handler : public thread_base {
 public:
-	bot_handler(net<TCP_protocol>* n, bot_states* states, config* conf);
+	bot_handler(unibot_irc_net* n, bot_states* states, config* conf);
 	~bot_handler();
 
 	enum IRC_COMMAND {
@@ -114,7 +116,7 @@ public:
 	};
 	static const char* IRC_COMMAND_STR[];
 	
-	void handle();
+	void run();
 	void quit_bot();
 	
 	string get_prev_msg(const size_t& offset);
@@ -122,7 +124,7 @@ public:
 	string strip_special_chars(const string& str);
 	
 protected:
-	net<TCP_protocol>* n;
+	unibot_irc_net* n;
 	map<string, IRC_COMMAND> irc_commands;
 	bot_states* states;
 	config* conf;

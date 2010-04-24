@@ -77,7 +77,7 @@ const char* bot_handler::IRC_COMMAND_STR[] = {
 	"372"
 };
 
-bot_handler::bot_handler(net<TCP_protocol>* n, bot_states* states, config* conf) : n(n), states(states), conf(conf) {
+bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) : thread_base(), n(n), states(states), conf(conf) {
 	servername = "";
 	
 	start_time = SDL_GetTicks();
@@ -89,13 +89,15 @@ bot_handler::bot_handler(net<TCP_protocol>* n, bot_states* states, config* conf)
 	}
 	
 	lua_obj = new lua(n, this, states, conf);
+	
+	this->start(); // start thread
 }
 
 bot_handler::~bot_handler() {
 }
 
-void bot_handler::handle() {
-	if(n->is_received_data()) {
+void bot_handler::run() {
+	if(n->is_running() && n->is_received_data()) {
 		deque<string>* data = n->get_received_data();
 		for (deque<string>::iterator data_iter = data->begin(); data_iter != data->end(); data_iter++) {
 			// handle the data
@@ -145,7 +147,7 @@ void bot_handler::handle() {
 						string real_name = (space_pos == string::npos ? cmd_joined_data.substr(colon_pos+1, cmd_joined_data.length()-colon_pos-1) :
 											cmd_joined_data.substr(space_pos+1, cmd_joined_data.length()-space_pos-1));
 						
-						states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "");
+						states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "", "");
 					}
 					catch(...) {
 						logger::log(logger::LT_ERROR, "bot_handler.cpp", string("CMD_352 failed").c_str());
@@ -175,6 +177,20 @@ void bot_handler::handle() {
 				case NOTICE:
 					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
 						states->set_identified(true);
+						n->join_channel(conf->get_channel());
+					}
+					else if(strip_user(cmd_sender) == "NickServ") {
+						// acc <nick> info, ACC 3 == nick/user is registered and identified
+						if(cmd_joined_data.find("ACC 3") != string::npos) {
+							// :<nick> ACC 3
+							string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
+							states->update_user_info(reg_user, "", "", "", "yes", "", "");
+						}
+						else if(cmd_joined_data.find(" ACC ") != string::npos) {
+							// :<nick> ACC # (# != 3) == unregistered
+							string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
+							states->update_user_info(reg_user, "", "", "", "no", "", "");
+						}
 					}
 					// ctcp notice
 					else if(cmd_joined_data.length() >= 2 &&
@@ -187,7 +203,7 @@ void bot_handler::handle() {
 							string ctcp_info = ctcp_msg.substr(space_pos+1, ctcp_msg.length()-space_pos-1);
 							
 							if(ctcp_type == "VERSION") {
-								states->update_user_info(strip_user(cmd_sender), "", "", "", "yes", ctcp_info);
+								states->update_user_info(strip_user(cmd_sender), "", "", "", "", "yes", ctcp_info);
 							}
 						}
 					}
@@ -240,7 +256,7 @@ void bot_handler::handle() {
 						msg_store.push_back(strip_special_chars(cmd_joined_data));
 						
 						// update user info
-						states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "");
+						states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "", "");
 						
 						// log msg
 						logger::log(logger::LT_MSG, "bot_handler.cpp", string(strip_user(cmd_sender) + ": " + msg).c_str());
@@ -293,6 +309,10 @@ void bot_handler::handle() {
 			
 			if(states->is_parted() && states->is_quit()) {
 				n->quit();
+				
+				// and finally finish both threads
+				set_thread_should_finish();
+				n->set_thread_should_finish();
 			}
 			
 			logger::log(logger::LT_DEBUG, "bot_handler.cpp", string(*data_iter).c_str());

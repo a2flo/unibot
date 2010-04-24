@@ -141,14 +141,14 @@ catch(lua_bindings_exception& e) { \
 /////////////////////////////////////////////////////
 // lua bindings
 
-net<TCP_protocol>* lua_bindings::n = NULL;
+unibot_irc_net* lua_bindings::n = NULL;
 bot_handler* lua_bindings::handler = NULL;
 bot_states* lua_bindings::states = NULL;
 config* lua_bindings::conf = NULL;
 lua* lua_bindings::l = NULL;
 lua_bindings::fp_reload_scripts lua_bindings::lua_reload_scripts = NULL;
 
-lua_bindings::lua_bindings(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
+lua_bindings::lua_bindings(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
 	lua_bindings::n = n;
 	lua_bindings::handler = handler;
 	lua_bindings::states = states;
@@ -277,10 +277,12 @@ int lua_bindings::get_users(lua_State* state) {
 			lua_rawseti(state, -2, 3);
 			lua_pushstring(state, user_iter->second->host_user.c_str());
 			lua_rawseti(state, -2, 4);
-			lua_pushstring(state, user_iter->second->ctcp_support.c_str());
+			lua_pushstring(state, user_iter->second->registered.c_str());
 			lua_rawseti(state, -2, 5);
-			lua_pushstring(state, user_iter->second->client.c_str());
+			lua_pushstring(state, user_iter->second->ctcp_support.c_str());
 			lua_rawseti(state, -2, 6);
+			lua_pushstring(state, user_iter->second->client.c_str());
+			lua_rawseti(state, -2, 7);
 			
 			// add key + value table to users table
 			lua_settable(state, -3);
@@ -291,6 +293,17 @@ int lua_bindings::get_users(lua_State* state) {
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 2;
+}
+
+int lua_bindings::is_registered(lua_State* state) {
+	try {
+		tuple<string> args = get_lua_args<string>(state);
+		
+		// check if user exists and is registered/identified
+		lua_pushboolean(state, states->is_user_registered(get<0>(args)));
+	}
+	HANDLE_LUA_BINDINGS_EXCEPTION;
+	return 1;
 }
 
 int lua_bindings::get_config_entry(lua_State* state) {
@@ -305,7 +318,9 @@ int lua_bindings::get_config_entry(lua_State* state) {
 int lua_bindings::is_owner(lua_State* state) {
 	try {
 		tuple<string> args = get_lua_args<string>(state);
-		lua_pushboolean(state, conf->is_owner(get<0>(args)));
+		
+		// check if user exists and is registered/identified and check if the nick has an config owner entry
+		lua_pushboolean(state, conf->is_owner(get<0>(args)) && states->is_user_registered(get<0>(args)));
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;

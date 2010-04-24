@@ -25,7 +25,7 @@
 	__LUA_FUNCTION_BINDINGS(__REGISTER_FUNCTION);	\
 }
 
-lua::lua(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf) : n(n), handler(handler), states(states), conf(conf) {
+lua::lua(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf) : n(n), handler(handler), states(states), conf(conf) {
 	bindings = new lua_bindings(n, handler, states, conf, this, &lua::reload_scripts);
 	
 	reload_scripts();
@@ -117,7 +117,7 @@ void lua::handle_message(const string& origin, const string& target, const strin
 			}
 		}
 	}
-	catch(invalidate_scripts_exception& e) {
+	catch(invalidate_scripts_exception&) {
 		// this breaks the scripts iteration loop (-> no more scripts are handled using the now invalidated script iterator)
 	}
 	catch(...) {

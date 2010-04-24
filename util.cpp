@@ -127,3 +127,17 @@ void set_call_path(const char* path) {
 const string& get_absolute_path() {
 	return abs_bin_path;
 }
+
+string str_to_lower(const string& str) {
+	string ret;
+	ret.resize(str.length());
+	transform(str.begin(), str.end(), ret.begin(), ptr_fun(::tolower));
+	return ret;
+}
+
+string str_to_upper(const string& str) {
+	string ret;
+	ret.resize(str.length());
+	transform(str.begin(), str.end(), ret.begin(), ptr_fun(::toupper));
+	return ret;
+}

@@ -52,17 +52,16 @@ function handle_message(origin, target, cmd, parameters)
 		if lastuser == origin then
 			send_private_msg(target, double_msg[math.random(1, table.maxn(double_msg))])
 		else
-			lastuser = origin
+			lastuser = name
 			
 			if bullets == chamber then
-				send_private_msg(channel, name..": chamber #"..bullets.." of "..slots.." => *BANG*")
+				send_private_msg(channel, "chamber #"..bullets.." of "..slots.." => *BANG*")
 				send_kick(name, kill_msg[math.random(1, table.maxn(kill_msg))])
 				send_action_msg(channel, "reloads")
 				
 				reset_roulette()
 			else
-				send_private_msg(channel, name..": chamber #"..bullets.." of "..slots.." => *click*")
-				send_private_msg(channel, luck_msg[math.random(1, table.maxn(luck_msg))])
+				send_private_msg(channel, "chamber #"..bullets.." of "..slots.." => *CLICK* "..luck_msg[math.random(1, table.maxn(luck_msg))])
 				bullets = bullets + 1
 			end
 		end

@@ -25,15 +25,17 @@
 #include <sstream>
 using namespace std;
 
+class config;
 namespace logger {
 	enum LOG_TYPE {
 		LT_NONE,
-		LT_MSG,
 		LT_ERROR,
-		LT_DEBUG
+		LT_DEBUG,
+		LT_MSG
 	};
 	
 	void log(const LOG_TYPE type, const char* filename, const char* str = NULL, ...);
+	void set_config(config* conf);
 	
 	class log_class {
 	public:
@@ -41,6 +43,7 @@ namespace logger {
 		~log_class();
 		
 		void print(const LOG_TYPE type, const char* filename, const char* str = NULL, ...);
+		void set_config(config* conf);
 		
 	protected:
 		unsigned long int error_counter;
@@ -49,12 +52,14 @@ namespace logger {
 		fstream* log_file;
 		fstream* msg_file;
 		
+		config* conf;
+		
 		const char* type_to_str(LOG_TYPE type) {
 			switch (type) {
 				case LT_NONE: return "NONE";
 				case LT_MSG: return "MSG";
-				case LT_ERROR: return "ERROR";
 				case LT_DEBUG: return "DEBUG";
+				case LT_ERROR: return "ERROR";
 			}
 			return "UNKNOWN";
 		}

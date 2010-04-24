@@ -16,16 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __WATCHDOG_H__
+#define __WATCHDOG_H__
 
 #include "platform.h"
-#include "net.h"
-#include "irc_net.h"
-#include "http_net.h"
-#include "bot_handler.h"
-#include "bot_states.h"
-#include "config.h"
-#include "lua.h"
+#include "thread_base.h"
+
+// TODO: implement watchdog
 
 #endif

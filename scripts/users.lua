@@ -25,10 +25,20 @@ function print_users(target, extended)
 					users_str = users_str .. "host user: " .. value[4] .. ", "
 				end
 				if string.len(value[5]) > 0 then
-					users_str = users_str .. "ctcp support: " .. value[5] .. ", "
+					users_str = users_str .. "registered: " .. value[5] .. ", "
 				end
+				
 				if string.len(value[6]) > 0 then
-					users_str = users_str .. "client: " .. value[6]
+					users_str = users_str .. "ctcp support: " .. value[6]
+					
+					-- add comma (no comma needed, if no ctcp support)
+					if value[6] == "yes" then
+						users_str = users_str .. ", "
+					end
+				end
+				
+				if string.len(value[7]) > 0 then
+					users_str = users_str .. "client: " .. value[7]
 				end
 				users_str = users_str .. "\n" -- one msg per user
 			end

@@ -25,66 +25,54 @@
 #include "net_protocol.h"
 #include "net_tcp.h"
 #include "config.h"
+#include "threading/thread_base.h"
 
 typedef std_protocol<UDPsocket> UDP_protocol;
 
-#define PACKET_MAX_LEN 4096
+#define PACKET_MAX_LEN 65536
 
-template <class protocol_policy> class net : public protocol_policy {
+template <class protocol_policy> class net : public protocol_policy, public thread_base {
 public:
 	net(config* conf);
-	~net();
+	virtual ~net();
 	
-	bool run();
-	bool connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port);
-	void disconnect();
+	virtual void run();
+	virtual bool connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port = 65535);
 	
-	bool is_received_data();
-	deque<string>* get_received_data();
-	void clear_received_data();
+	virtual bool is_received_data();
+	virtual deque<string>* get_received_data();
+	virtual void clear_received_data();
 	
-	void send(string data);
-	void send_channel_msg(string msg);
-	void send_private_msg(string where, string msg);
-	void send_action_msg(string where, string msg);
-	void send_ctcp_msg(string where, string type, string msg);
-	void send_ctcp_request(string where, string type);
-	void send_kick(string who, string reason);
-	void send_connect(string name, string real_name);
-	void send_identify(string password);
-	void part();
-	void quit();
-	void join_channel(string channel);
-	
-	IPaddress* get_local_ip();
-	IPaddress* get_server_ip();
+	virtual IPaddress* get_local_ip();
+	virtual IPaddress* get_server_ip();
 
 protected:
-	protocol_policy protocol;
 	config* conf;
+	protocol_policy protocol;
 	
 	IPaddress server_ip;
 	IPaddress local_ip;
 	
 	string last_packet_remains;
+	size_t received_length;
 	deque<string> receive_store;
 	deque<string> send_store;
 	
 	char receive_data[PACKET_MAX_LEN];
-	int receive_packet(char* data, const unsigned int max_len);
-	void send_packet(const char* data, const unsigned int len);
-	int process_packet(const string& data, const unsigned int max_len);
+	virtual int receive_packet(char* data, const unsigned int max_len);
+	virtual void send_packet(const char* data, const unsigned int len);
+	virtual int process_packet(const string& data, const unsigned int max_len);
 	
 };
 
-template <class protocol_policy> net<protocol_policy>::net(config* conf) : conf(conf) {
+template <class protocol_policy> net<protocol_policy>::net(config* conf) : thread_base(), conf(conf), last_packet_remains(""), received_length(0) {
 	if(SDLNet_Init() == -1) {
 		logger::log(logger::LT_ERROR, "net.h", string(string("couldn't initialize net: ") + string(SDLNet_GetError())).c_str());
 		return;
 	}
 	
-	last_packet_remains = "";
 	logger::log(logger::LT_DEBUG, "net.h", "net initialized!");
+	this->start(); // start thread
 }
 
 template <class protocol_policy> net<protocol_policy>::~net() {
@@ -93,78 +81,85 @@ template <class protocol_policy> net<protocol_policy>::~net() {
 }
 
 template <class protocol_policy> bool net<protocol_policy>::connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port) {
-	if(!protocol.is_valid()) return false;
+	lock(); // we need to lock the net class, so run() isn't called while we're connecting
 	
-	if(SDLNet_ResolveHost(&server_ip, server_name, port) == -1) {
-		logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(server): ") + string(SDLNet_GetError())).c_str());
+	try {
+		if(!protocol.is_valid()) throw exception();
+		
+		if(SDLNet_ResolveHost(&server_ip, server_name, port) == -1) {
+			logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(server): ") + string(SDLNet_GetError())).c_str());
+			throw exception();
+		}
+		
+		// currently useless for an irc bot ...
+#if 0
+		if(SDLNet_ResolveHost(&local_ip, NULL, local_port) == -1) {
+			logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(client): ") + string(SDLNet_GetError())).c_str());
+			throw exception();
+		}
+#endif
+		
+		// create server socket
+		if(!protocol.open_server_socket(server_ip)) throw exception();
+		
+#if 0
+		// create client socket
+		if(!protocol.open_client_socket(local_ip)) throw exception();
+#endif
+		
+		// connection created - data transfer is now possible
+		logger::log(logger::LT_DEBUG, "net.h", "connect_to_server(): successfully connected to server!");
+	}
+	catch(...) {
+		logger::log(logger::LT_ERROR, "net.h", "connect_to_server(): failed to connect to server!");
+		unlock();
+		set_thread_should_finish(); // and quit ...
 		return false;
 	}
 	
-	// currently useless for an irc bot ...
-#if 0
-	if(SDLNet_ResolveHost(&local_ip, NULL, local_port) == -1) {
-		logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(client): ") + string(SDLNet_GetError())).c_str());
-		return false;
-	}
-#endif
-	
-	// create server socket
-	if(!protocol.open_server_socket(server_ip)) return false;
-	
-#if 0
-	// create client socket
-	if(!protocol.open_client_socket(local_ip)) return false;
-#endif
-	
-	// connection created - data transfer is now possible
-	logger::log(logger::LT_DEBUG, "net.h", "connect_to_server(): successfully connected to server!");
-	
+	unlock();
 	return true;
 }
 
-template <class protocol_policy> bool net<protocol_policy>::run() {
+template <class protocol_policy> void net<protocol_policy>::run() {
 	int len = 0, used = 0;
 	
 	// receive data - if possible
-	if(protocol.valid_sockets()) {
-		if(protocol.server_ready()) {
-			//cout << "server_ready" << endl;
-			memset(receive_data, 0, PACKET_MAX_LEN);
-			len = receive_packet(receive_data, PACKET_MAX_LEN);
-			if(len <= 0) {
-				// failure, end bot
-				return false;
-			}
-			else {
-				string data = receive_data;
-				if(last_packet_remains.length() > 0) {
-					data = last_packet_remains + data;
-					len += (int)last_packet_remains.length();
-					last_packet_remains = "";
+	try {
+		if(protocol.valid_sockets()) {
+			if(protocol.server_ready()) {
+				//cout << "server_ready" << endl;
+				memset(receive_data, 0, PACKET_MAX_LEN);
+				len = receive_packet(receive_data, PACKET_MAX_LEN);
+				if(len <= 0) {
+					// failure, end bot
+					throw exception();
 				}
-				//cout << "received " << len << endl;
-				int loop = 0;
-				while(len > 0) {
+				else {
+					string data = receive_data;
+					if(last_packet_remains.length() > 0) {
+						data = last_packet_remains + data;
+						len += (int)last_packet_remains.length();
+						last_packet_remains = "";
+					}
+					
 					used = process_packet(data, len);
-					//cout << "used: " << used << ", rest: " << (len-used) << endl;
 					
 					len -= used;
-					if(used == 0) {
-						if(loop > 0) {
-							last_packet_remains = data.substr(used, len);
-						}
-						else {
-							// lost data ...
-							logger::log(logger::LT_ERROR, "net.h", "run(): lost data - server down or disconnect?");
-							len = 0;
-						}
+					if(used == 0 || len > 0) {
+						last_packet_remains = data.substr(used, len);
 					}
-					loop++;
 				}
 			}
 		}
+		else throw exception();
 	}
-	else return false;
+	catch(...) {
+		// something is wrong, finsh and return
+		logger::log(logger::LT_ERROR, "net.h", "run(): unknown net error, exiting ...");
+		set_thread_should_finish();
+		return;
+	}
 	
 	// send data - if possible
 	if(!send_store.empty()) {
@@ -173,8 +168,6 @@ template <class protocol_policy> bool net<protocol_policy>::run() {
 		}
 		send_store.clear();
 	}
-	
-	return true;
 }
 
 template <class protocol_policy> int net<protocol_policy>::receive_packet(char* data, const unsigned int max_len) {
@@ -196,44 +189,46 @@ template <class protocol_policy> int net<protocol_policy>::receive_packet(char* 
 
 template <class protocol_policy> int net<protocol_policy>::process_packet(const string& data, const unsigned int max_len) {
 	size_t old_pos = 0, pos = 0;
-	while((pos = data.find("\n", old_pos)) != string::npos) {
-		receive_store.push_back(data.substr(old_pos, pos - old_pos - 1));
+	size_t lb_offset = 1;
+	const size_t len = data.length();
+	for(;;) {
+		// handle \n and \r\n newlines
+		if((pos = data.find("\r", old_pos)) == string::npos) {
+			if((pos = data.find("\n", old_pos)) == string::npos) {
+				break;
+			}
+			else lb_offset = 1;
+		}
+		else {
+			if(pos+1 >= len) {
+				// \n not received yet
+				break;
+			}
+			if(data[pos+1] != '\n') {
+				// \r must be followed by \n!
+				break;
+			}
+			pos++;
+			lb_offset = 2;
+		}
+		
+		receive_store.push_back(data.substr(old_pos, pos - old_pos - lb_offset + 1));
 		//cout << "received (" << old_pos << "/" << (pos - old_pos) << "/" << data.length() << "): " << receive_store.back() << endl;
 		old_pos = pos + 1;
 	}
-	//cout << "end " << old_pos << endl;
+	//cout << ":: end " << old_pos << endl;
 	
+	received_length += old_pos;
 	return (int)old_pos;
 }
 
 template <class protocol_policy> void net<protocol_policy>::send_packet(const char* data, const unsigned int len) {
 	if(!protocol.server_send(data, len)) {
-		logger::log(logger::LT_ERROR, "net.h", "send_packet(): coudln't send packet!");
+		logger::log(logger::LT_ERROR, "net.h", "send_packet(): couldn't send packet!");
 	}
-	else cout << "send (" << len << "): " << string(data).substr(0, len-1) << endl;
-}
-
-template <class protocol_policy> void net<protocol_policy>::send(string data) {
-	if(data.find("\n") != string::npos) {
-		// treat \n as new msg, split string and send each line as new msg (with the same type -> string till first ':')
-		size_t colon_pos = data.find(":");
-		string msg_type = data.substr(0, colon_pos+1);
-		
-		size_t old_newline_pos = colon_pos;
-		size_t newline_pos = 0;
-		while((newline_pos = data.find("\n", old_newline_pos+1)) != string::npos) {
-			string msg = data.substr(old_newline_pos+1, newline_pos-old_newline_pos-1);
-			send_store.push_back(msg_type + msg + "\n");
-			old_newline_pos = newline_pos;
-		}
+	else if(conf->get_verbosity() >= logger::LT_DEBUG) {
+		cout << "send (" << len << "): " << string(data).substr(0, len-1) << endl;
 	}
-	// just send the msg
-	else send_store.push_back(data + "\n");
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_connect(string name, string real_name) {
-	send("NICK " + name);
-	send("USER " + name + " 0 * :" + real_name);
 }
 
 template <class protocol_policy> bool net<protocol_policy>::is_received_data() {
@@ -246,46 +241,6 @@ template <class protocol_policy> deque<string>* net<protocol_policy>::get_receiv
 
 template <class protocol_policy> void net<protocol_policy>::clear_received_data() {
 	receive_store.clear();
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_private_msg(string where, string msg) {
-	send("PRIVMSG " + where + " :" + msg);
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_action_msg(string where, string msg) {
-	send("PRIVMSG " + where + " :" + (char)0x01 + "ACTION " + msg + (char)0x01);
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_ctcp_msg(string where, string type, string msg) {
-	send("NOTICE " + where + " :" + (char)0x01 + type + " " + msg + (char)0x01);
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_ctcp_request(string where, string type) {
-	send("PRIVMSG " + where + " :" + (char)0x01 + type + (char)0x01);
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_identify(string password) {
-	send_private_msg("NickServ", "identify " + password);
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_channel_msg(string msg) {
-	send("PRIVMSG " + conf->get_channel() + " :" + msg);
-}
-
-template <class protocol_policy> void net<protocol_policy>::send_kick(string who, string reason) {
-	send("KICK " + conf->get_channel() + " " + who + " :" + reason);
-}
-
-template <class protocol_policy> void net<protocol_policy>::part() {
-	send("PART " + conf->get_channel() + " :EOL");
-}
-
-template <class protocol_policy> void net<protocol_policy>::quit() {
-	send("QUIT :EOL");
-}
-
-template <class protocol_policy> void net<protocol_policy>::join_channel(string channel) {
-	send("JOIN " + channel);
 }
 
 template <class protocol_policy> IPaddress* net<protocol_policy>::get_local_ip() {

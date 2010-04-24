@@ -21,6 +21,7 @@
 
 #include "platform.h"
 #include "net.h"
+#include "irc_net.h"
 #include "bot_states.h"
 #include "bot_handler.h"
 #include "config.h"
@@ -31,7 +32,7 @@
 
 class lua {
 public:
-	lua(net<TCP_protocol>* n, bot_handler* handler, bot_states* states, config* conf);
+	lua(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf);
 	~lua();
 	
 	void reload_scripts();
@@ -40,7 +41,7 @@ public:
 	void handle_message(const string& origin, const string& target, const string& msg);
 	
 protected:
-	net<TCP_protocol>* n;
+	unibot_irc_net* n;
 	bot_handler* handler;
 	bot_states* states;
 	config* conf;
