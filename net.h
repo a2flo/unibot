@@ -55,6 +55,8 @@ protected:
 	
 	string last_packet_remains;
 	size_t received_length;
+	size_t packets_per_second;
+	size_t last_packet_send;
 	deque<string> receive_store;
 	deque<string> send_store;
 	
@@ -65,7 +67,8 @@ protected:
 	
 };
 
-template <class protocol_policy> net<protocol_policy>::net(config* conf) : thread_base(), conf(conf), last_packet_remains(""), received_length(0) {
+template <class protocol_policy> net<protocol_policy>::net(config* conf) :
+thread_base(), conf(conf), last_packet_remains(""), received_length(0), packets_per_second(0), last_packet_send(0) {
 	if(SDLNet_Init() == -1) {
 		logger::log(logger::LT_ERROR, "net.h", string(string("couldn't initialize net: ") + string(SDLNet_GetError())).c_str());
 		return;
@@ -163,10 +166,22 @@ template <class protocol_policy> void net<protocol_policy>::run() {
 	
 	// send data - if possible
 	if(!send_store.empty()) {
-		for(deque<string>::iterator send_iter = send_store.begin(); send_iter != send_store.end(); send_iter++) {
-			send_packet(send_iter->c_str(), (int)send_iter->length());
+		deque<string>::iterator send_end = send_store.end();
+		if(packets_per_second != 0 && last_packet_send > SDL_GetTicks()-1000) {
+			// wait
 		}
-		send_store.clear();
+		else {
+			if(packets_per_second != 0 && send_store.size() > packets_per_second) {
+				send_end = send_store.begin()+packets_per_second;
+			}
+			
+			for(deque<string>::iterator send_iter = send_store.begin(); send_iter != send_end; send_iter++) {
+				send_packet(send_iter->c_str(), (int)send_iter->length());
+			}
+			if(packets_per_second != 0) last_packet_send = SDL_GetTicks();
+			
+			send_store.erase(send_store.begin(), send_end);
+		}
 	}
 }
 

@@ -27,7 +27,7 @@
 
 template <class protocol_policy> class irc_net : public net<protocol_policy> {
 public:
-	irc_net(config* conf) : net<protocol_policy>(conf) {}
+	irc_net(config* conf);
 	virtual ~irc_net() {} 
 	
 	void send(string data);
@@ -50,11 +50,18 @@ protected:
 	using net<protocol_policy>::local_ip;
 	using net<protocol_policy>::receive_store;
 	using net<protocol_policy>::send_store;
+	using net<protocol_policy>::packets_per_second;
 };
 
 // unibot_irc_net
 typedef irc_net<UNIBOT_NET_PROTOCOL> unibot_irc_net;
 
+
+template <class protocol_policy> irc_net<protocol_policy>::irc_net(config* conf) :
+net<protocol_policy>(conf) {
+	packets_per_second = 5;
+	this->set_thread_delay(20); // 20ms should suffice
+}
 
 template <class protocol_policy> void irc_net<protocol_policy>::send(string data) {
 	if(data.find("\n") != string::npos) {
