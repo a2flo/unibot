@@ -261,6 +261,9 @@ function handle_message(origin, target, cmd, parameters)
 					-- if only the dealer remains, stop the game
 					if table.maxn(user_list) == 1 then
 						game_running = false
+					else
+						-- check game/check if all players are done playing
+						check_game()
 					end
 				end
 			end
