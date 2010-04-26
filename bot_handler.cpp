@@ -154,6 +154,9 @@ void bot_handler::run() {
 					}
 					break;
 				case CMD_353: {
+					// only handle the main channel
+					if(cmd_tokens[4] != conf->get_channel()) break;
+					
 					if(cmd_joined_data.find(':') == string::npos) break;
 					// strip ':' and last ' ' (if there is one)
 					string user_str = trim(cmd_joined_data.substr(cmd_joined_data.find(':') + 1, cmd_joined_data.length() - cmd_joined_data.find(':') - 1));
@@ -209,36 +212,42 @@ void bot_handler::run() {
 					}
 					break;
 				case JOIN:
-					// if the bot joined the channel, set the flag and send a "hi there ;)" message
-					if(strip_user(cmd_sender) == conf->get_bot_name()) {
-						logger::log(logger::LT_DEBUG, "bot_handler.cpp", "joined the channel");
-						states->set_joined(true);
-						n->send_private_msg(cmd_tokens[2].substr(1, cmd_tokens[2].length()-1), "hi there ;)");
-						
-						// check if bot got kicked
-						if(states->is_kicked()) {
-							// random kick message
-							const char* kick_messages[] = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" };
+					// only handle the main channel
+					if(conf->get_channel() == cmd_tokens[2].substr(1, cmd_tokens[2].length()-1)) {
+						// if the bot joined the channel, set the flag and send a "hi there ;)" message
+						if(strip_user(cmd_sender) == conf->get_bot_name()) {
+							logger::log(logger::LT_DEBUG, "bot_handler.cpp", "joined the channel");
+							states->set_joined(true);
+							n->send_channel_msg("hi there ;)");
 							
-							// wait for 2 seconds before kicking the user
-							SDL_Delay(2000);
-							
-							cout << "kicking: " << states->get_kick_user() << endl;
-							n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
+							// check if bot got kicked
+							if(states->is_kicked()) {
+								// random kick message
+								const char* kick_messages[] = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" };
+								
+								// wait for 2 seconds before kicking the user
+								SDL_Delay(2000);
+								
+								cout << "kicking: " << states->get_kick_user() << endl;
+								n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
+							}
 						}
-					}
-					// if another user joined the channel, greet him
-					else {
-						if(!(states->is_silenced())) {
-							n->send_channel_msg("hey, " + strip_user(cmd_sender));
+						// if another user joined the channel, greet him
+						else {
+							if(!(states->is_silenced())) {
+								n->send_channel_msg("hey, " + strip_user(cmd_sender));
+							}
+							states->add_user(strip_user(cmd_sender));
 						}
-						states->add_user(strip_user(cmd_sender));
 					}
 					break;
 				case PART:
-					states->delete_user(strip_user(cmd_sender));
-					if(strip_user(cmd_sender) == conf->get_bot_name()) {
-						states->set_parted(true);
+					// only handle the main channel
+					if(conf->get_channel() == cmd_tokens[2]) {
+						states->delete_user(strip_user(cmd_sender));
+						if(strip_user(cmd_sender) == conf->get_bot_name()) {
+							states->set_parted(true);
+						}
 					}
 					break;
 				case QUIT:
