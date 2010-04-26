@@ -51,19 +51,36 @@ void lua::reload_scripts() {
 	
 	struct dirent** namelist;
 	
-	int n = scandir(lua_script_folder("."), &namelist, 0, alphasort);
-	if(n > 0) {
-		for(int j = 1; j < n; j++) {
-			string fname = namelist[j]->d_name;
-			if(namelist[j]->d_type != DT_DIR && fname.length() > 4) {
-				string ext = fname.substr(fname.length() - 3, 3);
-				if(ext == "lua") {
-					reload_script(fname);
+	deque<string> folders;
+	folders.push_back(".");
+	set<string> folder_blacklist;
+	folder_blacklist.insert("./include");
+	
+	for(;;) {
+		if(folders.size() == 0) break;
+		
+		int n = scandir(lua_script_folder(folders.front().c_str()), &namelist, 0, alphasort);
+		const string path = folders.front() + '/';
+		if(n > 0) {
+			for(int j = 1; j < n; j++) {
+				const string fname = namelist[j]->d_name;
+				const string full_fname = path+fname;
+				if(namelist[j]->d_type != DT_DIR && fname.length() > 4) {
+					string ext = fname.substr(fname.length() - 3, 3);
+					if(ext == "lua") {
+						reload_script(full_fname);
+					}
+				}
+				else if(namelist[j]->d_type == DT_DIR &&
+						folder_blacklist.count(full_fname) == 0 &&
+						fname != "." && fname != "..") {
+					folders.push_back(full_fname);
 				}
 			}
+			
+			delete [] namelist;
 		}
-		
-		delete [] namelist;
+		folders.pop_front();
 	}
 	
 	logger::log(logger::LT_DEBUG, "lua.cpp", "lua scripts loaded!");

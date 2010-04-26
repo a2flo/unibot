@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
 	// set lua script search path
 	setenv("LUA_PATH", (get_absolute_path()+LUA_SCRIPT_FOLDER).c_str(), 1);
 	
+	// event handler
+	init_event_handler();
+	
 	// config
 	config* conf;
 	try {
@@ -62,6 +65,8 @@ int main(int argc, char* argv[]) {
 
 	logger::log(logger::LT_DEBUG, "main.cpp", ">> eol");
 	delete conf;
+	
+	destroy_event_handler();
 	
 	return 0;
 }

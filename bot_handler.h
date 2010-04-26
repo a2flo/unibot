@@ -20,6 +20,7 @@
 #define __BOT_HANDLER_H__
 
 #include "platform.h"
+#include "event_handler.h"
 #include "net.h"
 #include "irc_net.h"
 #include "bot_states.h"

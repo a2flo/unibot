@@ -1,4 +1,8 @@
 
+--
+dofile (package.path.."include/table.lua")
+
+
 function xor(b1, b2)
 	return (b1 or b2) and (not (b1 and b2))
 end
@@ -8,17 +12,6 @@ function toboolean(value)
 		return true
 	end
 	return false
-end
-
-function unique(t)
-	table.sort(t)
-	local n = table.maxn(t)
-	for i = 1, n do
-		if t[n-i] == t[n-i+1] then
-			table.remove(t, n-i+1)
-		end
-	end
-	return t
 end
 
 -- executes a system/os command and returns the output

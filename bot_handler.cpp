@@ -213,7 +213,7 @@ void bot_handler::run() {
 					if(strip_user(cmd_sender) == conf->get_bot_name()) {
 						logger::log(logger::LT_DEBUG, "bot_handler.cpp", "joined the channel");
 						states->set_joined(true);
-						n->send_channel_msg("hi there ;)");
+						n->send_private_msg(cmd_tokens[2].substr(1, cmd_tokens[2].length()-1), "hi there ;)");
 						
 						// check if bot got kicked
 						if(states->is_kicked()) {

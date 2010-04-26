@@ -237,6 +237,15 @@ int lua_bindings::get_server_ip(lua_State* state) {
 	return 2;
 }
 
+int lua_bindings::join_channel(lua_State* state) {
+	try {
+		tuple<string> args = get_lua_args<string>(state);
+		n->join_channel(get<0>(args));
+	}
+	HANDLE_LUA_BINDINGS_EXCEPTION;
+	return 0;
+}
+
 int lua_bindings::get_bot_state(lua_State* state) {
 	try {
 		tuple<string> args = get_lua_args<string>(state);

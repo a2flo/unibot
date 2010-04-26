@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C1D226C1184BEB100A8FB37 /* event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C1D226B1184BEB100A8FB37 /* event_handler.cpp */; };
 		5C477496118263C4003EB8BB /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C477495118263C4003EB8BB /* watchdog.cpp */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CA2C5E611258F98007EC336 /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CA2C5E511258F98007EC336 /* lua.cpp */; };
@@ -39,17 +40,20 @@
 
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5C1D226A1184BEB100A8FB37 /* event_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event_handler.h; sourceTree = "<group>"; };
+		5C1D226B1184BEB100A8FB37 /* event_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = event_handler.cpp; sourceTree = "<group>"; };
 		5C26D02C113B0A8F00DE086A /* cmd.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = cmd.lua; sourceTree = "<group>"; };
 		5C2AF81C11401E3600254A60 /* eastereggs.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = eastereggs.lua; sourceTree = "<group>"; };
 		5C477494118263C4003EB8BB /* watchdog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = watchdog.h; path = threading/watchdog.h; sourceTree = "<group>"; };
 		5C477495118263C4003EB8BB /* watchdog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = watchdog.cpp; path = threading/watchdog.cpp; sourceTree = "<group>"; };
 		5C47756211833FFD003EB8BB /* identify.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = identify.lua; sourceTree = "<group>"; };
 		5C47758F11834E6A003EB8BB /* unikram.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = unikram.lua; sourceTree = "<group>"; };
+		5C4776F71183CA0D003EB8BB /* roulette.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = roulette.lua; sourceTree = "<group>"; };
+		5C4776F91183CA3B003EB8BB /* blackjack.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = blackjack.lua; sourceTree = "<group>"; };
 		5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = who_is_your_daddy.lua; sourceTree = "<group>"; };
 		5C5F4423113D8663000A2C73 /* upload.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = upload.lua; sourceTree = "<group>"; };
 		5C5F4425113D8663000A2C73 /* ss10.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = ss10.lua; sourceTree = "<group>"; };
 		5C5F4426113D8663000A2C73 /* spec.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = spec.lua; sourceTree = "<group>"; };
-		5C5F4427113D8663000A2C73 /* roulette.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = roulette.lua; sourceTree = "<group>"; };
 		5C5F4428113D8663000A2C73 /* ping.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = ping.lua; sourceTree = "<group>"; };
 		5C5F4429113D8663000A2C73 /* paste.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = paste.lua; sourceTree = "<group>"; };
 		5C5F442A113D8663000A2C73 /* mensa.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = mensa.lua; sourceTree = "<group>"; };
@@ -62,6 +66,9 @@
 		5C749B691125BBEF0079A57A /* system.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = system.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C749B6A1125BBEF0079A57A /* time.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
+		5C95C3D91184DD3D005864D0 /* table.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = table.lua; sourceTree = "<group>"; };
+		5C95C40F1184EDEF005864D0 /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = bindings_test.lua; sourceTree = "<group>"; };
+		5C95C4131184EE58005864D0 /* test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = test.lua; sourceTree = "<group>"; };
 		5C97DC25100E7B1000F6741B /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		5CA2C5DE11258F32007EC336 /* lua.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lua.framework; path = Library/Frameworks/lua.framework; sourceTree = SDKROOT; };
 		5CA2C5E411258F98007EC336 /* lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lua.h; sourceTree = "<group>"; };
@@ -76,7 +83,6 @@
 		5CABC27B117B58AE00B186E7 /* thread_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = thread_base.cpp; path = threading/thread_base.cpp; sourceTree = "<group>"; };
 		5CBE72D6117105E300A6C740 /* add2file.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = add2file.lua; sourceTree = "<group>"; };
 		5CBE72EE11710CB700A6C740 /* users.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = users.lua; sourceTree = "<group>"; };
-		5CC3E5D711288E8A00B4395E /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = bindings_test.lua; sourceTree = "<group>"; };
 		5CC8E3AE116B845000EFA722 /* dice.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = dice.lua; sourceTree = "<group>"; };
 		5CC8E3AF116B845000EFA722 /* gitupdate.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = gitupdate.lua; sourceTree = "<group>"; };
 		5CC8E3B0116B845000EFA722 /* slap.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = slap.lua; sourceTree = "<group>"; };
@@ -143,6 +149,8 @@
 				5CA3F8EE100F8244005B3F26 /* net_tcp.h */,
 				5CFAD2BF100E35EF00CEA98D /* log.cpp */,
 				5CFAD2BE100E35EF00CEA98D /* log.h */,
+				5C1D226A1184BEB100A8FB37 /* event_handler.h */,
+				5C1D226B1184BEB100A8FB37 /* event_handler.cpp */,
 				5CFAD2C2100E35FD00CEA98D /* bot_handler.cpp */,
 				5CFAD2C1100E35FD00CEA98D /* bot_handler.h */,
 				5CFAD2C5100E360400CEA98D /* bot_states.cpp */,
@@ -169,20 +177,40 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		5C4776F61183CA0D003EB8BB /* games */ = {
+			isa = PBXGroup;
+			children = (
+				5C4776F71183CA0D003EB8BB /* roulette.lua */,
+				5C4776F91183CA3B003EB8BB /* blackjack.lua */,
+			);
+			path = games;
+			sourceTree = "<group>";
+		};
 		5C5F4440113D86DF000A2C73 /* include */ = {
 			isa = PBXGroup;
 			children = (
 				5C5F4441113D86DF000A2C73 /* global.lua */,
+				5C95C3D91184DD3D005864D0 /* table.lua */,
 			);
 			path = include;
+			sourceTree = "<group>";
+		};
+		5C95C40E1184EDEF005864D0 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				5C95C40F1184EDEF005864D0 /* bindings_test.lua */,
+				5C95C4131184EE58005864D0 /* test.lua */,
+			);
+			path = tests;
 			sourceTree = "<group>";
 		};
 		5CA2C6091125929D007EC336 /* scripts */ = {
 			isa = PBXGroup;
 			children = (
 				5C5F4440113D86DF000A2C73 /* include */,
+				5C95C40E1184EDEF005864D0 /* tests */,
+				5C4776F61183CA0D003EB8BB /* games */,
 				5CBE72D6117105E300A6C740 /* add2file.lua */,
-				5CC3E5D711288E8A00B4395E /* bindings_test.lua */,
 				5C26D02C113B0A8F00DE086A /* cmd.lua */,
 				5CC8E3AE116B845000EFA722 /* dice.lua */,
 				5C2AF81C11401E3600254A60 /* eastereggs.lua */,
@@ -196,7 +224,6 @@
 				5C5F442A113D8663000A2C73 /* mensa.lua */,
 				5C5F4429113D8663000A2C73 /* paste.lua */,
 				5C5F4428113D8663000A2C73 /* ping.lua */,
-				5C5F4427113D8663000A2C73 /* roulette.lua */,
 				5CC8E3B0116B845000EFA722 /* slap.lua */,
 				5C5F4426113D8663000A2C73 /* spec.lua */,
 				5C5F448A113D8E7F000A2C73 /* src.lua */,
@@ -306,6 +333,7 @@
 				5CFD59B011271710001065D4 /* lua_bindings.cpp in Sources */,
 				5CABC27C117B58AE00B186E7 /* thread_base.cpp in Sources */,
 				5C477496118263C4003EB8BB /* watchdog.cpp in Sources */,
+				5C1D226C1184BEB100A8FB37 /* event_handler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

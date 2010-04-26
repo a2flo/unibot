@@ -117,8 +117,14 @@ template <class protocol_policy> void http_net<protocol_policy>::open_url(const 
 	
 	server_name = url_str.substr(sn_start, sn_end-sn_start);
 	
-	// open connection (TODO: port extraction)
-	if(!this->connect_to_server(server_name.c_str(), 80)) {
+	// open connection
+	size_t port = 80;
+	const size_t colon_pos = server_name.find(":");
+	if(colon_pos != string::npos) {
+		port = strtoull(server_name.substr(colon_pos+1, server_name.length()-colon_pos-1).c_str(), NULL, 10);
+		server_name = server_name.substr(0, colon_pos);
+	}
+	if(!this->connect_to_server(server_name.c_str(), port)) {
 		logger::log(logger::LT_ERROR, "http_net.h", string("open_url(): couldn't connect to server "+server_name+"!").c_str());
 		this->set_thread_should_finish();
 		return;

@@ -22,6 +22,7 @@
 #define __NET_H__
 
 #include "platform.h"
+#include "event_handler.h"
 #include "net_protocol.h"
 #include "net_tcp.h"
 #include "config.h"

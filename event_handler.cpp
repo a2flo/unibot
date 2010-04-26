@@ -16,17 +16,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
-
-#include "platform.h"
 #include "event_handler.h"
-#include "net.h"
-#include "irc_net.h"
-#include "http_net.h"
-#include "bot_handler.h"
-#include "bot_states.h"
-#include "config.h"
-#include "lua.h"
 
-#endif
+event_handler_base* event_handler = NULL;
+void init_event_handler() {
+	if(event_handler != NULL) {
+		event_handler = new event_handler_base();
+	}
+}
+void destroy_event_handler() {
+	if(event_handler != NULL) {
+		delete event_handler;
+		event_handler = NULL;
+	}
+}
+
+event_handler_base::event_handler_base() : thread_base() {
+	this->start();
+}
+
+event_handler_base::~event_handler_base() {
+}
+
+void event_handler_base::run() {
+	//
+}

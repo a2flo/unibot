@@ -37,6 +37,7 @@ F(send_ctcp_request) \
 F(send_kick) \
 F(get_local_ip) \
 F(get_server_ip) \
+F(join_channel) \
 /* bot_states.h bindings */ \
 F(get_bot_state) \
 F(set_bot_state) \
