@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5C1D226C1184BEB100A8FB37 /* event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C1D226B1184BEB100A8FB37 /* event_handler.cpp */; };
 		5C477496118263C4003EB8BB /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C477495118263C4003EB8BB /* watchdog.cpp */; };
+		5C95C483118628BB005864D0 /* texasholdem.lua in Sources */ = {isa = PBXBuildFile; fileRef = 5C95C482118628BB005864D0 /* texasholdem.lua */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CA2C5E611258F98007EC336 /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CA2C5E511258F98007EC336 /* lua.cpp */; };
 		5CABC27C117B58AE00B186E7 /* thread_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CABC27B117B58AE00B186E7 /* thread_base.cpp */; };
@@ -69,6 +70,7 @@
 		5C95C3D91184DD3D005864D0 /* table.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = table.lua; sourceTree = "<group>"; };
 		5C95C40F1184EDEF005864D0 /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = bindings_test.lua; sourceTree = "<group>"; };
 		5C95C4131184EE58005864D0 /* test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = test.lua; sourceTree = "<group>"; };
+		5C95C482118628BB005864D0 /* texasholdem.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = texasholdem.lua; sourceTree = "<group>"; };
 		5C97DC25100E7B1000F6741B /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		5CA2C5DE11258F32007EC336 /* lua.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lua.framework; path = Library/Frameworks/lua.framework; sourceTree = SDKROOT; };
 		5CA2C5E411258F98007EC336 /* lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lua.h; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 			children = (
 				5C4776F71183CA0D003EB8BB /* roulette.lua */,
 				5C4776F91183CA3B003EB8BB /* blackjack.lua */,
+				5C95C482118628BB005864D0 /* texasholdem.lua */,
 			);
 			path = games;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				5CABC27C117B58AE00B186E7 /* thread_base.cpp in Sources */,
 				5C477496118263C4003EB8BB /* watchdog.cpp in Sources */,
 				5C1D226C1184BEB100A8FB37 /* event_handler.cpp in Sources */,
+				5C95C483118628BB005864D0 /* texasholdem.lua in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

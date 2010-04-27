@@ -111,7 +111,6 @@ function check_game()
 							-- 0 = push, 1 = dealer wins, 2 = user wins
 							local outcome = 0 -- push = standard
 							if user_status[user_list[i]] == STATUS.STAND then
-								local usv, uhv = count_cards_value(user_list[i])
 								if dealer_blackjack then
 									outcome = 1
 								elseif dealer_lost then
@@ -120,11 +119,14 @@ function check_game()
 									-- dealer hv must equal sv or is > 21 (since dealers hits on sv < 17),
 									-- so we only have to check the players sv and hv
 									-- also: sv <= 20, usv <= 20, uhv == unknown
+									local usv, uhv = count_cards_value(user_list[i])
+									local user_max = ( uhv <= 21 ) and uhv or usv
+									local dealer_max = ( hv <= 21 ) and hv or sv
 									-- first: check for player win
-									if sv < usv or (uhv <= 21 and sv < uhv) then
+									if user_max > dealer_max then
 										outcome = 2
 									-- second: check for player push
-									elseif sv == usv or (uhv <= 21 and sv == uhv) then
+									elseif user_max == dealer_max then
 										outcome = 0
 									-- third: all cases checked, dealer must be the winner
 									else
@@ -218,7 +220,7 @@ function new_round()
 end
 
 reset_blackjack()
-		
+
 function handle_message(origin, target, cmd, parameters)
 	if (cmd == "blackjack" or cmd == "b") and cmd ~= parameters then
 		-- get second cmd
