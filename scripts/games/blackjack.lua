@@ -4,12 +4,11 @@
 -- TODO: player timeout/kick after 1 min? inactivity
 
 dofile (package.path.."include/global.lua")
+dofile (package.path.."include/game_framework.lua")
 
-cards = { "2", "3", "4", "5", "6", "7", "8", "9", "Jack", "Queen", "King", "Ace" }
-suits = { "♠", "♥", "♦", "♣" }
 decks = 4
 delt = {}
-user_list = {}
+users = user_list.create()
 dealer_name = get_config_entry("bot_name")
 game_running = false
 
@@ -30,14 +29,14 @@ join_channel(blackjack_channel)
 
 function reset_blackjack()
 	delt = {}
-	user_list = { }
+	users:reset()
 	user_sum = {}
 	user_status = {}
 	game_running = false
 	collectgarbage()
 	
 	-- add dealer
-	table.insert(user_list, dealer_name)
+	users:add(dealer_name)
 	user_sum[dealer_name] = {}
 	user_status[dealer_name] = STATUS.PLAYING
 end
@@ -73,11 +72,12 @@ function check_game()
 	-- check game status of all players
 	local users_done = true
 	local users_lost = true -- all users lost
-	for i = 1, table.maxn(user_list) do
-		if user_list[i] ~= dealer_name and user_status[user_list[i]] ~= STATUS.INACTIVE then
-			if user_status[user_list[i]] == STATUS.PLAYING then
+	for i = 1, users:size() do
+		local status = user_status[users:get(i)]
+		if users:get(i) ~= dealer_name and status ~= STATUS.INACTIVE then
+			if status == STATUS.PLAYING then
 				users_done = false
-			elseif user_status[user_list[i]] == STATUS.WON or user_status[user_list[i]] == STATUS.STAND then
+			elseif status == STATUS.WON or status == STATUS.STAND then
 				users_lost = false
 			end
 		end
@@ -106,11 +106,12 @@ function check_game()
 					end
 					
 					-- iterate over users and check who wins
-					for i = 1, table.maxn(user_list) do
-						if user_list[i] ~= dealer_name and user_status[user_list[i]] ~= STATUS.INACTIVE then
+					for i = 1, users:size() do
+						local status = user_status[users:get(i)]
+						if users:get(i) ~= dealer_name and status ~= STATUS.INACTIVE then
 							-- 0 = push, 1 = dealer wins, 2 = user wins
 							local outcome = 0 -- push = standard
-							if user_status[user_list[i]] == STATUS.STAND then
+							if status == STATUS.STAND then
 								if dealer_blackjack then
 									outcome = 1
 								elseif dealer_lost then
@@ -119,7 +120,7 @@ function check_game()
 									-- dealer hv must equal sv or is > 21 (since dealers hits on sv < 17),
 									-- so we only have to check the players sv and hv
 									-- also: sv <= 20, usv <= 20, uhv == unknown
-									local usv, uhv = count_cards_value(user_list[i])
+									local usv, uhv = count_cards_value(users:get(i))
 									local user_max = ( uhv <= 21 ) and uhv or usv
 									local dealer_max = ( hv <= 21 ) and hv or sv
 									-- first: check for player win
@@ -133,21 +134,21 @@ function check_game()
 										outcome = 1
 									end
 								end
-							elseif user_status[user_list[i]] == STATUS.WON then
+							elseif status == STATUS.WON then
 								if not dealer_blackjack then
 									outcome = 2
 								end
-							elseif user_status[user_list[i]] == STATUS.LOST then
+							elseif status == STATUS.LOST then
 								outcome = 1
 							end
 							
 							--
 							if outcome == 0 then
-								send_private_msg(blackjack_channel, push_msg..user_list[i].."!")
+								send_private_msg(blackjack_channel, push_msg..users:get(i).."!")
 							elseif outcome == 1 then
-								send_private_msg(blackjack_channel, win_msg..user_list[i].."!")
+								send_private_msg(blackjack_channel, win_msg..users:get(i).."!")
 							elseif outcome == 2 then
-								send_private_msg(blackjack_channel, loose_msg..user_list[i].."!")
+								send_private_msg(blackjack_channel, loose_msg..users:get(i).."!")
 							end
 						end
 					end
@@ -164,8 +165,8 @@ end
 function deal_card(user, amount)
 	local msg = "deals "..user.." "
 	for i = 1, amount do
-		local suit = table.random(suits)
-		local card = table.random(cards)
+		local suit = table.random(card_suits)
+		local card = table.random(card_values)
 		local card_str = "["..suit..card.."]"
 		table.insert(user_sum[user], card)
 		
@@ -204,17 +205,17 @@ function new_round()
 	-- reset dealer and all players
 	user_sum[dealer_name] = {}
 	user_status[dealer_name] = STATUS.PLAYING
-	for i = 1, table.maxn(user_list) do
-		user_status[user_list[i]] = STATUS.PLAYING
-		user_sum[user_list[i]] = {}
+	for i = 1, users:size() do
+		user_status[users:get(i)] = STATUS.PLAYING
+		user_sum[users:get(i)] = {}
 	end
 	
 	-- first dealer/bank card
 	deal_card(dealer_name, 1)
 	
-	for i = 1, table.maxn(user_list) do
-		if user_list[i] ~= dealer_name then
-			deal_card(user_list[i], 2)
+	for i = 1, users:size() do
+		if users:get(i) ~= dealer_name then
+			deal_card(users:get(i), 2)
 		end
 	end
 end
@@ -233,48 +234,54 @@ function handle_message(origin, target, cmd, parameters)
 		-- Note: help and rules can be requested in a private qry to the bot,
 		-- all other cmds have to come from the blackjack channel directly
 		if blackjack_cmd == "join" and target == blackjack_channel then
-			if not table.contains(user_list, origin) then
-				table.insert(user_list, origin)
+			if users:add(origin) then
 				user_sum[origin] = {}
 				user_status[origin] = STATUS.INACTIVE
 				
 				send_private_msg(blackjack_channel, origin.." joins the table!")
 			end
-		elseif blackjack_cmd == "leave" and target == blackjack_channel then
-			if table.contains(user_list, origin) then
-				table.remove_elem(user_list, origin)
-				send_private_msg(blackjack_channel, origin.." leaves the table!")
+		elseif (blackjack_cmd == "leave" or blackjack_cmd == "kick") and target == blackjack_channel then
+			local rem_user = ""
+			if blackjack_cmd == "kick" and is_owner(origin) and sep ~= nil then
+				local len = string.len(parameters)
+				if len > sep then
+					rem_user = string.sub(parameters, sep+1)
+					if rem_user == dealer_name then
+						rem_user = ""
+					end
+				end
+			elseif blackjack_cmd == "leave" then
+				rem_user = origin
+			end
+			
+			if users:remove(rem_user) then
+				if blackjack_cmd == "kick" then
+					send_action_msg(blackjack_channel, "removes "..rem_user.." from the table!")
+				else
+					send_private_msg(blackjack_channel, rem_user.." leaves the table!")
+				end
+					
+				-- if only the dealer remains, stop the game
+				if users:size() == 1 then
+					game_running = false
+				else
+					-- check game/check if all players are done playing
+					check_game()
+				end
 			end
 		elseif (blackjack_cmd == "start" or blackjack_cmd == "restart") and target == blackjack_channel then
-			if game_running ~= true and table.maxn(user_list) > 1 then
+			if game_running ~= true and users:size() > 1 then
 				game_running = true
 				new_round()
 			end
 		elseif blackjack_cmd == "list" and target == blackjack_channel then
-			if table.maxn(user_list) > 1 then
-				send_private_msg(blackjack_channel, table.concat(user_list, ", "))
+			if users:size() > 1 then
+				send_private_msg(blackjack_channel, users:concat())
 			else
 				send_private_msg(blackjack_channel, "no one is playing at the moment!")
 			end
 		elseif blackjack_cmd == "rules" then
 			send_private_msg(origin, "http://en.wikipedia.org/wiki/Blackjack#Rules_of_play_against_a_casino")
-		elseif blackjack_cmd == "kick" and is_owner(origin) and sep ~= nil and target == blackjack_channel then
-			local len = string.len(parameters)
-			if len > sep then
-				local kick_user = string.sub(parameters, sep+1)
-				if table.contains(user_list, kick_user) and kick_user ~= dealer_name then
-					table.remove_elem(user_list, kick_user)
-					send_action_msg(blackjack_channel, "removes "..kick_user.." from the table!")
-					
-					-- if only the dealer remains, stop the game
-					if table.maxn(user_list) == 1 then
-						game_running = false
-					else
-						-- check game/check if all players are done playing
-						check_game()
-					end
-				end
-			end
 		elseif blackjack_cmd == "reset" and is_owner(origin) and target == blackjack_channel then
 			reset_blackjack()
 		elseif blackjack_cmd == "help" then
@@ -292,7 +299,7 @@ function handle_message(origin, target, cmd, parameters)
 			end
 		else
 			-- inner game block
-			if table.contains(user_list, origin) and user_status[origin] == STATUS.PLAYING and target == blackjack_channel then
+			if users:contains(origin) and user_status[origin] == STATUS.PLAYING and target == blackjack_channel then
 				if blackjack_cmd == "hit" then
 					deal_card(origin, 1)
 				elseif blackjack_cmd == "stand" then

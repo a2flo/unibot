@@ -83,6 +83,7 @@
 		5CABC221117B436800B186E7 /* http_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = http_net.h; sourceTree = "<group>"; };
 		5CABC27A117B58AE00B186E7 /* thread_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thread_base.h; path = threading/thread_base.h; sourceTree = "<group>"; };
 		5CABC27B117B58AE00B186E7 /* thread_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = thread_base.cpp; path = threading/thread_base.cpp; sourceTree = "<group>"; };
+		5CAD48761188837F00CA1EED /* game_framework.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = game_framework.lua; sourceTree = "<group>"; };
 		5CBE72D6117105E300A6C740 /* add2file.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = add2file.lua; sourceTree = "<group>"; };
 		5CBE72EE11710CB700A6C740 /* users.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = users.lua; sourceTree = "<group>"; };
 		5CC8E3AE116B845000EFA722 /* dice.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = dice.lua; sourceTree = "<group>"; };
@@ -194,6 +195,7 @@
 			children = (
 				5C5F4441113D86DF000A2C73 /* global.lua */,
 				5C95C3D91184DD3D005864D0 /* table.lua */,
+				5CAD48761188837F00CA1EED /* game_framework.lua */,
 			);
 			path = include;
 			sourceTree = "<group>";
