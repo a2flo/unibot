@@ -1,6 +1,6 @@
 
 -- blackjack, b
--- cmds: start, join, leave, hit, stand, help, rules, kick, reset
+-- cmds: start, join, leave, hit, stand, help, rules, list, kick, reset
 -- TODO: player timeout/kick after 1 min? inactivity
 
 dofile (package.path.."include/global.lua")
@@ -250,6 +250,12 @@ function handle_message(origin, target, cmd, parameters)
 				game_running = true
 				new_round()
 			end
+		elseif blackjack_cmd == "list" and target == blackjack_channel then
+			if table.maxn(user_list) > 1 then
+				send_private_msg(blackjack_channel, table.concat(user_list, ", "))
+			else
+				send_private_msg(blackjack_channel, "no one is playing at the moment!")
+			end
 		elseif blackjack_cmd == "rules" then
 			send_private_msg(origin, "http://en.wikipedia.org/wiki/Blackjack#Rules_of_play_against_a_casino")
 		elseif blackjack_cmd == "kick" and is_owner(origin) and sep ~= nil and target == blackjack_channel then
@@ -278,6 +284,7 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(origin, "\002blackjack leave\002: leave the table")
 			send_private_msg(origin, "\002blackjack hit\002: deal another card")
 			send_private_msg(origin, "\002blackjack stand\002: no more card")
+			send_private_msg(origin, "\002blackjack list\002: list of all players")
 			send_private_msg(origin, "\002blackjack rules\002: blackjack rules")
 			if is_owner(origin) then
 				send_private_msg(origin, "\002blackjack kick <player>\002: removes <player> from the table")
