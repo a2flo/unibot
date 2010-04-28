@@ -264,7 +264,7 @@ function handle_message(origin, target, cmd, parameters)
 				-- if only the dealer remains, stop the game
 				if users:size() == 1 then
 					game_running = false
-				else
+				else if game_running then
 					-- check game/check if all players are done playing
 					check_game()
 				end
