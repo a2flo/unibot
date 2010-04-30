@@ -18,12 +18,9 @@
 
 #include "lua_bindings.h"
 
-//#if (!defined(__GNUC__) || defined(__clang__)) && (__has_feature(cxx_variadic_templates) || defined(__APPLE__)) // use this when compiling in c++0x mode
-#if __has_feature(cxx_variadic_templates) || !defined(__clang__) || defined(__APPLE__)
+// TODO: ifdef when compiling in c++0x mode (-tr1/)
 #include <tr1/tuple>
 using namespace tr1;
-#endif
-// NOTE: if you want to use clang w/o variadic template support, you have to use libstdc++ 4.2.x
 
 
 /////////////////////////////////////////////////////

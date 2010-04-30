@@ -260,7 +260,7 @@ function handle_message(origin, target, cmd, parameters)
 				else
 					send_private_msg(blackjack_channel, rem_user.." leaves the table!")
 				end
-					
+				
 				-- if only the dealer remains, stop the game
 				if users:size() == 1 then
 					game_running = false
