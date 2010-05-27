@@ -387,8 +387,10 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 	string target = (location == conf->get_bot_name() ? origin : location);
 	// all bot commands have to start with '!'
 	// only accept messages originating from the channel or from a user inside the channel
-	if((location == conf->get_channel() || states->is_user(origin)) && msg[0] == '!') {
-		msg = msg.substr(1, msg.length()-1);
+	if(location == conf->get_channel() || states->is_user(origin)) {
+		if(msg[0] == '!') {
+			msg = msg.substr(1, msg.length()-1);
+		}
 		
 		lua_obj->handle_message(origin, target, msg);
 		

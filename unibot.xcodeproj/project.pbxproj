@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5C1D226C1184BEB100A8FB37 /* event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C1D226B1184BEB100A8FB37 /* event_handler.cpp */; };
 		5C477496118263C4003EB8BB /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C477495118263C4003EB8BB /* watchdog.cpp */; };
-		5C95C483118628BB005864D0 /* texasholdem.lua in Sources */ = {isa = PBXBuildFile; fileRef = 5C95C482118628BB005864D0 /* texasholdem.lua */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CA2C5E611258F98007EC336 /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CA2C5E511258F98007EC336 /* lua.cpp */; };
 		5CABC27C117B58AE00B186E7 /* thread_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CABC27B117B58AE00B186E7 /* thread_base.cpp */; };
@@ -43,6 +42,7 @@
 		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		5C1D226A1184BEB100A8FB37 /* event_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event_handler.h; sourceTree = "<group>"; };
 		5C1D226B1184BEB100A8FB37 /* event_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = event_handler.cpp; sourceTree = "<group>"; };
+		5C23366E11A8779100B69FFD /* reply.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = reply.lua; sourceTree = "<group>"; };
 		5C26D02C113B0A8F00DE086A /* cmd.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = cmd.lua; sourceTree = "<group>"; };
 		5C2AF81C11401E3600254A60 /* eastereggs.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lua; path = eastereggs.lua; sourceTree = "<group>"; };
 		5C477494118263C4003EB8BB /* watchdog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = watchdog.h; path = threading/watchdog.h; sourceTree = "<group>"; };
@@ -205,6 +205,7 @@
 			children = (
 				5C95C40F1184EDEF005864D0 /* bindings_test.lua */,
 				5C95C4131184EE58005864D0 /* test.lua */,
+				5C23366E11A8779100B69FFD /* reply.lua */,
 			);
 			path = tests;
 			sourceTree = "<group>";
@@ -339,7 +340,6 @@
 				5CABC27C117B58AE00B186E7 /* thread_base.cpp in Sources */,
 				5C477496118263C4003EB8BB /* watchdog.cpp in Sources */,
 				5C1D226C1184BEB100A8FB37 /* event_handler.cpp in Sources */,
-				5C95C483118628BB005864D0 /* texasholdem.lua in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

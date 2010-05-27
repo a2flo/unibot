@@ -14,6 +14,27 @@ function toboolean(value)
 	return false
 end
 
+function tokenize(str, delim)
+	local tokens = {}
+	local last_pos = 0
+	local pos = string.find(str, "%s")
+	if pos == nil then
+		table.insert(tokens, str)
+	else
+		repeat
+			table.insert(tokens, string.sub(str, last_pos, pos-1))
+			
+			last_pos = pos+1
+			pos = string.find(str, "%s", last_pos)
+		until pos == nil
+		
+		-- add last one
+		table.insert(tokens, string.sub(str, last_pos, string.len(str)))
+	end
+	
+	return tokens
+end
+
 -- executes a system/os command and returns the output
 function execute_command(cmd)
 	local output = ""
