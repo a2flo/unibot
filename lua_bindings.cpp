@@ -17,6 +17,7 @@
  */
 
 #include "lua_bindings.h"
+#include "lua.h"
 
 // TODO: ifdef when compiling in c++0x mode (-tr1/)
 #include <tr1/tuple>
