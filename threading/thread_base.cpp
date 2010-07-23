@@ -105,7 +105,9 @@ const thread_base::THREAD_STATUS thread_base::get_thread_status() {
 }
 
 bool thread_base::is_running() {
-	return (thread_status == thread_base::RUNNING || thread_status == thread_base::INIT);
+	// copy before use
+	const THREAD_STATUS status = thread_status;
+	return (status == thread_base::RUNNING || status == thread_base::INIT);
 }
 
 void thread_base::set_thread_should_finish() {
