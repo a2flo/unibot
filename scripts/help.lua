@@ -1,7 +1,7 @@
 
 -- help command, sends an overview of all available commands to the requesting user
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "help" then
@@ -38,7 +38,7 @@ function handle_message(origin, target, cmd, parameters)
 			if is_owner(origin) then
 				send_private_msg(origin, " roulette [<user>]: use roulette at yourself [or the given user]")
 			else
-				send_private_msg(origin, " roulette: play the well-known game! you'll be kicked if the bullet hits you. if the bullet is in the last chamber, a random gamer will be kicked")
+				send_private_msg(origin, " roulette: play the well-known game! you'll be kicked if the bullet hits you. if the bullet is in the last chamber, a random player will be kicked")
 			end
 		elseif parameters == "slap" then
 			send_private_msg(origin, " slap [<user>]: slap yourself [or the given user]")
@@ -61,17 +61,13 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(origin, " happa: outputs a link, where one can find an overview of meals at the current day of the whole campus")
 		elseif parameters == "unikram" then
 			send_private_msg(origin, " unikram: outputs a link to the unikram at thedarkwebsite.de")
-		elseif parameters == "ss10" then
-			send_private_msg(origin, " ss10: outputs links to sites of several courses")
 		-- Links
-		elseif parameters == "we" then
-			send_private_msg(origin, " we [<term>]: outputs a link to en.wikipedia.org [or to the given term]")
-		elseif parameters == "wd" then
-			send_private_msg(origin, " wd [<term>]: outputs a link to de.wikipedia.org [or to the given term]")
+		elseif parameters == "w" or parameters == "wp" then
+			send_private_msg(origin, " w [<term>]: outputs a link to en.wikipedia.org [or to the given term]")
 		elseif parameters == "wa" then
 			send_private_msg(origin, " wa [<term>]: outputs a link to wolframalpha.com [or to the given term]")
 		elseif parameters == "g" then
-			send_private_msg(origin, " g [<term>]: outputs a link to google.de [or to the given term]")
+			send_private_msg(origin, " g [<term>]: outputs a link to google.com [or to the given term]")
 		elseif parameters == "dict" then
 			send_private_msg(origin, " dict [<term>]: outputs a link to dict.cc [or to the given term]")
 		-- Owner Cmds
@@ -103,8 +99,8 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(origin, "Use '!help <command>' to get further information about this command.")
 			send_private_msg(origin, "* \002Bot Info\002: who's your daddy?, system, time, uptime, src, spec, version, ping, bug <report>, ticket <summary>")
 			send_private_msg(origin, "* \002Channel\002: users, roulette, slap <user>, dice <range>, identify")
-			send_private_msg(origin, "* \002Uni\002: paste, upload, mensa, happa, unikram, ss10")
-			send_private_msg(origin, "* \002Links\002: we, wd, wa, g, dict")
+			send_private_msg(origin, "* \002Uni\002: paste, upload, mensa, happa, unikram")
+			send_private_msg(origin, "* \002Links\002: w, wa, g, dict")
 			send_private_msg(origin, "  \002+options\002: <message offset> <word offset>, extracts the word (given by word offset) or whole msg (if no word offset) of the msg specified by message offset (in reverse)")
 
 			-- TODO: clean up add2file and add command here

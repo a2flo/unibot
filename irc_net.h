@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,14 +71,20 @@ template <class protocol_policy> void irc_net<protocol_policy>::send(string data
 		
 		size_t old_newline_pos = colon_pos;
 		size_t newline_pos = 0;
+		this->lock(); // lock before modifying send store
 		while((newline_pos = data.find("\n", old_newline_pos+1)) != string::npos) {
 			string msg = data.substr(old_newline_pos+1, newline_pos-old_newline_pos-1);
 			send_store.push_back(msg_type + msg + "\n");
 			old_newline_pos = newline_pos;
 		}
+		this->unlock();
 	}
 	// just send the msg
-	else send_store.push_back(data + "\n");
+	else {
+		this->lock(); // lock before modifying send store
+		send_store.push_back(data + "\n");
+		this->unlock();
+	}
 }
 
 template <class protocol_policy> void irc_net<protocol_policy>::send_connect(string name, string real_name) {

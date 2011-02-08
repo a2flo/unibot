@@ -1,6 +1,11 @@
 
+On Unix:
  * install premake4 (http://industriousone.com/premake/download)
  * execute premake.sh to generate platform specific makefile
  * dependent on your platform this will tell you to either use config=release32 or config=release64
  * build unibot via 'make config=release$YOUR_ARCH' or 'gmake config=release$YOUR_ARCH' (gnu make is required)
 
+On Windows:
+ * install premake4 (http://industriousone.com/premake/download)
+ * execute premake.bat to generate visual studio project files
+ * open project file and build

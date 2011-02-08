@@ -1,7 +1,7 @@
 
 -- bot src (git+trac) links
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "src" then

@@ -2,7 +2,7 @@
 -- lua roulette [name]
 -- alternative: if name is owner and origin no owner, then the origin will be kicked.
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 bullets = -1
 slots = -1

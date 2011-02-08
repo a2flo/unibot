@@ -3,8 +3,9 @@
 -- cmds: start, join, leave, hit, stand, help, rules, list, kick, reset
 -- TODO: player timeout/kick after 1 min? inactivity
 
-dofile (package.path.."include/global.lua")
-dofile (package.path.."include/game_framework.lua")
+require "global"
+require "table"
+require "game_framework"
 
 decks = 4
 delt = {}
@@ -46,7 +47,7 @@ function count_cards_value(user)
 	local hard_sum = 0
 	local ace_count = 0
 	
-	local card_count = table.maxn(user_sum[user])
+	local card_count = #user_sum[user]
 	for i = 1, card_count do
 		local card = user_sum[user][i]
 		if card == "Jack" or card == "Queen" or card == "King" then

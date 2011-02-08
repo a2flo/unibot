@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ template<> struct std_protocol<TCPsocket> {
 	bool valid_sockets() {
 		if(is_valid()) {
 			int active_sockets = SDLNet_CheckSockets(socketset, 0);
-			if(active_sockets == -1 || active_sockets > 2) {
+			if((server_set || client_set) && (active_sockets == -1 || active_sockets > 2)) {
 				logger::log(logger::LT_ERROR, "net_tcp.h", "valid_sockets(): invalid socket activity!");
 				valid = false;
 				return false;

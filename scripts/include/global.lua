@@ -1,6 +1,6 @@
 
 --
-dofile (package.path.."include/table.lua")
+require "exttable"
 
 
 function xor(b1, b2)
@@ -17,19 +17,25 @@ end
 function tokenize(str, delim)
 	local tokens = {}
 	local last_pos = 0
-	local pos = string.find(str, "%s")
+	local delim_len = string.len(delim)
+	if string.sub(delim, 0, 1) == "%" then
+		delim_len = 1
+	end
+
+	local pos = string.find(str, delim)
 	if pos == nil then
 		table.insert(tokens, str)
 	else
 		repeat
 			table.insert(tokens, string.sub(str, last_pos, pos-1))
 			
-			last_pos = pos+1
-			pos = string.find(str, "%s", last_pos)
+			last_pos = pos+delim_len
+			pos = string.find(str, delim, last_pos)
 		until pos == nil
 		
 		-- add last one
-		table.insert(tokens, string.sub(str, last_pos, string.len(str)))
+		local last_token = string.sub(str, last_pos, string.len(str))
+		table.insert(tokens, last_token)
 	end
 	
 	return tokens

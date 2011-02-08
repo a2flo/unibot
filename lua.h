@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include "util.h"
 #include "lua_bindings.h"
 
-#define LUA_SCRIPT_FOLDER "scripts/"
+#define LUA_SCRIPT_FOLDER "scripts" OS_DIR_SLASH
 
 class lua {
 public:
@@ -37,6 +37,7 @@ public:
 	
 	void reload_scripts();
 	void reload_script(const string& filename);
+	const vector<string> list_scripts() const;
 	
 	void handle_message(const string& origin, const string& target, const string& msg);
 	
@@ -50,7 +51,7 @@ protected:
 	struct lua_script;
 	void register_functions(lua_script* script);
 	void check_scripts();
-	const char* lua_script_folder(const string addition = "");
+	string lua_script_folder(const string addition = "");
 	
 	template<int level> static int lua_error_handler(lua_State* state) {
 		// get debug info
@@ -59,10 +60,10 @@ protected:
 		lua_getinfo(state, "nSlu", &dbg);
 		
 		// get error str
-		string error_str = lua_tostring(state, -1);
+		const char* error_str = lua_tostring(state, -1);
 		
 		// print error message
-		logger::log(logger::LT_ERROR, "lua.h", string("lua error: "+error_str+", in line "+to_str(dbg.currentline)+"\nsrc:\n"+dbg.short_src).c_str());
+		logger::log(logger::LT_ERROR, "lua.h", string("lua error: "+string(error_str != NULL ? error_str : "<unknown>")+", in line "+to_str(dbg.currentline)+"\nsrc:\n"+dbg.short_src).c_str());
 		return 0;
 	}
 	
@@ -81,8 +82,29 @@ protected:
 			// push level 0 error handler (level 0 is necessary, b/c we're always in level 0 while loading)
 			lua_pushcfunction(state, lua_error_handler<0>);
 			bool load_error = false;
-			load_error |= luaL_loadfile(state, script_filename.c_str());
-			load_error |= lua_pcall(state, 0, 0, -lua_gettop(state)); // error handler @index #0
+
+			fstream script;
+			script.open(script_filename.c_str(), ios::in);
+			if(script.is_open()) {
+				script.seekg(0, ios::end);
+				const size_t script_size = (size_t)script.tellg();
+				script.seekg(0, ios::beg);
+				char* script_data = new char[script_size+1];
+				script.read(script_data, script_size);
+				script_data[script_size] = 0;
+
+				string script_string = script_data;
+#ifdef __WINDOWS__
+				string script_path = get_absolute_path() + LUA_SCRIPT_FOLDER + "include\\?.lua";
+				script_path = find_and_replace(script_path, "\\", "\\\\");
+				script_string = "package.path = package.path .. \";" + script_path + "\"\n" + script_string;
+#endif
+				luaL_loadstring(state, script_string.c_str());
+			}
+			else load_error = true;
+			script.close();
+
+			load_error |= (lua_pcall(state, 0, 0, -lua_gettop(state)) == 0 ? false : true); // error handler @index #0
 			if(load_error) {
 				logger::log(logger::LT_ERROR, "lua.h", string("error loading lua script \""+script_filename+"\"!").c_str());
 				lua_pop(state, 1);

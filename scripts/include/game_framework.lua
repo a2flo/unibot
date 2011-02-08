@@ -1,7 +1,7 @@
 
 -- game framework
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 -- for card games
 card_values = { "2", "3", "4", "5", "6", "7", "8", "9", "Jack", "Queen", "King", "Ace" }
@@ -52,7 +52,7 @@ function user_list:remove(user)
 end
 
 function user_list:size()
-	return table.maxn(self.list)
+	return #self.list
 end
 
 function user_list:get(index)

@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General License as published by
@@ -191,4 +191,12 @@ void bot_states::set(const string& state_name, bool new_state) {
 		return;
 	}
 	states[state_name] = new_state;
+}
+
+bool bot_states::is_restart() {
+	return states["restart"];
+}
+
+void bot_states::set_restart(bool restart) {
+	states["restart"] = restart;
 }

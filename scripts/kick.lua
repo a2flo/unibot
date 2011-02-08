@@ -1,7 +1,7 @@
 
 -- lua kick [name [message]]
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "kick" then
@@ -13,7 +13,7 @@ function handle_message(origin, target, cmd, parameters)
 		-- no params / only name
 		local name = ( parameters ~= cmd ) and parameters or origin
 		local msgs = { "Cause I can!", "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" }
-		local msg = msgs[math.random(1, table.maxn(msgs))]
+		local msg = msgs[math.random(1, #msgs)]
 
 		-- name + msg
 		if name ~= origin then

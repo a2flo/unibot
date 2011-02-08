@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,21 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#if !defined(WIN32) && !defined(_WIN32) && !defined(WIN64) && !defined(_WIN64)
 #include <unistd.h>
+#else
+#include <windows.h>
+#include <winnt.h>
+#include <io.h>
+#include <direct.h>
+#undef getcwd
+#define getcwd _getcwd
+
+#ifndef __WINDOWS__
+#define __WINDOWS__
+#endif
+
+#endif
 using namespace std;
 
 template<int i> struct int2type {
@@ -46,12 +60,12 @@ template<typename T> string to_str(const T& var) {
 	return buffer.str();
 }
 
-string trim(string str);
+string find_and_replace(const string& str, const string& find, const string& repl);
+string trim(const string& str);
 void tokenize(vector<string>& dst, const string& src, const char delim);
 string encode_url(string& url);
 string encode_url(const char* url);
 
-string rev(string& str);
 string str_to_lower(const string& str);
 string str_to_upper(const string& str);
 

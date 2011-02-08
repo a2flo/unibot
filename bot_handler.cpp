@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) : 
 	servername = "";
 	
 	start_time = SDL_GetTicks();
-	keep_msg_count = numeric_limits<size_t>::max();
+	keep_msg_count = (std::numeric_limits<size_t>::max)();
 	
 	unsigned int cmd_size = sizeof(IRC_COMMAND_STR) / sizeof(const char*);
 	for(unsigned int i = 0; i < cmd_size; i++) {
@@ -98,8 +98,9 @@ bot_handler::~bot_handler() {
 
 void bot_handler::run() {
 	if(n->is_running() && n->is_received_data()) {
-		deque<string>* data = n->get_received_data();
-		for (deque<string>::iterator data_iter = data->begin(); data_iter != data->end(); data_iter++) {
+		deque<string> data;
+		n->get_and_clear_received_data(data);
+		for(deque<string>::iterator data_iter = data.begin(); data_iter != data.end(); data_iter++) {
 			// handle the data
 			// cmd_tokens:
 			// [0]: sender
@@ -416,14 +417,19 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			
 			n->send_private_msg(target, uptime_str);
 		}
-		else if(msg.find("quit") == 0) {
+		else if((msg.length() >= 4 && msg.substr(0, 4) == "quit") ||
+				(msg.length() >= 7 && msg.substr(0, 7) == "restart")) {
+			bool restart = (msg.length() >= 7 && msg.substr(0, 7) == "restart");
+			
 			string in_bot_name = "";
-			if(msg.length() > 5) in_bot_name = msg.substr(5, msg.length()-5);
+			if(!restart && msg.length() > 5) in_bot_name = msg.substr(5, msg.length()-5);
+			else if(restart && msg.length() > 8) in_bot_name = msg.substr(8, msg.length()-8);
 			
 			if(in_bot_name == "" || in_bot_name == conf->get_bot_name()) {
 				if(conf->is_owner(origin)) {
 					quit_bot();
 					states->set_quit(true);
+					states->set_restart(restart);
 				}
 				else {
 					if(states->is_op()) {
@@ -442,6 +448,18 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			string script = msg.substr(14, msg.length()-14);
 			lua_obj->reload_script(script);
 			logger::log(logger::LT_DEBUG, "bot_handler.cpp", ("script "+script+" reloaded!").c_str());
+		}
+		else if(cmd == "list_scripts") {
+			if(conf->is_owner(origin)) {
+				string script_list = "";
+				vector<string> scripts = lua_obj->list_scripts();
+				sort(scripts.begin(), scripts.end());
+				for(vector<string>::const_iterator siter = scripts.begin(); siter != scripts.end(); siter++) {
+					const size_t slash_pos = siter->rfind('/')+1;
+					script_list += siter->substr(slash_pos, siter->length()-slash_pos) + " ";
+				}
+				n->send_private_msg(target, script_list);
+			}
 		}
 	}
 	

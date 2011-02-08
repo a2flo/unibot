@@ -1,7 +1,7 @@
 
 -- lua who's your daddy?
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	local joined_cmd = ( parameters ~= cmd ) and cmd.." "..parameters or cmd

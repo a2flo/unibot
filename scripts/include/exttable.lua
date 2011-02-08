@@ -4,7 +4,7 @@
 -- sorts the table and removes all duplicates
 function table.unique(t)
 	table.sort(t)
-	local n = table.maxn(t)
+	local n = #t
 	for i = 1, n do
 		if t[n-i] == t[n-i+1] then
 			table.remove(t, n-i+1)
@@ -15,7 +15,7 @@ end
 
 -- returns the index of elem in the table, returns 0 if nonexistent
 function table.find(t, elem)
-	for i = 1, table.maxn(t) do
+	for i = 1, #t do
 		if t[i] == elem then
 			return i
 		end
@@ -37,6 +37,6 @@ function table.remove_elem(t, elem)
 end
 
 -- returns a random element of the table
-function table.random(t)
-	return t[crand(table.maxn(t))]
+function table.random(self)
+	return self[crand(#self)]
 end

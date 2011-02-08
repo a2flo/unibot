@@ -2,7 +2,7 @@
 -- !gitupdate, calls 'git pull origin master' (if possible, if the current bot binary folder also
 -- contains a unibot git checkout) and reloads all scripts
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if is_owner(origin) then
@@ -19,7 +19,7 @@ function handle_message(origin, target, cmd, parameters)
 								string.find(git_output, "error", 1, true)
 			}
 			
-			for i = 1, table.maxn(err_strs) do
+			for i = 1, #err_strs do
 				if err_strs[i] ~= nil then
 					-- git update error, send output and return
 					send_private_msg(target, git_output)

@@ -35,7 +35,7 @@ project "unibot"
 
 	if(not os.is("windows")) then
 		includedirs { "/usr/include", "/usr/local/include", "./", "threading/" }
-		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops -ftree-vectorize" }
+		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
 		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
 		prebuildcommands { "./build_version.sh" }
 		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
@@ -43,9 +43,9 @@ project "unibot"
 	
 	if(os.is("linux") or os.is("bsd")) then
 		-- find lua lib (try different lib names)
-		local lua_lib_names = { "lua", "lua5.1", "lua-5.1" }
+		local lua_lib_names = { "lua", "lua5.1", "lua-5.1", "lua5.2", "lua-5.2" }
 		local lua_lib = { name = nil, dir = nil }
-		for i = 1, table.maxn(lua_lib_names) do
+		for i = 1, #lua_lib_names do
 			lua_lib.name = lua_lib_names[i]
 			lua_lib.dir = os.findlib(lua_lib.name)
 			if(lua_lib.dir ~= nil) then
@@ -61,7 +61,7 @@ project "unibot"
 		
 		-- find all necessary headers (in case they aren't in /usr/include)
 		local include_files = { "SDL.h", "SDL_net.h", "lua.h" }
-		for i = 1, table.maxn(include_files) do
+		for i = 1, #include_files do
 			if((not os.isfile("/usr/include/"..include_files[i])) and
 			   (not os.isfile("/usr/local/include/"..include_files[i]))) then
 			   -- search in /usr/include and /usr/local/include

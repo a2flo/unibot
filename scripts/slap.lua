@@ -1,7 +1,8 @@
 
 -- bot slap [name]
 
-dofile (package.path.."include/global.lua")
+require "table"
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "slap" and parameters ~= cmd then
@@ -19,7 +20,12 @@ function handle_message(origin, target, cmd, parameters)
 			slap_users = tokenize(parameters, "%s")
 		end
 
-		for i = 1, table.maxn(slap_users) do
+		if #slap_users == 1 and slap_users[1] == bot_name then
+			send_private_msg(target, "Hey, that's me!")
+			slap_users = {}
+		end
+
+		for i = 1, #slap_users do
 			local name = slap_users[i]
 			local random_quotes = {
 				"schlaegt "..name.." mit einer alten Maus",

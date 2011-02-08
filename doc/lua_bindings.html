@@ -1,127 +1,131 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>UniBot :: Lua Bindings</title>
-<style type="text/css">
-body {
-	background-color: #000000;
-	font-family: "Lucida Sans Unicode", "Lucida Grande", "Verdana", "Helvetica", sans-serif;
-	font-size: 12px;
-	color: #F7F7F7;
-	margin: 0;
-	padding: 0;
-}
-h1 {
-	font-size: 18px;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-	border-bottom-color: #F7F7F7;
-}
-.lua_command {
-	background-color: #202020;
-	text-align: justify;
-	margin-top: 5px;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-right: 10px;
-	padding-left: 10px;
-}
-</style>
-</head>
-
-<body class="lua_bindings_layout">
-
-<h1>network functions</h1>
-<div class="lua_command">
-command: send &lt;string: msg&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: send_channel_msg &lt;string: msg&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: send_private_msg &lt;string: user/channel&gt; &lt;string: msg&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: send_action_msg &lt;string: user/channel&gt; &lt;string: action&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: send_ctcp_request &lt;string: user&gt; &lt;string: ctcp type&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: send_kick &lt;string: user&gt; &lt;string: kick reason&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: get_local_ip<br />
-returns: &lt;integer: host ip&gt; &lt;integer: host port&gt;
-</div>
-<div class="lua_command">
-command: get_server_ip<br />
-returns: &lt;integer: server ip&gt; &lt;integer: server port&gt;
-</div>
-
-<h1>bot state functions</h1>
-<div class="lua_command">
-command: get_bot_state &lt;string: state&gt;<br />
-returns: &lt;boolean: state&gt;
-</div>
-<div class="lua_command">
-command: set_bot_state &lt;string: state&gt; &lt;boolean: new state&gt;<br />
-returns: -
-</div>
-<div class="lua_command">
-command: get_users<br />
-returns: &lt;table: [nick name] = &lt;table: [1] = nick name, [2] = real name, [3] = host, [4] = host user, [5] = registered, [6] = ctcp_support, [7] = client/version&gt;&gt; &lt;integer: user count&gt;
-</div>
-<div class="lua_command">
-command: is_registered &lt;string: user name&gt;<br />
-returns: &lt;boolean: registered flag&gt;
-</div>
-
-<h1>config functions</h1>
-<div class="lua_command">
-command: get_config_entry &lt;string: config name&gt;<br />
-returns: &lt;string: config setting&gt;
-</div>
-<div class="lua_command">
-command: is_owner &lt;string: user name&gt;<br />
-returns: &lt;boolean: owner flag&gt;
-</div>
-
-<h1>misc/additional functions</h1>
-<div class="lua_command">
-command: url_encode &lt;string: input string&gt;<br />
-returns: &lt;string: output string/url&gt;
-</div>
-<div class="lua_command">
-command: get_prev_msg &lt;integer: message offset (> 0!)&gt;<br />
-returns: &lt;string: previous message&gt;
-</div>
-<div class="lua_command">
-command: strip_special_chars &lt;string: input string&gt;<br />
-returns: &lt;string: output string&gt;
-</div>
-<div class="lua_command">
-command: handle_args_chronological &lt;string: formatted input string&gt;<br />
-returns: &lt;string: output string&gt;
-</div>
-<div class="lua_command">
-command: reload_scripts<br />
-returns: -<br />
-<em>Note: this aborts all running scripts</em>
-</div>
-<div class="lua_command">
-command: crand &lt;integer: range&gt;<br />
-returns: &lt;integer: random value in [1 - range]&gt;<br />
-<em>Note: crand(0) will return 0; signedness is ignored</em>
-</div>
-
-<div><br /><br /></div>
-</body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>UniBot :: Lua Bindings</title>
+		<style type="text/css">
+			body {
+				background-color: #000000;
+				font-family: "Lucida Sans Unicode", "Lucida Grande", "Verdana", "Helvetica", sans-serif;
+				font-size: 12px;
+				color: #F7F7F7;
+				margin: 0;
+				padding: 0;
+			}
+			h1 {
+				font-size: 18px;
+				border-bottom-width: 1px;
+				border-bottom-style: solid;
+				border-bottom-color: #F7F7F7;
+			}
+			.lua_command {
+				background-color: #202020;
+				text-align: justify;
+				margin-top: 5px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				padding-right: 10px;
+				padding-left: 10px;
+			}
+			</style>
+	</head>
+	
+	<body class="lua_bindings_layout">
+		
+		<h1>network functions</h1>
+		<div class="lua_command">
+			command: send &lt;string: msg&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: send_channel_msg &lt;string: msg&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: send_private_msg &lt;string: user/channel&gt; &lt;string: msg&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: send_action_msg &lt;string: user/channel&gt; &lt;string: action&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: send_ctcp_request &lt;string: user&gt; &lt;string: ctcp type&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: send_kick &lt;string: user&gt; &lt;string: kick reason&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: get_local_ip<br />
+			returns: &lt;integer: host ip&gt; &lt;integer: host port&gt;
+		</div>
+		<div class="lua_command">
+			command: get_server_ip<br />
+			returns: &lt;integer: server ip&gt; &lt;integer: server port&gt;
+		</div>
+		
+		<h1>bot state functions</h1>
+		<div class="lua_command">
+			command: get_bot_state &lt;string: state&gt;<br />
+			returns: &lt;boolean: state&gt;
+		</div>
+		<div class="lua_command">
+			command: set_bot_state &lt;string: state&gt; &lt;boolean: new state&gt;<br />
+			returns: -
+		</div>
+		<div class="lua_command">
+			command: get_users<br />
+			returns: &lt;table: [nick name] = &lt;table: [1] = nick name, [2] = real name, [3] = host, [4] = host user, [5] = registered, [6] = ctcp_support, [7] = client/version&gt;&gt; &lt;integer: user count&gt;
+		</div>
+		<div class="lua_command">
+			command: is_registered &lt;string: user name&gt;<br />
+			returns: &lt;boolean: registered flag&gt;
+		</div>
+		
+		<h1>config functions</h1>
+		<div class="lua_command">
+			command: get_config_entry &lt;string: config name&gt;<br />
+			returns: &lt;string: config setting&gt;
+		</div>
+		<div class="lua_command">
+			command: is_owner &lt;string: user name&gt;<br />
+			returns: &lt;boolean: owner flag&gt;
+		</div>
+		
+		<h1>misc/additional functions</h1>
+		<div class="lua_command">
+			command: url_encode &lt;string: input string&gt;<br />
+			returns: &lt;string: output string/url&gt;
+		</div>
+		<div class="lua_command">
+			command: get_prev_msg &lt;integer: message offset (> 0!)&gt;<br />
+			returns: &lt;string: previous message&gt;
+		</div>
+		<div class="lua_command">
+			command: strip_special_chars &lt;string: input string&gt;<br />
+			returns: &lt;string: output string&gt;
+		</div>
+		<div class="lua_command">
+			command: handle_args_chronological &lt;string: formatted input string&gt;<br />
+			returns: &lt;string: output string&gt;
+		</div>
+		<div class="lua_command">
+			command: reload_scripts<br />
+			returns: -<br />
+			<em>Note: this aborts all running scripts</em>
+		</div>
+		<div class="lua_command">
+			command: crand &lt;integer: range&gt;<br />
+			returns: &lt;integer: random value in [1 - range]&gt;<br />
+			<em>Note: crand(0) will return 0; signedness is ignored</em>
+		</div>
+		<div class="lua_command">
+			command: get_os<br />
+			returns: &lt;integer: 0 = unix system; 1 = windows&gt;<br />
+		</div>
+		
+		<div><br /><br /></div>
+	</body>
 </html>

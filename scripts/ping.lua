@@ -1,7 +1,7 @@
 
 -- lua is the bot is still active?
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "ping" then

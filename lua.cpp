@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,10 +45,42 @@ void lua::register_functions(lua_script* script) {
 }
 
 void lua::reload_scripts() {
-#ifdef WIN32
-#error "no windows support yet"
-#endif
+#ifdef __WINDOWS__
+	struct _finddata_t c_file;
+	intptr_t hFile;
 	
+	deque<string> folders;
+	folders.push_back("*");
+	set<string> folder_blacklist;
+	folder_blacklist.insert("include");
+	
+	for(;;) {
+		if(folders.size() == 0) break;
+		
+		hFile = _findfirst(lua_script_folder(folders.front()).c_str(), &c_file);
+		const string path = folders.front().substr(0, folders.front().length()-1); // trim '*'
+		if(hFile != -1L) {
+			do {
+				const string fname = c_file.name;
+				const string full_fname = path+fname;
+				if(!(c_file.attrib & _A_SUBDIR) && fname.length() > 4) {
+					string ext = fname.substr(fname.length() - 3, 3);
+					if(ext == "lua") {
+						reload_script(full_fname);
+					}
+				}
+				else if((c_file.attrib & _A_SUBDIR) &&
+						folder_blacklist.count(fname) == 0 &&
+						fname != "." && fname != "..") {
+					folders.push_back(fname+"\\*");
+				}
+			} while(_findnext(hFile, &c_file) == 0);
+			
+			_findclose(hFile);
+		}
+		folders.pop_front();
+	}
+#else
 	struct dirent** namelist;
 	
 	deque<string> folders;
@@ -59,7 +91,7 @@ void lua::reload_scripts() {
 	for(;;) {
 		if(folders.size() == 0) break;
 		
-		int n = scandir(lua_script_folder(folders.front().c_str()), &namelist, 0, alphasort);
+		int n = scandir(lua_script_folder(folders.front().c_str()).c_str(), &namelist, 0, alphasort);
 		const string path = folders.front() + '/';
 		if(n > 0) {
 			for(int j = 1; j < n; j++) {
@@ -82,7 +114,8 @@ void lua::reload_scripts() {
 		}
 		folders.pop_front();
 	}
-	
+#endif
+
 	logger::log(logger::LT_DEBUG, "lua.cpp", "lua scripts loaded!");
 }
 
@@ -143,7 +176,14 @@ void lua::handle_message(const string& origin, const string& target, const strin
 
 }
 
-const char* lua::lua_script_folder(const string addition) {
-	const string script_folder = get_absolute_path() + string(LUA_SCRIPT_FOLDER) + addition;
-	return script_folder.c_str();
+string lua::lua_script_folder(const string addition) {
+	return string(get_absolute_path() + string(LUA_SCRIPT_FOLDER) + addition);
+}
+
+const vector<string> lua::list_scripts() const {
+	vector<string> script_list;
+	for(map<string, lua_script*>::const_iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
+		script_list.push_back(script_iter->first);
+	}
+	return script_list;
 }

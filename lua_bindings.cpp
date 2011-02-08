@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,17 @@
 #include "lua.h"
 
 // TODO: ifdef when compiling in c++0x mode (-tr1/)
+#if !defined(__clang__) || (defined(__clang__) && !defined(_LIBCPP_VERSION))
+
+#ifndef __WINDOWS__
 #include <tr1/tuple>
+#else
+#include <tuple>
+#endif
+
 using namespace tr1;
+
+#endif
 
 
 /////////////////////////////////////////////////////
@@ -92,7 +101,7 @@ template<> double get_lua_arg<double>(lua_State* state, const size_t& arg_num) {
 }
 
 template<> bool get_lua_arg<bool>(lua_State* state, const size_t& arg_num) {
-	return bool(lua_toboolean(state, (int)arg_num));
+	return bool(lua_toboolean(state, (int)arg_num) == 0 ? false : true);
 }
 
 void check_lua_stack(lua_State* state, const size_t& expected_size) {
@@ -389,7 +398,22 @@ int lua_bindings::reload_scripts(lua_State* state) {
 int lua_bindings::crand(lua_State* state) {
 	try {
 		tuple<ssize_t> args = get_lua_args<ssize_t>(state);
-		lua_pushinteger(state, get<0>(args) != 0 ? 1 + (rand() % std::labs(get<0>(args))) : 0);
+		lua_pushinteger(state, get<0>(args) != 0 ? 1 + (rand() % std::abs(get<0>(args))) : 0);
+	}
+	HANDLE_LUA_BINDINGS_EXCEPTION;
+	return 1;
+}
+
+int lua_bindings::get_os(lua_State* state) {
+	try {
+		check_lua_stack(state, 0);
+
+		// 0 = unix, 1 = windows
+#if defined(__WINDOWS__)
+		lua_pushinteger(state, 1);
+#else // unix
+		lua_pushinteger(state, 0);
+#endif
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;

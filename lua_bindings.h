@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,8 @@ F(get_prev_msg) \
 F(strip_special_chars) \
 F(handle_args_chronological) \
 F(reload_scripts) \
-F(crand)
+F(crand) \
+F(get_os)
 
 #define LUA_FUNCTION_DEFINITION(func_name) static int func_name(lua_State* state);
 

@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@
  */
 
 // Windows
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)
 #define WIN32_LEAN_AND_MEAN
+#define __WINDOWS__
 #include <windows.h>
 #include <winnt.h>
 #include <io.h>
@@ -27,6 +28,10 @@
 #define snprintf _snprintf
 #define ssize_t SSIZE_T
 #define strtof(arg1, arg2) (float)strtod(arg1, arg2)
+
+#define __func__ __FUNCTION__
+
+#define setenv(var_name, var_value, x) SetEnvironmentVariable(var_name, var_value)
 
 #if (_MSC_VER < 1400) // define vsnprintf for VC++ 7.1 and minor
 #ifndef vsnprintf
@@ -45,8 +50,13 @@
 // everything else (Linux, *BSD, ...)
 #else
 #include <dirent.h>
-#endif // WIN32
+#endif // windows
 
+#ifndef __WINDOWS__
+#define OS_DIR_SLASH "/"
+#else
+#define OS_DIR_SLASH "\\"
+#endif
 
 // general includes
 #ifdef __APPLE__
@@ -60,7 +70,18 @@ extern "C" {
 #include <lua/lualib.h>
 #include <lua/lauxlib.h>
 }
-#else // unix/linux/windows
+#elif defined(__WINDOWS__) // windows
+#include <SDL/SDL.h>
+#include <SDL/SDL_thread.h>
+#include <SDL/SDL_cpuinfo.h>
+#include <SDL_net/SDL_net.h>
+
+extern "C" {
+#include <lua/lua.hpp>
+#include <lua/lualib.h>
+#include <lua/lauxlib.h>
+}
+#else // unix/linux
 #include <SDL.h>
 #include <SDL_thread.h>
 #include <SDL_cpuinfo.h>
@@ -86,12 +107,12 @@ extern "C" {
 #include <map>
 #include <set>
 #include <locale>
-#include <cmath>
 #include <ctime>
 #include <cstring>
 #include <cstdarg>
 #include <typeinfo>
 #include <limits>
+#include <math.h>
 
 using namespace std;
 

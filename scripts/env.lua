@@ -1,7 +1,7 @@
 
 -- !set, !get and !env
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if is_owner(origin) then
@@ -17,7 +17,7 @@ function handle_message(origin, target, cmd, parameters)
 		if cmd == "env" then
 			local env_vars = { "connected", "joined", "parted", "op", "quit", "kicked", "identified", "silenced" }
 			
-			for i = 1, table.maxn(env_vars) do
+			for i = 1, #env_vars do
 				send_private_msg(target, env_vars[i]..": "..tostring(get_bot_state(env_vars[i])))
 			end
 		end

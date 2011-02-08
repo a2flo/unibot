@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 
 #define UNIBOT_MAJOR_VERSION "0"
 #define UNIBOT_MINOR_VERSION "3"
-#define UNIBOT_REVISION_VERSION "0d1"
+#define UNIBOT_REVISION_VERSION "0d3"
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
@@ -41,14 +41,23 @@
 #elif (defined(__GNUC__) && defined(__llvm__) && !defined(__clang__))
 #define UNIBOT_COMPILER "LLVM-GCC "+to_str(__VERSION__)
 #elif defined(__clang__)
-#define UNIBOT_COMPILER "Clang "+to_str(__VERSION__)
+#define UNIBOT_COMPILER "Clang "+to_str(__clang_version__)
 #else
 #define UNIBOT_COMPILER "unknown compiler"
 #endif
 
+#define UNIBOT_LIBCXX_PREFIX " and "
+#if defined(_LIBCPP_VERSION)
+#define UNIBOT_LIBCXX UNIBOT_LIBCXX_PREFIX+"libc++ "+to_str(_LIBCPP_VERSION)
+#elif defined(__GLIBCXX__)
+#define UNIBOT_LIBCXX UNIBOT_LIBCXX_PREFIX+"libstdc++ "+to_str(__GLIBCXX__)
+#else
+#define UNIBOT_LIBCXX ""
+#endif
+
 #define UNIBOT_VERSION_STRING ("UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+ \
 								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+ \
-								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER)
+								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER+UNIBOT_LIBCXX)
 
 #define UNIBOT_SOURCE_URL "http://www.assembla.com/spaces/unibot"
 
@@ -64,7 +73,7 @@ public:
 		AWAY,
 		CONNECT,
 		DIE,
-		ERROR,
+		CMD_ERROR, // damn you, msvc!
 		INFO,
 		NVITE,
 		SON,

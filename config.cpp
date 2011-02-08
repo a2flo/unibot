@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ string config::get_hostname() {
 }
 
 unsigned short int config::get_port() {
-	return strtoul(config_data["port"].c_str(), NULL, 10);
+	return (unsigned short int)strtoul(config_data["port"].c_str(), NULL, 10);
 }
 
 string config::get_channel() {

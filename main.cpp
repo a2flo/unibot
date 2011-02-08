@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,15 +22,20 @@ int main(int argc, char* argv[]) {
 	// set call path and get absolute path
 	set_call_path(argv[0]);
 	// set lua script search path
-	setenv("LUA_PATH", (get_absolute_path()+LUA_SCRIPT_FOLDER).c_str(), 1);
-	
+	const string lua_path = string(get_absolute_path()+LUA_SCRIPT_FOLDER);
+	setenv("LUA_PATH", string(lua_path + "include/?.lua;" + lua_path + "?.lua").c_str(), 1);
+
 	// event handler
 	init_event_handler();
 	
 	// config
 	config* conf;
 	try {
+#ifndef __WINDOWS__
 		conf = new config("/etc/unibot.conf");
+#else
+		conf = new config("C:/unibot.conf");
+#endif
 	}
 	catch(...) {
 		exit(-1);
@@ -56,6 +61,7 @@ int main(int argc, char* argv[]) {
 	while(irc->is_running() || bot->is_running()) {
 		SDL_Delay(100); // no need to be fast here
 	}
+	bool restart = states->is_restart();
 	
 	delete bot;
 	delete states;
@@ -67,6 +73,15 @@ int main(int argc, char* argv[]) {
 	delete conf;
 	
 	destroy_event_handler();
+	
+#ifndef __WINDOWS__
+	if(restart) {
+		cout << "restarting bot ..." << endl;
+		system("killall unibot 2&>/dev/null");
+		system("sleep 1");
+		system(string(argv[0]).c_str());
+	}
+#endif
 	
 	return 0;
 }

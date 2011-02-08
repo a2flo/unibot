@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,6 +74,8 @@ public:
 	bool is_user_registered(string name);
 	bool is_silenced();
 	void set_silenced(bool silenced);
+	bool is_restart();
+	void set_restart(bool restart);
 	
 	bool is(const string& state_name);
 	void set(const string& state_name, bool new_state);
@@ -90,6 +92,7 @@ protected:
 	 * kicked
 	 * identified
 	 * silenced
+	 * restart
 	 */
 	// state name, state
 	map<string, bool> states;

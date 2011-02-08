@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public:
 	virtual bool connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port = 65535);
 	
 	virtual bool is_received_data();
-	virtual deque<string>* get_received_data();
+	virtual void get_and_clear_received_data(deque<string>& dst);
 	virtual void clear_received_data();
 	
 	virtual IPaddress* get_local_ip();
@@ -251,8 +251,11 @@ template <class protocol_policy> bool net<protocol_policy>::is_received_data() {
 	return !receive_store.empty();
 }
 
-template <class protocol_policy> deque<string>* net<protocol_policy>::get_received_data() {
-	return &receive_store;
+template <class protocol_policy> void net<protocol_policy>::get_and_clear_received_data(deque<string>& dst) {
+	this->lock();
+	dst = receive_store;
+	receive_store.clear();
+	this->unlock();
 }
 
 template <class protocol_policy> void net<protocol_policy>::clear_received_data() {

@@ -1,7 +1,7 @@
 
 -- create a ticket or bug report for unibot
 
-dofile (package.path.."include/global.lua")
+require "global"
 
 function handle_message(origin, target, cmd, parameters)
 	if cmd == "ticket" or cmd == "bug" then

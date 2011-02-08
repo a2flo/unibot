@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2010 Florian Ziesche
+ *  Copyright (C) 2009 - 2011 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ int thread_base::_thread_run(void* data) {
 		this_thread->unlock();
 		
 		// reduce system load and make other locks possible
-		SDL_Delay(this_thread->get_thread_delay());
+		SDL_Delay((Uint32)this_thread->get_thread_delay());
 		
 		if(this_thread->thread_should_finish()) {
 			break;
