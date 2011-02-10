@@ -22,8 +22,12 @@ config::config(const char* config_file, const ssize_t& argc, const char** argv) 
 	// default values
 	config_data["verbosity"] = to_str(logger::LT_MSG);
 	
+	string binary = clean_path(argv[0]);
+	const size_t slash_pos = binary.rfind('/');
+	if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
+	
 	config_data["argc"] = to_str(argc);
-	config_data["arg_0"] = clean_path(get_absolute_path()+string(argv[0]));
+	config_data["arg_0"] = clean_path(get_absolute_path()+binary);
 	for(ssize_t i = 1; i < argc; i++) {
 		config_data["arg_"+to_str(i)] = argv[i];
 	}
@@ -86,7 +90,7 @@ bool config::load_config() {
 				}
 			}
 			
-			// arg_* and argc are reserved values
+			// arg_# and argc are reserved values
 			const string id_4 = identifier.size() >= 4 ? identifier.substr(0, 4) : "";
 			if(id_4 == "arg_" || id_4 == "argc") {
 				logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): "+identifier+" is a reserved value!").c_str());

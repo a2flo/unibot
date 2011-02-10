@@ -191,7 +191,6 @@ string clean_path(string path) {
 	}
 #endif
 	
-	
 	// also remove ./
 	path = find_and_replace(path, "./", "");
 #ifdef __WINDOWS__

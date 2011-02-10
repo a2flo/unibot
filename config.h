@@ -59,7 +59,7 @@ protected:
 	 * channel
 	 * verbosity
 	 * argc
-	 * arg_*
+	 * arg_#
 	 */
 	map<string, string> config_data;
 	vector<string> owner_names;
