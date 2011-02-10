@@ -87,7 +87,8 @@ bool config::load_config() {
 			}
 			
 			// arg_* and argc are reserved values
-			if(identifier.substr(0, 4) == "arg_" || identifier.substr(0, 4) == "argc") {
+			const string id_4 = identifier.size() >= 4 ? identifier.substr(0, 4) : "";
+			if(id_4 == "arg_" || id_4 == "argc") {
 				logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): "+identifier+" is a reserved value!").c_str());
 				continue;
 			}
