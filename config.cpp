@@ -18,9 +18,15 @@
 
 #include "config.h"
 
-config::config(const char* config_file) {
+config::config(const char* config_file, const ssize_t& argc, const char** argv) {
 	// default values
 	config_data["verbosity"] = to_str(logger::LT_MSG);
+	
+	config_data["argc"] = to_str(argc);
+	config_data["arg_0"] = clean_path(get_absolute_path()+string(argv[0]));
+	for(ssize_t i = 1; i < argc; i++) {
+		config_data["arg_"+to_str(i)] = argv[i];
+	}
 	
 	logger::set_config(this);
 	
@@ -78,6 +84,12 @@ bool config::load_config() {
 					logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): invalid config version "+value+" - current version: "+to_str(UNIBOT_CONFIG_VERSION)+"!").c_str());
 					return false;
 				}
+			}
+			
+			// arg_* and argc are reserved values
+			if(identifier.substr(0, 4) == "arg_" || identifier.substr(0, 4) == "argc") {
+				logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): "+identifier+" is a reserved value!").c_str());
+				continue;
 			}
 			
 			// don't store the password inside the config data ...

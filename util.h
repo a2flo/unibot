@@ -44,6 +44,8 @@
 #endif
 using namespace std;
 
+#define ARRAY_LENGTH(array) (sizeof(array)/sizeof(array[0]))
+
 template<int i> struct int2type {
 	enum { value = i };
 };
@@ -60,16 +62,17 @@ template<typename T> string to_str(const T& var) {
 	return buffer.str();
 }
 
-string find_and_replace(const string& str, const string& find, const string& repl);
-string trim(const string& str);
-void tokenize(vector<string>& dst, const string& src, const char delim);
-string encode_url(string& url);
-string encode_url(const char* url);
+extern string find_and_replace(const string& str, const string& find, const string& repl);
+extern string trim(const string& str);
+extern void tokenize(vector<string>& dst, const string& src, const char delim);
+extern string encode_url(string& url);
+extern string encode_url(const char* url);
 
-string str_to_lower(const string& str);
-string str_to_upper(const string& str);
+extern string str_to_lower(const string& str);
+extern string str_to_upper(const string& str);
 
-void set_call_path(const char* path);
-const string& get_absolute_path();
+extern void set_call_path(const char* path);
+extern const string& get_absolute_path();
+extern string clean_path(string path);
 
 #endif

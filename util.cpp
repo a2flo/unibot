@@ -165,3 +165,38 @@ string find_and_replace(const string& str, const string& find, const string& rep
 	}
 	return ret;
 }
+
+string clean_path(string path) {
+	size_t pos = 0, erase_pos;
+
+	while((pos = path.find("../", 0)) != string::npos) {
+		erase_pos = path.rfind("/", pos-2);
+#ifdef __WINDOWS__
+		if(erase_pos == string::npos) erase_pos = path.rfind("\\", pos-2);
+#endif
+		if(erase_pos != string::npos) {
+			path.erase(erase_pos+1, pos+2-erase_pos);
+		}
+	}
+	
+#ifdef __WINDOWS__
+	// additional windows path handling
+	pos = 0, erase_pos;
+	while((pos = path.find("..\\", 0)) != string::npos) {
+		erase_pos = path.rfind("/", pos-2);
+		if(erase_pos == string::npos) erase_pos = path.rfind("\\", pos-2);
+		if(erase_pos != string::npos) {
+			path.erase(erase_pos+1, pos+2-erase_pos);
+		}
+	}
+#endif
+	
+	
+	// also remove ./
+	path = find_and_replace(path, "./", "");
+#ifdef __WINDOWS__
+	path = find_and_replace(path, ".\\", "");
+#endif
+	
+	return path;
+}

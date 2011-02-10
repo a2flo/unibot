@@ -4,7 +4,6 @@
 -- TODO: player timeout/kick after 1 min? inactivity
 
 require "global"
-require "table"
 require "game_framework"
 
 decks = 4

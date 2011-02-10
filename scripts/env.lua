@@ -14,6 +14,9 @@ function handle_message(origin, target, cmd, parameters)
 		if cmd == "get" then
 			send_private_msg(target, parameters..": "..tostring(get_bot_state(parameters)))
 		end
+		if cmd == "conf" then
+			send_private_msg(target, parameters..": "..tostring(get_config_entry(parameters)))
+		end
 		if cmd == "env" then
 			local env_vars = { "connected", "joined", "parted", "op", "quit", "kicked", "identified", "silenced" }
 			

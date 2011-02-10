@@ -284,21 +284,22 @@ int lua_bindings::get_users(lua_State* state) {
 			lua_pushstring(state, user_iter->first.c_str());
 			
 			// value (-> new table, containing two strings)
-			lua_createtable(state, 2, 0);
+			size_t arg = 0;
+			lua_createtable(state, 2, arg++);
 			lua_pushstring(state, user_iter->second->nick.c_str());
-			lua_rawseti(state, -2, 1);
+			lua_rawseti(state, -2, arg++);
 			lua_pushstring(state, user_iter->second->real_name.c_str());
-			lua_rawseti(state, -2, 2);
+			lua_rawseti(state, -2, arg++);
 			lua_pushstring(state, user_iter->second->host.c_str());
-			lua_rawseti(state, -2, 3);
+			lua_rawseti(state, -2, arg++);
 			lua_pushstring(state, user_iter->second->host_user.c_str());
-			lua_rawseti(state, -2, 4);
+			lua_rawseti(state, -2, arg++);
 			lua_pushstring(state, user_iter->second->registered.c_str());
-			lua_rawseti(state, -2, 5);
+			lua_rawseti(state, -2, arg++);
 			lua_pushstring(state, user_iter->second->ctcp_support.c_str());
-			lua_rawseti(state, -2, 6);
+			lua_rawseti(state, -2, arg++);
 			lua_pushstring(state, user_iter->second->client.c_str());
-			lua_rawseti(state, -2, 7);
+			lua_rawseti(state, -2, arg++);
 			
 			// add key + value table to users table
 			lua_settable(state, -3);

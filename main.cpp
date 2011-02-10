@@ -32,9 +32,9 @@ int main(int argc, char* argv[]) {
 	config* conf;
 	try {
 #ifndef __WINDOWS__
-		conf = new config("/etc/unibot.conf");
+		conf = new config("/etc/unibot.conf", (ssize_t)argc, (const char**)argv);
 #else
-		conf = new config("C:/unibot.conf");
+		conf = new config("C:/unibot.conf", (ssize_t)argc, (const char**)argv);
 #endif
 	}
 	catch(...) {
@@ -77,9 +77,20 @@ int main(int argc, char* argv[]) {
 #ifndef __WINDOWS__
 	if(restart) {
 		cout << "restarting bot ..." << endl;
-		system("killall unibot 2&>/dev/null");
+		
+		// get binary name
+		string binary = clean_path(argv[0]);
+		const size_t slash_pos = binary.rfind('/');
+		if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
+		
+#ifdef __APPLE__
+		string restart_cmd = "killall "+binary+" 2&>/dev/null && sleep 1 && "+string(argv[0]);
+		system(restart_cmd.c_str());
+#else
+		system(string("killall "+binary).c_str());
 		system("sleep 1");
 		system(string(argv[0]).c_str());
+#endif
 	}
 #endif
 	

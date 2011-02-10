@@ -27,7 +27,7 @@ class invalid_config_exception : exception {};
 
 class config {
 public:
-	config(const char* config_file);
+	config(const char* config_file, const ssize_t& argc, const char** argv);
 	~config();
 	
 	bool load_config();
@@ -58,6 +58,8 @@ protected:
 	 * port
 	 * channel
 	 * verbosity
+	 * argc
+	 * arg_*
 	 */
 	map<string, string> config_data;
 	vector<string> owner_names;
