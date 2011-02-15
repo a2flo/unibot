@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 	
 	// initialize SDL
 	if(SDL_Init(0) < 0) {
-		logger::log(logger::LT_ERROR, "main.cpp", string(string("couldn't initialize SDL: ") + string(SDL_GetError())).c_str());
+		unibot_error("couldn't initialize SDL: %s", SDL_GetError());
 		exit(-1);
 	}
 	
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 	
 	SDL_Quit();
 
-	logger::log(logger::LT_DEBUG, "main.cpp", ">> eol");
+	unibot_debug(">> eol");
 	delete conf;
 	
 	destroy_event_handler();

@@ -179,7 +179,7 @@ void bot_states::set_silenced(bool silenced) {
 
 bool bot_states::is(const string& state_name) {
 	if(states.count(state_name) == 0) {
-		logger::log(logger::LT_ERROR, "bot_states.cpp", string("is(): unknown state name \""+state_name+"\"!").c_str());
+		unibot_error("unknown state name \"%s\"!", state_name);
 		return false;
 	}
 	return states[state_name];
@@ -187,7 +187,7 @@ bool bot_states::is(const string& state_name) {
 
 void bot_states::set(const string& state_name, bool new_state) {
 	if(states.count(state_name) == 0) {
-		logger::log(logger::LT_ERROR, "bot_states.cpp", string("set(): unknown state name \""+state_name+"\"!").c_str());
+		unibot_error("unknown state name \"%s\"!", state_name);
 		return;
 	}
 	states[state_name] = new_state;

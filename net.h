@@ -26,6 +26,7 @@
 #include "net_protocol.h"
 #include "net_tcp.h"
 #include "config.h"
+#include "logger.h"
 #include "threading/thread_base.h"
 
 typedef std_protocol<UDPsocket> UDP_protocol;
@@ -71,17 +72,17 @@ protected:
 template <class protocol_policy> net<protocol_policy>::net(config* conf) :
 thread_base(), conf(conf), last_packet_remains(""), received_length(0), packets_per_second(0), last_packet_send(0) {
 	if(SDLNet_Init() == -1) {
-		logger::log(logger::LT_ERROR, "net.h", string(string("couldn't initialize net: ") + string(SDLNet_GetError())).c_str());
+		unibot_error("couldn't initialize net: %s", SDLNet_GetError());
 		return;
 	}
 	
-	logger::log(logger::LT_DEBUG, "net.h", "net initialized!");
+	unibot_debug("net initialized!");
 	this->start(); // start thread
 }
 
 template <class protocol_policy> net<protocol_policy>::~net() {
 	SDLNet_Quit();
-	logger::log(logger::LT_DEBUG, "net.h", "net deleted!");
+	unibot_debug("net deleted!");
 }
 
 template <class protocol_policy> bool net<protocol_policy>::connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port) {
@@ -91,14 +92,14 @@ template <class protocol_policy> bool net<protocol_policy>::connect_to_server(co
 		if(!protocol.is_valid()) throw exception();
 		
 		if(SDLNet_ResolveHost(&server_ip, server_name, port) == -1) {
-			logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(server): ") + string(SDLNet_GetError())).c_str());
+			unibot_error("SDLNet_ResolveHost(server): %s", SDLNet_GetError());
 			throw exception();
 		}
 		
 		// currently useless for an irc bot ...
 #if 0
 		if(SDLNet_ResolveHost(&local_ip, NULL, local_port) == -1) {
-			logger::log(logger::LT_ERROR, "net.h", string(string("SDLNet_ResolveHost(client): ") + string(SDLNet_GetError())).c_str());
+			unibot_error("SDLNet_ResolveHost(client): %s", SDLNet_GetError());
 			throw exception();
 		}
 #endif
@@ -112,10 +113,10 @@ template <class protocol_policy> bool net<protocol_policy>::connect_to_server(co
 #endif
 		
 		// connection created - data transfer is now possible
-		logger::log(logger::LT_DEBUG, "net.h", "connect_to_server(): successfully connected to server!");
+		unibot_debug("successfully connected to server!");
 	}
 	catch(...) {
-		logger::log(logger::LT_ERROR, "net.h", "connect_to_server(): failed to connect to server!");
+		unibot_error("failed to connect to server!");
 		unlock();
 		set_thread_should_finish(); // and quit ...
 		return false;
@@ -160,7 +161,7 @@ template <class protocol_policy> void net<protocol_policy>::run() {
 	}
 	catch(...) {
 		// something is wrong, finsh and return
-		logger::log(logger::LT_ERROR, "net.h", "run(): unknown net error, exiting ...");
+		unibot_error("unknown net error, exiting ...");
 		set_thread_should_finish();
 		return;
 	}
@@ -188,7 +189,7 @@ template <class protocol_policy> void net<protocol_policy>::run() {
 
 template <class protocol_policy> int net<protocol_policy>::receive_packet(char* data, const unsigned int max_len) {
 	if(!protocol.is_valid()) {
-		logger::log(logger::LT_ERROR, "net.h", "receive_packet(): invalid protocol and/or sockets!");
+		unibot_error("invalid protocol and/or sockets!");
 		return -1;
 	}
 	
@@ -196,7 +197,7 @@ template <class protocol_policy> int net<protocol_policy>::receive_packet(char* 
 	int len = protocol.server_receive(data, max_len);
 	// received packet length is equal or less than zero, return -1
 	if(len <= 0) {
-		logger::log(logger::LT_ERROR, "net.h", "receive_packet(): invalid data received!");
+		unibot_error("invalid data received!");
 		return -1;
 	}
 	
@@ -240,10 +241,10 @@ template <class protocol_policy> int net<protocol_policy>::process_packet(const 
 
 template <class protocol_policy> void net<protocol_policy>::send_packet(const char* data, const unsigned int len) {
 	if(!protocol.server_send(data, len)) {
-		logger::log(logger::LT_ERROR, "net.h", "send_packet(): couldn't send packet!");
+		unibot_error("couldn't send packet!");
 	}
 	else if(conf->get_verbosity() >= logger::LT_DEBUG) {
-		cout << "send (" << len << "): " << string(data).substr(0, len-1) << endl;
+		unibot_debug("send (%i): %s", len, string(data).substr(0, len-1));
 	}
 }
 

@@ -63,7 +63,7 @@ protected:
 		const char* error_str = lua_tostring(state, -1);
 		
 		// print error message
-		logger::log(logger::LT_ERROR, "lua.h", string("lua error: "+string(error_str != NULL ? error_str : "<unknown>")+", in line "+to_str(dbg.currentline)+"\nsrc:\n"+dbg.short_src).c_str());
+		unibot_error("lua error: %s, in line %i\nsrc:\n%s", (error_str != NULL ? error_str : "<unknown>"), dbg.currentline, dbg.short_src);
 		return 0;
 	}
 	
@@ -106,7 +106,7 @@ protected:
 
 			load_error |= (lua_pcall(state, 0, 0, -lua_gettop(state)) == 0 ? false : true); // error handler @index #0
 			if(load_error) {
-				logger::log(logger::LT_ERROR, "lua.h", string("error loading lua script \""+script_filename+"\"!").c_str());
+				unibot_error("error loading lua script \"%s\"!", script_filename);
 				lua_pop(state, 1);
 			}
 			

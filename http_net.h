@@ -98,7 +98,7 @@ template <class protocol_policy> void http_net<protocol_policy>::open_url(const 
 		// if http:// wasn't found, check for other ://
 		if(url_str.find("://") != string::npos) {
 			// if so, another protocol is requested, exit
-			logger::log(logger::LT_ERROR, "http_net.h", string("open_url(): "+url_str+": invalid protocol!").c_str());
+			unibot_error("%s: invalid protocol!", url_str);
 			this->set_thread_should_finish();
 			return;
 		}
@@ -125,7 +125,7 @@ template <class protocol_policy> void http_net<protocol_policy>::open_url(const 
 		server_name = server_name.substr(0, colon_pos);
 	}
 	if(!this->connect_to_server(server_name.c_str(), port)) {
-		logger::log(logger::LT_ERROR, "http_net.h", string("open_url(): couldn't connect to server "+server_name+"!").c_str());
+		unibot_error("couldn't connect to server %s!", server_name);
 		this->set_thread_should_finish();
 		return;
 	}
@@ -218,7 +218,7 @@ template <class protocol_policy> void http_net<protocol_policy>::run() {
 	}
 	
 	if((start_time + request_timeout*1000) < SDL_GetTicks()) {
-		logger::log(logger::LT_ERROR, "http_net.h", string("run(): timeout for "+server_name+server_url+" request!").c_str());
+		unibot_error("timeout for %s%s request!", server_name, server_url);
 		this->set_thread_should_finish();
 	}
 }
@@ -231,8 +231,7 @@ template <class protocol_policy> void http_net<protocol_policy>::check_header() 
 	const size_t space_2 = line->find(" ", space_1);
 	status_code = (HTTP_STATUS_CODE)strtoul(line->substr(space_1, space_2-space_1).c_str(), NULL, 10);
 	if(status_code != SC_200) {
-		logger::log(logger::LT_ERROR, "http_net.h", string("check_header(): "+server_name+server_url+": received status code "+
-														   to_str(status_code)+"!").c_str());
+		unibot_error("%s%s: received status code %i!", server_name, server_url, status_code);
 		this->set_thread_should_finish();
 		return;
 	}

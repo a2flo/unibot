@@ -46,7 +46,7 @@ bool config::load_config() {
 	file.open(config_file.c_str(), fstream::in);
 	if(!file.is_open()) {
 		file.clear();
-		logger::log(logger::LT_ERROR, "config.cpp", string(string("load_config(): couldn't open config file ")+config_file+string("!")).c_str());
+		unibot_error("couldn't open config file %s!", config_file);
 		return false;
 	}
 	
@@ -85,7 +85,7 @@ bool config::load_config() {
 			if(identifier == "config_version") {
 				config_version_found = true;
 				if(value != to_str(UNIBOT_CONFIG_VERSION)) {
-					logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): invalid config version "+value+" - current version: "+to_str(UNIBOT_CONFIG_VERSION)+"!").c_str());
+					unibot_error("invalid config version %i - current version: %i!", value, UNIBOT_CONFIG_VERSION);
 					return false;
 				}
 			}
@@ -93,7 +93,7 @@ bool config::load_config() {
 			// arg_# and argc are reserved values
 			const string id_4 = identifier.size() >= 4 ? identifier.substr(0, 4) : "";
 			if(id_4 == "arg_" || id_4 == "argc") {
-				logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): "+identifier+" is a reserved value!").c_str());
+				unibot_error("%s is a reserved value!", identifier);
 				continue;
 			}
 			
@@ -125,7 +125,7 @@ bool config::load_config() {
 	}
 	
 	if(!config_version_found) {
-		logger::log(logger::LT_ERROR, "config.cpp", string("load_config(): no config version specified!").c_str());
+		unibot_error("no config version specified!");
 		return false;
 	}
 	
@@ -167,7 +167,7 @@ string config::get_channel() {
 
 string config::get_config_entry(const string& name) {
 	if(config_data.count(name) == 0) {
-		logger::log(logger::LT_ERROR, "config.cpp", string("get_config_entry(): unknown config entry name \""+name+"\"!").c_str());
+		unibot_error("unknown config entry name \"%s\"!", name);
 		return "";
 	}
 	return config_data[name];
@@ -180,6 +180,6 @@ bool config::is_owner(string user) {
 	return false;
 }
 
-size_t config::get_verbosity() {
-	return strtoul(config_data["verbosity"].c_str(), NULL, 10);
+const size_t config::get_verbosity() const {
+	return strtoul(config_data.find("verbosity")->second.c_str(), NULL, 10);
 }

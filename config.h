@@ -41,7 +41,7 @@ public:
 	string get_hostname();
 	unsigned short int get_port();
 	string get_channel();
-	size_t get_verbosity();
+	const size_t get_verbosity() const;
 	
 	bool is_owner(string user);
 	

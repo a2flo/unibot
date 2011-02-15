@@ -27,7 +27,7 @@ template<> struct std_protocol<TCPsocket> {
 		// initialize socket set
 		socketset = SDLNet_AllocSocketSet(2);
 		if(socketset == NULL) {
-			logger::log(logger::LT_ERROR, "net_tcp.h", string(string("couldn't create socket set: ") + string(SDLNet_GetError())).c_str());
+			unibot_error("couldn't create socket set: %s", SDLNet_GetError());
 			valid = false;
 		}
 	}
@@ -55,13 +55,13 @@ template<> struct std_protocol<TCPsocket> {
 		if(is_valid()) {
 			int active_sockets = SDLNet_CheckSockets(socketset, 0);
 			if((server_set || client_set) && (active_sockets == -1 || active_sockets > 2)) {
-				logger::log(logger::LT_ERROR, "net_tcp.h", "valid_sockets(): invalid socket activity!");
+				unibot_error("invalid socket activity!");
 				valid = false;
 				return false;
 			}
 			return true;
 		}
-		logger::log(logger::LT_ERROR, "net_tcp.h", "valid_sockets(): invalid sockets!");
+		unibot_error("invalid sockets!");
 		return false;
 	}
 	
@@ -71,7 +71,7 @@ template<> struct std_protocol<TCPsocket> {
 		
 		server_socket = SDLNet_TCP_Open(&server_ip);
 		if(server_socket == NULL) {
-			logger::log(logger::LT_ERROR, "net_tcp.h", string(string("open_server_socket(): ") + string(SDLNet_GetError())).c_str());
+			unibot_error("server socket error: %s", SDLNet_GetError());
 			return false;
 		}
 		
@@ -84,7 +84,7 @@ template<> struct std_protocol<TCPsocket> {
 		
 		client_socket = SDLNet_TCP_Open(&client_ip);
 		if(client_socket == NULL) {
-			logger::log(logger::LT_ERROR, "net_tcp.h", string(string("open_client_socket(): ") + string(SDLNet_GetError())).c_str());
+			unibot_error("client socket error: %s", SDLNet_GetError());
 			return false;
 		}
 		
@@ -111,7 +111,7 @@ template<> struct std_protocol<TCPsocket> {
 	bool server_send(const char* data, const int len) {
 		int send_len = SDLNet_TCP_Send(server_socket, data, len);
 		if(send_len != len) {
-			logger::log(logger::LT_ERROR, "net_tcp.h", string(string("server_send(): invalid data send: ") + string(SDLNet_GetError())).c_str());
+			unibot_error("invalid data send: %s", SDLNet_GetError());
 			return false;
 		}
 		return true;
@@ -120,7 +120,7 @@ template<> struct std_protocol<TCPsocket> {
 	bool client_send(const char* data, const int len) {
 		int send_len = SDLNet_TCP_Send(client_socket, data, len);
 		if(send_len != len) {
-			logger::log(logger::LT_ERROR, "net_tcp.h", string(string("client_send(): invalid data send: ") + string(SDLNet_GetError())).c_str());
+			unibot_error("invalid data send: %s", SDLNet_GetError());
 			return false;
 		}
 		return true;

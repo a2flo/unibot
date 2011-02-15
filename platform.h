@@ -117,8 +117,7 @@ extern "C" {
 using namespace std;
 
 // logger
-#include "log.h"
-//using namespace logger;
+#include "logger.h"
 
 #include "util.h"
 

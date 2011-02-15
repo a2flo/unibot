@@ -131,12 +131,12 @@ void bot_handler::run() {
 					break;
 				case CMD_001:
 					states->set_connected(true);
-					logger::log(logger::LT_DEBUG, "bot_handler.cpp", "successfully connected to the server!");
+					unibot_debug("successfully connected to the server!");
 					n->send_identify(conf->get_bot_password());
 					break;
 				case CMD_004:
 					servername = cmd_data;
-					logger::log(logger::LT_DEBUG, "bot_handler.cpp", string(string("server name is: ") + servername).c_str());
+					unibot_debug("server name is: %s", servername);
 					break;
 				case CMD_352:
 					// this might get nasty, catch exceptions, just to be on the safe side
@@ -151,7 +151,7 @@ void bot_handler::run() {
 						states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "", "");
 					}
 					catch(...) {
-						logger::log(logger::LT_ERROR, "bot_handler.cpp", string("CMD_352 failed").c_str());
+						unibot_error("CMD_352 failed");
 					}
 					break;
 				case CMD_353: {
@@ -176,7 +176,7 @@ void bot_handler::run() {
 				break;
 				case PING:
 					n->send("PONG " + servername);
-					logger::log(logger::LT_DEBUG, "bot_handler.cpp", "PONG!");
+					unibot_debug("PONG!");
 					break;
 				case NOTICE:
 					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
@@ -217,7 +217,7 @@ void bot_handler::run() {
 					if(conf->get_channel() == cmd_tokens[2].substr(1, cmd_tokens[2].length()-1)) {
 						// if the bot joined the channel, set the flag and send a "hi there ;)" message
 						if(strip_user(cmd_sender) == conf->get_bot_name()) {
-							logger::log(logger::LT_DEBUG, "bot_handler.cpp", "joined the channel");
+							unibot_debug("joined the channel");
 							states->set_joined(true);
 							n->send_channel_msg("hi there ;)");
 							
@@ -229,7 +229,7 @@ void bot_handler::run() {
 								// wait for 2 seconds before kicking the user
 								SDL_Delay(2000);
 								
-								cout << "kicking: " << states->get_kick_user() << endl;
+								unibot_debug("kicking: %s", states->get_kick_user());
 								n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
 							}
 						}
@@ -269,7 +269,7 @@ void bot_handler::run() {
 						states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "", "");
 						
 						// log msg
-						logger::log(logger::LT_MSG, "bot_handler.cpp", string(strip_user(cmd_sender) + ": " + msg).c_str());
+						unibot_msg("%s: %s", strip_user(cmd_sender), msg);
 					}
 				}
 				break;
@@ -298,7 +298,7 @@ void bot_handler::run() {
 							n->join_channel(conf->get_channel());
 							
 							states->set_kick_user(strip_user(cmd_sender));
-							cout << "to get kicked: " << states->get_kick_user() << endl;
+							unibot_debug("to get kicked: %s", states->get_kick_user());
 							states->set_kicked(true);
 						}
 					}
@@ -325,7 +325,7 @@ void bot_handler::run() {
 				n->set_thread_should_finish();
 			}
 			
-			logger::log(logger::LT_DEBUG, "bot_handler.cpp", string(*data_iter).c_str());
+			unibot_debug("%s", *data_iter);
 		}
 		n->clear_received_data();
 	}
@@ -447,7 +447,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("reload_script ") == 0 && msg.length() > 14) {
 			string script = msg.substr(14, msg.length()-14);
 			lua_obj->reload_script(script);
-			logger::log(logger::LT_DEBUG, "bot_handler.cpp", ("script "+script+" reloaded!").c_str());
+			unibot_debug("script %s reloaded!", script);
 		}
 		else if(cmd == "list_scripts") {
 			if(conf->is_owner(origin)) {
@@ -561,7 +561,7 @@ string bot_handler::strip_special_chars(const string& str) {
 
 string bot_handler::get_prev_msg(const size_t& offset) {
 	if(offset == 0 || offset > msg_store.size()) {
-		logger::log(logger::LT_ERROR, "bot_handler.cpp", string("get_prev_msg(): invalid offset "+to_str(offset)+"!").c_str());
+		unibot_error("invalid offset %i!", offset);
 		return "";
 	}
 	return msg_store[msg_store.size() - offset];
