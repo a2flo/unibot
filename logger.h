@@ -36,7 +36,7 @@ using namespace std;
 #define unibot_log(...) logger::log(logger::LT_NONE, __FILE__, __func__, __VA_ARGS__)
 
 // check if atomics and sdl 1.3 are available
-#ifndef _SDL_atomic_h_
+#if !defined(_SDL_atomic_h_ ) || (SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION < 3)
 #error "UniBot requires SDL 1.3 with support for atomics"
 #endif
 
