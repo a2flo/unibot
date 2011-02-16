@@ -35,6 +35,20 @@ using namespace std;
 #define unibot_msg(...) logger::log(logger::LT_MSG, __FILE__, __func__, __VA_ARGS__)
 #define unibot_log(...) logger::log(logger::LT_NONE, __FILE__, __func__, __VA_ARGS__)
 
+// check if atomics and sdl 1.3 are available
+#ifndef _SDL_atomic_h_
+#error "UniBot requires SDL 1.3 with support for atomics"
+#endif
+
+// this is only a temporary workaround to support older sdl 1.3 versions (TODO: remove at a later point)
+#if defined(SDL_AtomicAdd) || defined(SDL_atomic_t)
+#define AtomicFetchThenIncrement(a) SDL_AtomicAdd(a, 1)
+#define atomic_t SDL_atomic_t
+#else
+#define AtomicFetchThenIncrement(a) SDL_AtomicFetchThenIncrement32(a.value)
+typedef struct { volatile unsigned int value; } atomic_t;
+#endif
+
 class config;
 class logger {
 public:
@@ -47,7 +61,7 @@ public:
 	
 	static void init();
 	static void destroy();
-	static void set_config(const config const* conf);
+	static void set_config(const config* conf);
 	
 	//
 	static const char* type_to_str(const LOG_TYPE& type) {
@@ -76,9 +90,9 @@ protected:
 	
 	static fstream log_file;
 	static fstream msg_file;
-	static volatile unsigned int err_counter;
+	static atomic_t err_counter;
 	static SDL_SpinLock slock;
-	static const config const* conf;
+	static const config* conf;
 
 	//
 	static bool prepare_log(stringstream& buffer, const LOG_TYPE& type, const char* file, const char* func);

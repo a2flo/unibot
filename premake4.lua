@@ -35,7 +35,7 @@ project "unibot"
 
 	if(not os.is("windows")) then
 		includedirs { "/usr/include", "/usr/local/include", "./", "threading/" }
-		buildoptions { "-Wall -x c++ -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
+		buildoptions { "-Wall -x c++ -std=c++0x -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
 		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
 		prebuildcommands { "./build_version.sh" }
 		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }

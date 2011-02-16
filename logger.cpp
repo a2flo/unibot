@@ -24,11 +24,12 @@
 
 fstream logger::log_file(UNIBOT_LOG_FILENAME, fstream::out);
 fstream logger::msg_file(UNIBOT_MSG_FILENAME, fstream::out);
-volatile unsigned int logger::err_counter = 0;
+atomic_t logger::err_counter;
 SDL_SpinLock logger::slock;
-const config const* logger::conf = NULL;
+const config* logger::conf = NULL;
 
 void logger::init() {
+	logger::err_counter.value = 0;
 	if(!log_file.is_open()) {
 		cout << "LOG ERROR: couldn't open log file!" << endl;
 	}
@@ -50,7 +51,7 @@ bool logger::prepare_log(stringstream& buffer, const LOG_TYPE& type, const char*
 	
 	if(type != logger::LT_NONE && type != logger::LT_MSG) {
 		buffer << logger::type_to_str(type);
-		if(type == logger::LT_ERROR) buffer << " #" << SDL_AtomicFetchThenIncrement32(&err_counter);
+		if(type == logger::LT_ERROR) buffer << " #" << AtomicFetchThenIncrement(&err_counter);
 		buffer << ": ";
 		/* prettify file string (aka strip path) */
 		string file_str = file;
@@ -100,6 +101,6 @@ void logger::_log(stringstream& buffer, const LOG_TYPE& type, const char* str) {
 	SDL_AtomicUnlock(&slock);
 }
 
-void logger::set_config(const config const* conf) {
+void logger::set_config(const config* conf) {
 	logger::conf = conf;
 }

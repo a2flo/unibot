@@ -19,20 +19,6 @@
 #include "lua_bindings.h"
 #include "lua.h"
 
-// TODO: ifdef when compiling in c++0x mode (-tr1/)
-#if !defined(__clang__) || (defined(__clang__) && !defined(_LIBCPP_VERSION))
-
-#ifndef __WINDOWS__
-#include <tr1/tuple>
-#else
-#include <tuple>
-#endif
-
-using namespace tr1;
-
-#endif
-
-
 /////////////////////////////////////////////////////
 // helper functions
 
