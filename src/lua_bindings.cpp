@@ -110,7 +110,7 @@ template<size_t arg_num, typename T> T get_and_check_lua_arg(lua_State* state) {
 	return get_lua_arg<T>(state, arg_num);
 }
 
-// now, where are those variadic templates ... -.-?
+// TODO: now, where are those variadic templates ... -.-?
 // note: lua argument count starts at 1, not 0!
 template<typename arg1> tuple<arg1> get_lua_args(lua_State* state) {
 	return make_tuple(get_and_check_lua_arg<1, arg1>(state));

@@ -30,11 +30,11 @@ project "unibot"
 	targetname "unibot"
 	kind "ConsoleApp"
 	language "C++"
-	files { "*.h", "*.cpp", "threading/*.h", "threading/*.cpp" }
+	files { "src/**.h", "src/**.cpp" }
 	platforms { "x32", "x64" }
 
 	if(not os.is("windows")) then
-		includedirs { "/usr/include", "/usr/local/include", "./", "threading/" }
+		includedirs { "/usr/include", "/usr/local/include", "src/", "src/threading/" }
 		buildoptions { "-Wall -x c++ -std=c++0x -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
 		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
 		prebuildcommands { "./build_version.sh" }

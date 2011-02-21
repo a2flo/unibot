@@ -83,14 +83,8 @@ int main(int argc, char* argv[]) {
 		const size_t slash_pos = binary.rfind('/');
 		if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
 		
-#ifdef __APPLE__
-		string restart_cmd = "killall "+binary+" 2&>/dev/null && sleep 1 && "+string(argv[0]);
+		string restart_cmd = "killall "+binary+" >/dev/null 2>&1 && sleep 1 && "+string(argv[0]);
 		system(restart_cmd.c_str());
-#else
-		system(string("killall "+binary).c_str());
-		system("sleep 1");
-		system(string(argv[0]).c_str());
-#endif
 	}
 #endif
 	

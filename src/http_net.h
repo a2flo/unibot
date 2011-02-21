@@ -30,6 +30,12 @@ public:
 	http_net(config* conf);
 	virtual ~http_net() {} 
 
+	enum HTTP_STATUS_CODE {
+		SC_NONE = 0,
+		SC_200 = 200,
+		SC_404 = 404
+	};
+	
 	void open_url(const char* url, const size_t timeout = 30);
 	virtual void run();
 	
@@ -43,11 +49,6 @@ protected:
 	
 	size_t start_time;
 	
-	enum HTTP_STATUS_CODE {
-		SC_NONE = 0,
-		SC_200 = 200,
-		SC_404 = 404
-	};
 	HTTP_STATUS_CODE status_code;
 	
 	enum PACKET_TYPE {

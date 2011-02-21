@@ -98,8 +98,7 @@ bot_handler::~bot_handler() {
 
 void bot_handler::run() {
 	if(n->is_running() && n->is_received_data()) {
-		deque<string> data;
-		n->get_and_clear_received_data(data);
+		deque<string> data = n->get_and_clear_received_data();
 		for(deque<string>::iterator data_iter = data.begin(); data_iter != data.end(); data_iter++) {
 			// handle the data
 			// cmd_tokens:
@@ -132,6 +131,7 @@ void bot_handler::run() {
 				case CMD_001:
 					states->set_connected(true);
 					unibot_debug("successfully connected to the server!");
+					n->join_channel(conf->get_channel());
 					n->send_identify(conf->get_bot_password());
 					break;
 				case CMD_004:
@@ -181,7 +181,6 @@ void bot_handler::run() {
 				case NOTICE:
 					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
 						states->set_identified(true);
-						n->join_channel(conf->get_channel());
 					}
 					else if(strip_user(cmd_sender) == "NickServ") {
 						// acc <nick> info, ACC 3 == nick/user is registered and identified
@@ -478,7 +477,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		}
 		else if(stripped_msg == "TIME") {
 			stringstream local_time;
-			const time_put<char>& tmput = use_facet<time_put<char> >(loc);
+			const time_put<char>& tmput = use_facet<time_put<char>>(loc);
 			time_t timestamp;
 			time(&timestamp);
 			const char* pattern = "%Y-%m-%d %H:%M:%S %Z";

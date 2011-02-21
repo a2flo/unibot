@@ -42,7 +42,7 @@ public:
 	virtual bool connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port = 65535);
 	
 	virtual bool is_received_data();
-	virtual void get_and_clear_received_data(deque<string>& dst);
+	virtual deque<string> get_and_clear_received_data();
 	virtual void clear_received_data();
 	
 	virtual IPaddress* get_local_ip();
@@ -252,11 +252,13 @@ template <class protocol_policy> bool net<protocol_policy>::is_received_data() {
 	return !receive_store.empty();
 }
 
-template <class protocol_policy> void net<protocol_policy>::get_and_clear_received_data(deque<string>& dst) {
+template <class protocol_policy> deque<string> net<protocol_policy>::get_and_clear_received_data() {
+	deque<string> ret;
 	this->lock();
-	dst = receive_store;
+	std::swap(ret, receive_store);
 	receive_store.clear();
 	this->unlock();
+	return ret;
 }
 
 template <class protocol_policy> void net<protocol_policy>::clear_received_data() {

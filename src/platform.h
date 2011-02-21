@@ -33,14 +33,6 @@
 
 #define setenv(var_name, var_value, x) SetEnvironmentVariable(var_name, var_value)
 
-#if (_MSC_VER < 1400) // define vsnprintf for VC++ 7.1 and minor
-#ifndef vsnprintf
-#define vsnprintf _vsnprintf
-#undef strlwr
-#define strlwr _strlwr
-#endif // vsnprintf
-#endif // (_MSC_VER < 1400)
-
 #pragma warning(disable: 4251)
 
 // Mac OS X
@@ -116,11 +108,37 @@ extern "C" {
 
 using namespace std;
 
-// logger
+// global unibot headers
+#include "type_list.h"
+#include "functor.h"
 #include "logger.h"
-
 #include "util.h"
 
 #ifndef __has_feature
 #define __has_feature(x) 0
+#endif
+
+// compiler checks:
+// msvc check
+#if defined(_MSC_VER)
+#if (_MSC_VER <= 1600)
+#error "Sorry, but you need MSVC 11.0+ to compile UniBot"
+#endif
+
+// clang check
+#elif defined(__clang__)
+#if !__has_feature(cxx_rvalue_references) || \
+	/*!__has_feature(cxx_auto_type) ||*/ \
+	!__has_feature(cxx_variadic_templates)
+#error "Sorry, but you need Clang with support for 'rvalue_references', 'auto_type' and 'variadic_templates' to compile UniBot"
+#endif
+
+// gcc check
+#elif defined(__GNUC__)
+#if (__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 4)
+#error "Sorry, but you need GCC 4.4+ to compile UniBot"
+#endif
+
+// just fall through ...
+#else
 #endif
