@@ -31,10 +31,10 @@ template<> bool check_lua_type<string>(lua_State* state, const size_t& arg_num) 
 	return (lua_isstring(state, (int)arg_num) == 1);
 }
 
+#ifndef PLATFORM_X86
 template<> bool check_lua_type<int>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
-#ifndef PLATFORM_X86
 template<> bool check_lua_type<unsigned int>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
@@ -65,10 +65,10 @@ template<> string get_lua_arg<string>(lua_State* state, const size_t& arg_num) {
 	return string(lua_tostring(state, (int)arg_num));
 }
 
+#ifndef PLATFORM_X86
 template<> int get_lua_arg<int>(lua_State* state, const size_t& arg_num) {
 	return int(lua_tointeger(state, (int)arg_num));
 }
-#ifndef PLATFORM_X86
 template<> unsigned int get_lua_arg<unsigned int>(lua_State* state, const size_t& arg_num) {
 	return (unsigned int)(lua_tointeger(state, (int)arg_num));
 }
@@ -265,7 +265,7 @@ int lua_bindings::get_users(lua_State* state) {
 		// create user table and add all users to it
 		// table format: { nickname = { realname, host }, ... }
 		lua_createtable(state, (int)users->size(), 0);
-		for(map<string, bot_states::user_info*>::iterator user_iter = users->begin(); user_iter != users->end(); user_iter++) {
+		for(auto user_iter = users->begin(); user_iter != users->end(); user_iter++) {
 			// key
 			lua_pushstring(state, user_iter->first.c_str());
 			

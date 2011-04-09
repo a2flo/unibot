@@ -32,7 +32,7 @@ lua::lua(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* co
 }
 
 lua::~lua() {
-	for(map<string, lua_script*>::iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
+	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
 		delete (script_iter->second);
 	}
 	script_store.clear();
@@ -133,7 +133,7 @@ void lua::reload_script(const string& filename) {
 }
 
 void lua::check_scripts() {
-	for(map<string, lua_script*>::iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
+	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
 		if(lua_status(script_iter->second->state) != 0) {
 			unibot_error("erroneous status of script/state \"%s\"!", script_iter->first);
 		}
@@ -149,7 +149,7 @@ void lua::handle_message(const string& origin, const string& target, const strin
 	check_scripts();
 	
 	try {
-		for(map<string, lua_script*>::iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
+		for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
 			lua_getglobal(script_iter->second->state, "handle_message");
 			if(!lua_isfunction(script_iter->second->state, -1)) {
 				lua_pop(script_iter->second->state, 1);
@@ -182,7 +182,7 @@ string lua::lua_script_folder(const string addition) {
 
 const vector<string> lua::list_scripts() const {
 	vector<string> script_list;
-	for(map<string, lua_script*>::const_iterator script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
+	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
 		script_list.push_back(script_iter->first);
 	}
 	return script_list;

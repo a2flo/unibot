@@ -73,7 +73,7 @@ bool config::load_config() {
 	bool bot_block = false;
 	bool config_version_found = false;
 	size_t assign_pos = 0;
-	for(vector<string>::iterator line_iter = lines.begin(); line_iter != lines.end(); line_iter++) {
+	for(auto line_iter = lines.begin(); line_iter != lines.end(); line_iter++) {
 		if(line_iter->find(";") == 0 || line_iter->find("#") == 0 || line_iter->find("//") == 0) continue;
 		else if(line_iter->find("[unibot]") == 0) bot_block = true;
 		else if(line_iter->find("[") == 0 && line_iter->find("]") != string::npos) bot_block = false;
@@ -108,12 +108,12 @@ bool config::load_config() {
 				tokenize(owner_names, value, ',');
 				
 				// trim each (array) value
-				for(vector<string>::iterator owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
+				for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
 					*owner_iter = trim(*owner_iter);
 				}
 				
 				// remove empty names
-				for(vector<string>::reverse_iterator owner_iter = owner_names.rbegin(); owner_iter != owner_names.rend(); owner_iter++) {
+				for(auto owner_iter = owner_names.rbegin(); owner_iter != owner_names.rend(); owner_iter++) {
 					if(owner_iter->length() == 0) owner_names.erase(owner_names.begin() + (owner_names.rend() - owner_iter) - 1);
 				}
 				
@@ -174,7 +174,7 @@ string config::get_config_entry(const string& name) {
 }
 
 bool config::is_owner(string user) {
-	for(vector<string>::iterator owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
+	for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
 		if(*owner_iter == user) return true;
 	}
 	return false;

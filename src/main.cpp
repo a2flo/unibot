@@ -18,6 +18,12 @@
 
 #include "main.h"
 
+// these are unnecessary with cygwin (but are defined by sdl -> undef them to prevent problems)
+#ifdef CYGWIN
+#undef main
+#undef SDL_main
+#endif
+
 int main(int argc, char* argv[]) {
 	// set call path and get absolute path
 	set_call_path(argv[0]);

@@ -85,7 +85,7 @@ bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) : 
 	
 	unsigned int cmd_size = sizeof(IRC_COMMAND_STR) / sizeof(const char*);
 	for(unsigned int i = 0; i < cmd_size; i++) {
-		irc_commands.insert(pair<string, IRC_COMMAND>(IRC_COMMAND_STR[i], (bot_handler::IRC_COMMAND)(bot_handler::NONE + i)));
+		irc_commands.insert(pair<string, IRC_COMMAND>(IRC_COMMAND_STR[i], (bot_handler::IRC_COMMAND)(bot_handler::CMD_NONE + i)));
 	}
 	
 	lua_obj = new lua(n, this, states, conf);
@@ -99,7 +99,7 @@ bot_handler::~bot_handler() {
 void bot_handler::run() {
 	if(n->is_running() && n->is_received_data()) {
 		deque<string> data = n->get_and_clear_received_data();
-		for(deque<string>::iterator data_iter = data.begin(); data_iter != data.end(); data_iter++) {
+		for(auto data_iter = data.begin(); data_iter != data.end(); data_iter++) {
 			// handle the data
 			// cmd_tokens:
 			// [0]: sender
@@ -125,7 +125,7 @@ void bot_handler::run() {
 			}
 			
 			switch(current_cmd) {
-				case NONE:
+				case CMD_NONE:
 					// ignore
 					break;
 				case CMD_001:
@@ -164,7 +164,7 @@ void bot_handler::run() {
 					vector<string> users;
 					tokenize(users, user_str, ' ');
 					states->delete_all_users();
-					for(vector<string>::iterator user_iter = users.begin(); user_iter != users.end(); user_iter++) {
+					for(auto user_iter = users.begin(); user_iter != users.end(); user_iter++) {
 						if(user_iter->length() > 0) {
 							if((*user_iter)[0] == '+' || (*user_iter)[0] == '@') {
 								*user_iter = user_iter->substr(1, user_iter->length() - 1);
@@ -174,11 +174,11 @@ void bot_handler::run() {
 					}
 				}
 				break;
-				case PING:
+				case CMD_PING:
 					n->send("PONG " + servername);
 					unibot_debug("PONG!");
 					break;
-				case NOTICE:
+				case CMD_NOTICE:
 					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
 						states->set_identified(true);
 					}
@@ -211,7 +211,7 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case JOIN:
+				case CMD_JOIN:
 					// only handle the main channel
 					if(conf->get_channel() == cmd_tokens[2].substr(1, cmd_tokens[2].length()-1)) {
 						// if the bot joined the channel, set the flag and send a "hi there ;)" message
@@ -241,7 +241,7 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case PART:
+				case CMD_PART:
 					// only handle the main channel
 					if(conf->get_channel() == cmd_tokens[2]) {
 						states->delete_user(strip_user(cmd_sender));
@@ -250,10 +250,10 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case QUIT:
+				case CMD_QUIT:
 					states->delete_user(strip_user(cmd_sender));
 					break;
-				case PRIVMSG: {
+				case CMD_PRIVMSG: {
 					// handle the message (also trim the leading ':')
 					string msg = cmd_joined_data.substr(1, cmd_joined_data.length()-1);
 					handle_message(cmd_sender, cmd_location, msg);
@@ -272,7 +272,7 @@ void bot_handler::run() {
 					}
 				}
 				break;
-				case MODE:
+				case CMD_MODE:
 					// only handle mode stuff in the bots host channel
 					if(cmd_location == conf->get_channel()) {
 						// mode for the bot was set
@@ -288,7 +288,7 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case KICK:
+				case CMD_KICK:
 					// check if bot was kicked
 					if(cmd_data == conf->get_bot_name()) {
 						// check if the user who kicked the bot is the owner
@@ -305,10 +305,10 @@ void bot_handler::run() {
 						states->delete_user(cmd_data);
 					}
 					break;
-				case NICK:
+				case CMD_NICK:
 					states->update_user_name(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
 					break;
-				case TOPIC:
+				case CMD_TOPIC:
 					break;
 				default:
 					break;
@@ -333,7 +333,7 @@ void bot_handler::run() {
 bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {
 	vector<string> cmd_tokens;
 	tokenize(cmd_tokens, cmd, ' ');
-	IRC_COMMAND irc_cmd = bot_handler::NONE;
+	IRC_COMMAND irc_cmd = bot_handler::CMD_NONE;
 	
 	// check for normal irc command, some commands are in the first token ...
 	if(cmd_tokens.size() > 0 && irc_commands.count(cmd_tokens[0]) > 0) {
@@ -453,7 +453,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				string script_list = "";
 				vector<string> scripts = lua_obj->list_scripts();
 				sort(scripts.begin(), scripts.end());
-				for(vector<string>::const_iterator siter = scripts.begin(); siter != scripts.end(); siter++) {
+				for(auto siter = scripts.begin(); siter != scripts.end(); siter++) {
 					const size_t slash_pos = siter->rfind('/')+1;
 					script_list += siter->substr(slash_pos, siter->length()-slash_pos) + " ";
 				}
@@ -518,7 +518,7 @@ string bot_handler::handle_args_chronological(const string& msg, const size_t& o
 		// get longest word of last message
 		vector<string> last_msg_tokens;
 		tokenize(last_msg_tokens, msg_store.back(), ' ');
-		for(vector<string>::iterator str_iter = last_msg_tokens.begin(); str_iter != last_msg_tokens.end(); str_iter++) {
+		for(auto str_iter = last_msg_tokens.begin(); str_iter != last_msg_tokens.end(); str_iter++) {
 			if(str_iter->length() > msg.length()) ret_msg = *str_iter;
 		}
 	}
@@ -552,7 +552,7 @@ string bot_handler::strip_special_chars(const string& str) {
 	//string special_chars = ",.;:!?=*^<>\"\'";
 	string special_chars = ",.;:!?^\"\'";
 	string new_str = "";
-	for(string::const_iterator citer = str.begin(); citer != str.end(); citer++) {
+	for(auto citer = str.begin(); citer != str.end(); citer++) {
 		if(special_chars.find(*citer) == string::npos) new_str += *citer;
 	}
 	return new_str;

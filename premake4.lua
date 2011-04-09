@@ -1,7 +1,10 @@
 
+-- vars
+local cygwin = false
+
 -- this function returns the first result of "find basepath -name filename", this is needed on some platforms to determine the include path of a library
 function find_include(filename, base_path)
-	if(os.is("windows")) then
+	if(os.is("windows") and not cygwin) then
 		return ""
 	end
 	
@@ -32,16 +35,29 @@ project "unibot"
 	language "C++"
 	files { "src/**.h", "src/**.cpp" }
 	platforms { "x32", "x64" }
+	
+	-- check if we are building with cygwin/mingw
+	if(_ARGS[1] ~= nil) then
+		if(_ARGS[1] == "cygwin") then
+			cygwin = true
+		end
+	end
 
-	if(not os.is("windows")) then
+	if(not os.is("windows") or cygwin) then
 		includedirs { "/usr/include", "/usr/local/include", "src/", "src/threading/" }
 		buildoptions { "-Wall -x c++ -std=c++0x -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
-		buildoptions { "-msse3 -fvisibility=hidden -fvisibility-inlines-hidden" }
+		buildoptions { "-msse3" }
 		prebuildcommands { "./build_version.sh" }
 		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
 	end
 	
-	if(os.is("linux") or os.is("bsd")) then
+	if(cygwin) then
+		-- only works with gnu++0x for now ...
+		buildoptions { "-std=gnu++0x" }
+		defines { "CYGWIN" }
+	end
+	
+	if(os.is("linux") or os.is("bsd") or cygwin) then
 		-- find lua lib (try different lib names)
 		local lua_lib_names = { "lua", "lua5.1", "lua-5.1", "lua5.2", "lua-5.2" }
 		local lua_lib = { name = nil, dir = nil }
@@ -53,10 +69,15 @@ project "unibot"
 			end
 		end
 		
-		libdirs { os.findlib("SDL"), os.findlib("SDL_net"), lua_lib.dir }
-		links { "SDL", "SDLmain", "SDL_net", lua_lib.name }
+		links { lua_lib.name }
 		buildoptions { "`sdl-config --cflags`" }
-		linkoptions { "`sdl-config --libs`" }
+		if(not cygwin) then
+			libdirs { os.findlib("SDL"), os.findlib("SDL_net"), lua_lib.dir }
+			links { "SDL_net", "SDL", "SDLmain" }
+			linkoptions { "`sdl-config --libs`" }
+		else
+			linkoptions { "-L/usr/local/lib -lSDL.dll -lSDL_net.dll -lpthread -mwindows" }
+		end
 		defines { "_GLIBCXX__PTHREADS" }
 		
 		-- find all necessary headers (in case they aren't in /usr/include)

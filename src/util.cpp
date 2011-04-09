@@ -35,7 +35,7 @@ void tokenize(vector<string>& dst, const string& src, const char delim) {
 
 string encode_url(string& url) {
 	stringstream result;
-	for(string::iterator citer = url.begin(); citer != url.end(); citer++) {
+	for(auto citer = url.begin(); citer != url.end(); citer++) {
 		switch(*citer) {
 			case '!':
 			case '#':

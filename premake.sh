@@ -4,8 +4,9 @@ UNIBOT_OS="unknown"
 UNIBOT_PLATFORM="x32"
 UNIBOT_MAKE="make"
 UNIBOT_MAKE_PLATFORM="32"
+UNIBOT_ARGS=""
 
-case $( uname ) in
+case $( uname | tr [:upper:] [:lower:] ) in
 	"Darwin")
 		UNIBOT_OS="macosx"
 		;;
@@ -15,6 +16,10 @@ case $( uname ) in
 	[a-zA-Z0-9]*"BSD")
 		UNIBOT_OS="bsd"
 		UNIBOT_MAKE="gmake"
+		;;
+	"cygwin"* | "mingw"*)
+		UNIBOT_OS="windows"
+		UNIBOT_ARGS="cygwin"
 		;;
 	*)
 		echo "unknown operating system - exiting"
@@ -38,9 +43,9 @@ case $( uname -m ) in
 esac
 
 
-echo "using: premake4 --cc=gcc --os="${UNIBOT_OS}" gmake"
+echo "using: premake4 --cc=gcc --os="${UNIBOT_OS}" gmake "${UNIBOT_ARGS}
 
-premake4 --cc=gcc --os=${UNIBOT_OS} gmake
+premake4 --cc=gcc --os=${UNIBOT_OS} gmake ${UNIBOT_ARGS}
 
 chmod +x build_version.sh
 

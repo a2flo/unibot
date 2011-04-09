@@ -119,10 +119,10 @@ template <class protocol_policy> void http_net<protocol_policy>::open_url(const 
 	server_name = url_str.substr(sn_start, sn_end-sn_start);
 	
 	// open connection
-	size_t port = 80;
+	unsigned short int port = 80;
 	const size_t colon_pos = server_name.find(":");
 	if(colon_pos != string::npos) {
-		port = strtoull(server_name.substr(colon_pos+1, server_name.length()-colon_pos-1).c_str(), NULL, 10);
+		port = strtoul(server_name.substr(colon_pos+1, server_name.length()-colon_pos-1).c_str(), NULL, 10);
 		server_name = server_name.substr(0, colon_pos);
 	}
 	if(!this->connect_to_server(server_name.c_str(), port)) {
@@ -154,7 +154,7 @@ template <class protocol_policy> void http_net<protocol_policy>::run() {
 		// first, try to get the header
 		if(!header_read) {
 			header_length = 0;
-			for(deque<string>::iterator line = receive_store.begin(); line != receive_store.end(); line++) {
+			for(auto line = receive_store.begin(); line != receive_store.end(); line++) {
 				header_length += line->size() + 2; // +2 == CRLF
 				// check for empty line
 				if(line->length() == 0) {
@@ -174,14 +174,14 @@ template <class protocol_policy> void http_net<protocol_policy>::run() {
 			bool packet_complete = false;
 			if(packet_type == http_net::NORMAL && content_length == (received_length - header_length)) {
 				packet_complete = true;
-				for(deque<string>::iterator line = receive_store.begin(); line != receive_store.end(); line++) {
+				for(auto line = receive_store.begin(); line != receive_store.end(); line++) {
 					page_data += *line + '\n';
 				}
 			}
 			else if(packet_type == http_net::CHUNKED) {
 				// note: this iterates over the receive store twice, once to check if all data was received and sizes are correct and
 				// a second time to write the chunk data to page_data
-				for(deque<string>::iterator line = receive_store.begin(); line != receive_store.end(); line++) {
+				for(auto line = receive_store.begin(); line != receive_store.end(); line++) {
 					// get chunk length
 					size_t chunk_len = strtoull(line->c_str(), NULL, 16);
 					if(chunk_len == 0 && line->length() == 1) {
@@ -225,7 +225,7 @@ template <class protocol_policy> void http_net<protocol_policy>::run() {
 }
 
 template <class protocol_policy> void http_net<protocol_policy>::check_header() {
-	deque<string>::iterator line = receive_store.begin();
+	auto line = receive_store.begin();
 	
 	// first line contains status code
 	const size_t space_1 = line->find(" ")+1;

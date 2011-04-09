@@ -177,7 +177,7 @@ template <class protocol_policy> void net<protocol_policy>::run() {
 				send_end = send_store.begin()+packets_per_second;
 			}
 			
-			for(deque<string>::iterator send_iter = send_store.begin(); send_iter != send_end; send_iter++) {
+			for(auto send_iter = send_store.begin(); send_iter != send_end; send_iter++) {
 				send_packet(send_iter->c_str(), (int)send_iter->length());
 			}
 			if(packets_per_second != 0) last_packet_send = SDL_GetTicks();

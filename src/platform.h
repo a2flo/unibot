@@ -17,7 +17,7 @@
  */
 
 // Windows
-#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)
+#if (defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)) && !defined(CYGWIN)
 #define WIN32_LEAN_AND_MEAN
 #define __WINDOWS__
 #include <windows.h>
@@ -50,11 +50,16 @@
 #define OS_DIR_SLASH "\\"
 #endif
 
+#ifdef CYGWIN
+#define SDL_MAIN_HANDLED
+#endif
+
 // general includes
 #ifdef __APPLE__
 #include <SDL/SDL.h>
 #include <SDL/SDL_thread.h>
 #include <SDL/SDL_cpuinfo.h>
+#include <SDL/SDL_main.h>
 #include <SDL_net/SDL_net.h>
 
 extern "C" {
@@ -66,6 +71,7 @@ extern "C" {
 #include <SDL/SDL.h>
 #include <SDL/SDL_thread.h>
 #include <SDL/SDL_cpuinfo.h>
+#include <SDL/SDL_main.h>
 #include <SDL_net/SDL_net.h>
 
 extern "C" {
@@ -77,6 +83,7 @@ extern "C" {
 #include <SDL.h>
 #include <SDL_thread.h>
 #include <SDL_cpuinfo.h>
+#include <SDL_main.h>
 #include <SDL_net.h>
 
 extern "C" {
@@ -105,6 +112,7 @@ extern "C" {
 #include <typeinfo>
 #include <limits>
 #include <math.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -128,7 +136,7 @@ using namespace std;
 // clang check
 #elif defined(__clang__)
 #if !__has_feature(cxx_rvalue_references) || \
-	/*!__has_feature(cxx_auto_type) ||*/ \
+	!__has_feature(cxx_auto_type) || \
 	!__has_feature(cxx_variadic_templates)
 #error "Sorry, but you need Clang with support for 'rvalue_references', 'auto_type' and 'variadic_templates' to compile UniBot"
 #endif
