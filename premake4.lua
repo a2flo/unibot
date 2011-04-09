@@ -76,7 +76,7 @@ project "unibot"
 			links { "SDL_net", "SDL", "SDLmain" }
 			linkoptions { "`sdl-config --libs`" }
 		else
-			linkoptions { "-L/usr/local/lib -lSDL.dll -lSDL_net.dll -lpthread -mwindows" }
+			linkoptions { "-L/usr/local/lib -lSDL.dll -lSDL_net.dll -lpthread" }
 		end
 		defines { "_GLIBCXX__PTHREADS" }
 		
