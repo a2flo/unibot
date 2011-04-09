@@ -50,10 +50,6 @@
 #define OS_DIR_SLASH "\\"
 #endif
 
-#ifdef CYGWIN
-#define SDL_MAIN_HANDLED
-#endif
-
 // general includes
 #ifdef __APPLE__
 #include <SDL/SDL.h>

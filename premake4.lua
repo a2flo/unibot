@@ -27,7 +27,7 @@ end
 
 -- actual premake info
 solution "unibot"
-	configurations { "Debug", "Release" }
+	configurations { "Release", "Debug" }
 
 project "unibot"
 	targetname "unibot"
@@ -36,11 +36,17 @@ project "unibot"
 	files { "src/**.h", "src/**.cpp" }
 	platforms { "x32", "x64" }
 	
-	-- check if we are building with cygwin/mingw
-	if(_ARGS[1] ~= nil) then
-		if(_ARGS[1] == "cygwin") then
-			cygwin = true
+	-- scan args
+	local argc = 1
+	while(_ARGS[argc] ~= nil) do
+		if(_ARGS[argc] == "--env") then
+			argc=argc+1
+			-- check if we are building with cygwin/mingw
+			if(_ARGS[argc] ~= nil and _ARGS[argc] == "cygwin") then
+				cygwin = true
+			end
 		end
+		argc=argc+1
 	end
 
 	if(not os.is("windows") or cygwin) then
@@ -57,7 +63,7 @@ project "unibot"
 		defines { "CYGWIN" }
 	end
 	
-	if(os.is("linux") or os.is("bsd") or cygwin) then
+	if(os.is("linux") or os.is("bsd") or cygwin) then	
 		-- find lua lib (try different lib names)
 		local lua_lib_names = { "lua", "lua5.1", "lua-5.1", "lua5.2", "lua-5.2" }
 		local lua_lib = { name = nil, dir = nil }
@@ -69,14 +75,14 @@ project "unibot"
 			end
 		end
 		
-		links { lua_lib.name }
-		buildoptions { "`sdl-config --cflags`" }
+		links { "SDL_net", lua_lib.name }
 		if(not cygwin) then
 			libdirs { os.findlib("SDL"), os.findlib("SDL_net"), lua_lib.dir }
-			links { "SDL_net", "SDL", "SDLmain" }
-			linkoptions { "`sdl-config --libs`" }
+			buildoptions { "$(sdl-config --cflags)" }
+			linkoptions { "$(sdl-config --libs)" }
 		else
-			linkoptions { "-L/usr/local/lib -lSDL.dll -lSDL_net.dll -lpthread" }
+			buildoptions { "`sdl-config --cflags | sed -E 's/-Dmain=SDL_main//g'`" }
+			linkoptions { "`sdl-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
 		end
 		defines { "_GLIBCXX__PTHREADS" }
 		
