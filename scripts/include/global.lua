@@ -40,20 +40,3 @@ function tokenize(str, delim)
 	
 	return tokens
 end
-
--- executes a system/os command and returns the output
-function execute_command(cmd)
-	local output = ""
-	local proc = io.popen(cmd, "r")
-	while true do
-		local out = proc:read("*a")
-		if out == nil or out == "" then -- nil/"" indicates EOF
-			break
-		end
-		
-		output = output..out
-	end
-	proc:close()
-	
-	return output
-end

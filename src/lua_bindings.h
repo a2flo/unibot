@@ -53,7 +53,8 @@ F(strip_special_chars) \
 F(handle_args_chronological) \
 F(reload_scripts) \
 F(crand) \
-F(get_os)
+F(get_os) \
+F(execute_command)
 
 #define LUA_FUNCTION_DEFINITION(func_name) static int func_name(lua_State* state);
 

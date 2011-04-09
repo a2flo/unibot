@@ -109,6 +109,11 @@ extern "C" {
 #include <limits>
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+#ifdef CYGWIN
+#include <sys/wait.h>
+#endif
 
 using namespace std;
 

@@ -24,20 +24,28 @@ int main(int argc, char* argv[]) {
 	// set lua script search path
 	const string lua_path = string(get_absolute_path()+LUA_SCRIPT_FOLDER);
 	setenv("LUA_PATH", string(lua_path + "include/?.lua;" + lua_path + "?.lua").c_str(), 1);
-
+	
 	// event handler
 	init_event_handler();
 	
 	// config
 	config* conf;
-	try {
-#ifndef __WINDOWS__
-		conf = new config("/etc/unibot.conf", (ssize_t)argc, (const char**)argv);
-#else
-		conf = new config("C:/unibot.conf", (ssize_t)argc, (const char**)argv);
-#endif
+	const char* config_filenames[][2] = {
+		{ "/etc/unibot.conf", "unix" },
+		{ "C:/unibot.conf", "windows" }
+	};
+	for(size_t i = 0; i < ARRAY_LENGTH(config_filenames); i++) {
+		try {
+			conf = new config(config_filenames[i][0], config_filenames[i][1], (ssize_t)argc, (const char**)argv);
+			break;
+		}
+		catch(...) {
+			conf = NULL;
+			continue;
+		}
 	}
-	catch(...) {
+	if(conf == NULL) {
+		cout << "ERROR: couldn't open the unibot config file!" << endl;
 		exit(-1);
 	}
 	

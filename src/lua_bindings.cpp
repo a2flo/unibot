@@ -396,11 +396,116 @@ int lua_bindings::get_os(lua_State* state) {
 		check_lua_stack(state, 0);
 
 		// 0 = unix, 1 = windows
-#if defined(__WINDOWS__)
-		lua_pushinteger(state, 1);
-#else // unix
-		lua_pushinteger(state, 0);
+		lua_pushinteger(state, (conf->get_config_entry("environment") == "windows" ? 1 : 0));
+	}
+	HANDLE_LUA_BINDINGS_EXCEPTION;
+	return 1;
+}
+
+#ifdef CYGWIN
+// credits go to: http://svn.wald.intevation.org/svn/openvas/trunk/sladinstaller/tools.cpp
+// and: http://lists.dn-systems.net/pipermail/slad/2006-February/000003.html
+static FILE* cygwin_popen(const char* dir, char** cmd, pid_t* p_pid) {
+	int ret;
+	pid_t pid;
+	int thepipe[2];
+
+	if(pipe(thepipe) < 0) {
+		unibot_error("error creating pipes");
+		return NULL;
+	}
+
+	pid = fork();
+	if(pid == 0) {
+		if(chdir(dir) < 0) {
+			exit(127);
+		}
+		dup2(thepipe[1], 1);
+		dup2(thepipe[1], 2);
+		for(int i = 3; i < getdtablesize(); i++) {
+			close(i);
+		}
+		ret = execvp(cmd[0], cmd);
+		
+		if(ret) exit(127);
+		else exit(0);
+	}
+	if(pid < 0) {
+		unibot_error("error starting subprocess");
+		return NULL;
+	}
+
+	close(thepipe[1]);
+	*p_pid = pid;
+	return fdopen(thepipe[0], "r");
+}
 #endif
+
+int lua_bindings::execute_command(lua_State* state) {
+	try {
+		tuple<string> args = get_lua_args<string>(state);
+		
+		static const size_t buffer_size = 4096;
+		static char buffer[buffer_size+1];
+		memset(buffer, 0, buffer_size+1);
+		string output = "";
+		
+#ifdef CYGWIN
+		if(conf->get_config_entry("environment") == "unix") {
+#endif
+			FILE* proc = popen(get<0>(args).c_str(), "r");
+			while(fgets(buffer, buffer_size, proc) != NULL) {
+				output += buffer;
+			}
+			pclose(proc);
+#ifdef CYGWIN
+		}
+		else {
+			// cygwin popen only works in a cygwin environment (bash!), to use popen
+			// in a windows environment, use another (working!) implementation of popen
+			pid_t proc_pid = 0;
+			
+			// create argv list
+			const string& full_cmd = get<0>(args);
+			vector<string> argv;
+			size_t space_pos = 0, last_pos = 0;
+			while((space_pos = full_cmd.find(" ", space_pos+1)) != string::npos) {
+				argv.push_back(full_cmd.substr(last_pos, space_pos-last_pos));
+				last_pos = space_pos+1;
+			}
+			argv.push_back(full_cmd.substr(last_pos, full_cmd.size()-last_pos));
+			
+			const char** cargv = new const char*[argv.size()+1];
+			for(size_t i = 0; i < argv.size(); i++) {
+				cargv[i] = argv[i].c_str();
+			}
+			cargv[argv.size()] = NULL;
+			
+			// finally:
+			FILE* proc = cygwin_popen(".", (char**)cargv, &proc_pid);
+			while(!feof(proc)) {
+				if(!fgets(buffer, buffer_size, proc)) break;
+				output += buffer;
+			}
+			pclose(proc);
+
+			while(true) {
+				int ret;
+				pid_t e = waitpid(proc_pid, &ret, 0);
+				if(e < 0 && errno == EINTR) continue;
+				ret = WEXITSTATUS(ret);
+				if(ret != 0) {
+					unibot_error("command execution failed with: %i!", ret);
+				}
+				break;
+			}
+			
+			delete [] cargv;
+			argv.clear();
+		}
+#endif
+
+		lua_pushstring(state, output.c_str());
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;

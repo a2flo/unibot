@@ -18,9 +18,10 @@
 
 #include "config.h"
 
-config::config(const char* config_file, const ssize_t& argc, const char** argv) {
+config::config(const char* config_file, const char* environment, const ssize_t& argc, const char** argv) {
 	// default values
 	config_data["verbosity"] = to_str(logger::LT_MSG);
+	config_data["environment"] = environment;
 	
 	string binary = clean_path(argv[0]);
 	const size_t slash_pos = binary.rfind('/');

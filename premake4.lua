@@ -63,7 +63,7 @@ project "unibot"
 		defines { "CYGWIN" }
 	end
 	
-	if(os.is("linux") or os.is("bsd") or cygwin) then	
+	if(os.is("linux") or os.is("bsd") or cygwin) then
 		-- find lua lib (try different lib names)
 		local lua_lib_names = { "lua", "lua5.1", "lua-5.1", "lua5.2", "lua-5.2" }
 		local lua_lib = { name = nil, dir = nil }
