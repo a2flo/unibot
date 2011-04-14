@@ -29,6 +29,7 @@
 #include "lua_bindings.h"
 
 #define LUA_SCRIPT_FOLDER "scripts" OS_DIR_SLASH
+#define UNIBOT_MAX_LUA_SCRIPT_SIZE (16 * 1024 * 1024)
 
 class lua {
 public:
@@ -88,18 +89,25 @@ protected:
 			if(script.is_open()) {
 				script.seekg(0, ios::end);
 				const size_t script_size = (size_t)script.tellg();
-				script.seekg(0, ios::beg);
-				char* script_data = new char[script_size+1];
-				script.read(script_data, script_size);
-				script_data[script_size] = 0;
-
-				string script_string = script_data;
+				
+				if(script_size > UNIBOT_MAX_LUA_SCRIPT_SIZE) {
+					load_error = true;
+					unibot_error("lua script %s is too large (size: %u, allowed: %u)!", script_filename, script_size, UNIBOT_MAX_LUA_SCRIPT_SIZE);
+				}
+				else {
+					script.seekg(0, ios::beg);
+					char* script_data = new char[script_size+1];
+					script.read(script_data, script_size);
+					script_data[script_size] = 0;
+					
+					string script_string = script_data;
 #ifdef __WINDOWS__
-				string script_path = get_absolute_path() + LUA_SCRIPT_FOLDER + "include\\?.lua";
-				script_path = find_and_replace(script_path, "\\", "\\\\");
-				script_string = "package.path = package.path .. \";" + script_path + "\"\n" + script_string;
+					string script_path = get_absolute_path() + LUA_SCRIPT_FOLDER + "include\\?.lua";
+					script_path = find_and_replace(script_path, "\\", "\\\\");
+					script_string = "package.path = package.path .. \";" + script_path + "\"\n" + script_string;
 #endif
-				luaL_loadstring(state, script_string.c_str());
+					luaL_loadstring(state, script_string.c_str());
+				}
 			}
 			else load_error = true;
 			script.close();
