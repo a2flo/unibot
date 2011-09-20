@@ -27,11 +27,11 @@ class invalid_config_exception : exception {};
 
 class config {
 public:
-	config(const char* config_file, const char* environment, const ssize_t& argc, const char** argv);
+	config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv);
 	~config();
 	
 	bool load_config();
-	bool load_config(const char* config_file);
+	bool load_config(const string& config_file);
 	
 	string get_config_entry(const string& name);
 	string get_bot_name();

@@ -130,22 +130,23 @@ using namespace std;
 // compiler checks:
 // msvc check
 #if defined(_MSC_VER)
-#if (_MSC_VER <= 1600)
-#error "Sorry, but you need MSVC 11.0+ to compile UniBot"
+#if (_MSC_VER <= 1700)
+#error "Sorry, but you need MSVC 12.0+ to compile UniBot"
 #endif
 
 // clang check
 #elif defined(__clang__)
 #if !__has_feature(cxx_rvalue_references) || \
 	!__has_feature(cxx_auto_type) || \
-	!__has_feature(cxx_variadic_templates)
-#error "Sorry, but you need Clang with support for 'rvalue_references', 'auto_type' and 'variadic_templates' to compile UniBot"
+	!__has_feature(cxx_variadic_templates) || \
+	!__has_feature(cxx_range_for)
+#error "Sorry, but you need Clang with support for 'rvalue_references', 'auto_type', 'variadic_templates' and 'range_for' to compile UniBot"
 #endif
 
 // gcc check
 #elif defined(__GNUC__)
-#if (__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 4)
-#error "Sorry, but you need GCC 4.4+ to compile UniBot"
+#if (__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 6)
+#error "Sorry, but you need GCC 4.6+ to compile UniBot"
 #endif
 
 // just fall through ...

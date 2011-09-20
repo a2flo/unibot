@@ -30,9 +30,10 @@ int main(int argc, char* argv[]) {
 	
 	// config
 	config* conf;
-	const char* config_filenames[][2] = {
-		{ "/etc/unibot.conf", "unix" },
-		{ "C:/unibot.conf", "windows" }
+	const string conf_name = (argc > 1 ? argv[1] : "unibot.conf");
+	const string config_filenames[][2] = {
+		{ "/etc/"+conf_name, "unix" },
+		{ "C:/"+conf_name, "windows" }
 	};
 	for(size_t i = 0; i < ARRAY_LENGTH(config_filenames); i++) {
 		try {

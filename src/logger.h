@@ -40,15 +40,6 @@ using namespace std;
 #error "UniBot requires SDL 1.3 with support for atomics"
 #endif
 
-// this is only a temporary workaround to support older sdl 1.3 versions (TODO: remove at a later point)
-#if defined(SDL_AtomicAdd) || defined(SDL_atomic_t)
-#define AtomicFetchThenIncrement(a) SDL_AtomicAdd(a, 1)
-#define atomic_t SDL_atomic_t
-#else
-#define AtomicFetchThenIncrement(a) SDL_AtomicFetchThenIncrement32(a.value)
-typedef struct { volatile unsigned int value; } atomic_t;
-#endif
-
 class config;
 class logger {
 public:
@@ -90,7 +81,7 @@ protected:
 	
 	static fstream log_file;
 	static fstream msg_file;
-	static atomic_t err_counter;
+	static SDL_atomic_t err_counter;
 	static SDL_SpinLock slock;
 	static const config* conf;
 

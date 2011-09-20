@@ -18,7 +18,7 @@
 
 #include "config.h"
 
-config::config(const char* config_file, const char* environment, const ssize_t& argc, const char** argv) {
+config::config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv) {
 	// default values
 	config_data["verbosity"] = to_str(logger::LT_MSG);
 	config_data["environment"] = environment;
@@ -133,7 +133,7 @@ bool config::load_config() {
 	return true;
 }
 
-bool config::load_config(const char* config_file) {
+bool config::load_config(const string& config_file) {
 	this->config_file = config_file;
 	return load_config();
 }

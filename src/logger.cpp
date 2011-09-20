@@ -24,7 +24,7 @@
 
 fstream logger::log_file(UNIBOT_LOG_FILENAME, fstream::out);
 fstream logger::msg_file(UNIBOT_MSG_FILENAME, fstream::out);
-atomic_t logger::err_counter;
+SDL_atomic_t logger::err_counter;
 SDL_SpinLock logger::slock;
 const config* logger::conf = NULL;
 
@@ -51,7 +51,7 @@ bool logger::prepare_log(stringstream& buffer, const LOG_TYPE& type, const char*
 	
 	if(type != logger::LT_NONE && type != logger::LT_MSG) {
 		buffer << logger::type_to_str(type);
-		if(type == logger::LT_ERROR) buffer << " #" << AtomicFetchThenIncrement(&err_counter);
+		if(type == logger::LT_ERROR) buffer << " #" << SDL_AtomicAdd(&err_counter, 1);
 		buffer << ": ";
 		/* prettify file string (aka strip path) */
 		string file_str = file;
