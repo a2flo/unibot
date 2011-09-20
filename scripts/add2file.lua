@@ -1,5 +1,6 @@
 
 -- lua add something to a file
+-- note: folder output has to exist (in unibot/)
 
 require "global"
 
