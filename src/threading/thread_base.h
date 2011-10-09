@@ -20,6 +20,8 @@
 #define __THREAD_BASE_H__
 
 #include "platform.h"
+#include <thread>
+#include <mutex>
 
 class thread_base {
 public:
@@ -38,6 +40,7 @@ public:
 	
 	void finish();
 	void lock();
+	bool try_lock();
 	void unlock();
 	
 	void set_thread_status(const thread_base::THREAD_STATUS status);
@@ -49,14 +52,14 @@ public:
 	const size_t get_thread_delay();
 	
 protected:
-	SDL_Thread* thread;
-	SDL_mutex* thread_lock;
+	thread* thread_obj;
+	recursive_mutex thread_lock;
 	THREAD_STATUS thread_status;
 	bool thread_should_finish_flag;
 	size_t thread_delay;
 	
 	void start();
-	static int _thread_run(void* data);
+	static int _thread_run(thread_base* this_thread_obj);
 };
 
 #endif

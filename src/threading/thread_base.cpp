@@ -17,25 +17,21 @@
  */
 
 #include "thread_base.h"
+#include <chrono>
 
-thread_base::thread_base() {
-	thread_status = thread_base::INIT;
-	thread_should_finish_flag = false;
-	thread_delay = 1;
-	
-	thread_lock = SDL_CreateMutex();
+thread_base::thread_base() : thread_obj(NULL), thread_lock(), thread_status(thread_base::INIT),
+thread_should_finish_flag(false), thread_delay(1) {
 	this->lock(); // lock thread, so start (or unlock) must be called before the thread starts running
-	thread = SDL_CreateThread(&thread_base::_thread_run, this);
+	thread_obj = new thread(_thread_run, this);
 }
 
 thread_base::~thread_base() {
 	finish();
-	SDL_DestroyMutex(thread_lock);
 }
 
 void thread_base::start() {
 	if(thread_status != thread_base::INIT) {
-		// somethin is wrong, return (thread status must be init!)
+		// something is wrong, return (thread status must be init!)
 		return;
 	}
 	
@@ -43,22 +39,21 @@ void thread_base::start() {
 	this->unlock();
 }
 
-int thread_base::_thread_run(void* data) {
-	thread_base* this_thread = (thread_base*)data;
-	
+int thread_base::_thread_run(thread_base* this_thread_obj) {
 	while(true) {
-		this_thread->lock();
-		this_thread->run();
-		this_thread->unlock();
+		if(this_thread_obj->try_lock()) {
+			this_thread_obj->run();
+			this_thread_obj->unlock();
+			
+			// reduce system load and make other locks possible
+			this_thread::sleep_for(chrono::milliseconds(this_thread_obj->get_thread_delay()));
+		}
 		
-		// reduce system load and make other locks possible
-		SDL_Delay((Uint32)this_thread->get_thread_delay());
-		
-		if(this_thread->thread_should_finish()) {
+		if(this_thread_obj->thread_should_finish()) {
 			break;
 		}
 	}
-	this_thread->set_thread_status(thread_base::FINISHED);
+	this_thread_obj->set_thread_status(thread_base::FINISHED);
 	
 	return 0;
 }
@@ -68,23 +63,50 @@ void thread_base::finish() {
 	set_thread_should_finish();
 	
 	// wait a few ms
-	SDL_Delay(50);
+	this_thread::sleep_for(chrono::milliseconds(50));
 	
-	// if it's finished, wait (this is presumably better than kill)
-	SDL_WaitThread(thread, NULL);
+	// this will block until the thread is finished
+	// TODO: since the thread can't be killed and join doesn't have a timeout, start an extra thread
+	// to join so we don't block forever if the thread gets unexpectedly blocked/terminated/...?
+	thread_obj->join();
 	
 	set_thread_status(thread_base::FINISHED);
 }
 
 void thread_base::lock() {
-	if(SDL_mutexP(thread_lock) == -1) {
-		cout << "ERROR: couldn't lock mutex!" << endl;
+	try {
+		thread_lock.lock();
+	}
+	catch(system_error& sys_err) {
+		cout << "unable to lock thread: " << sys_err.code() << ": " << sys_err.what() << endl;
+	}
+	catch(...) {
+		cout << "unable to lock thread" << endl;
 	}
 }
 
+bool thread_base::try_lock() {
+	try {
+		return thread_lock.try_lock();
+	}
+	catch(system_error& sys_err) {
+		cout << "unable to try-lock thread: " << sys_err.code() << ": " << sys_err.what() << endl;
+	}
+	catch(...) {
+		cout << "unable to try-lock thread" << endl;
+	}
+	return false;
+}
+
 void thread_base::unlock() {
-	if(SDL_mutexV(thread_lock) == -1) {
-		cout << "ERROR: couldn't unlock mutex!" << endl;
+	try {
+		thread_lock.unlock();
+	}
+	catch(system_error& sys_err) {
+		cout << "unable to unlock thread: " << sys_err.code() << ": " << sys_err.what() << endl;
+	}
+	catch(...) {
+		cout << "unable to unlock thread" << endl;
 	}
 }
 
