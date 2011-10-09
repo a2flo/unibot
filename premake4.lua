@@ -84,7 +84,7 @@ project "unibot"
 			buildoptions { "`sdl-config --cflags | sed -E 's/-Dmain=SDL_main//g'`" }
 			linkoptions { "`sdl-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
 		end
-		defines { "_GLIBCXX__PTHREADS" }
+		defines { "_GLIBCXX__PTHREADS", "_GLIBCXX_USE_NANOSLEEP" }
 		
 		-- find all necessary headers (in case they aren't in /usr/include)
 		local include_files = { "SDL.h", "SDL_net.h", "lua.h" }
