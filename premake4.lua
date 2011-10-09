@@ -34,7 +34,7 @@ project "unibot"
 	kind "ConsoleApp"
 	language "C++"
 	files { "src/**.h", "src/**.cpp" }
-	platforms { "x32", "x64" }
+	platforms { "x64", "x32" }
 	
 	-- scan args
 	local argc = 1

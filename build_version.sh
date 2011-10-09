@@ -11,8 +11,5 @@ if [ ${NEW_SOURCE_COUNT} -gt 0 ]; then
         echo "# increased build version to ${BUILD_VERSION}"
 fi;
 
-# generate build_version.h if it's nonexistent or build version was increased
-if [ ! -f src/build_version.h -o ${NEW_SOURCE_COUNT} -gt 0 ]; then
-        echo "#define UNIBOT_BUILD_VERSION ${BUILD_VERSION}" > src/build_version.h
-fi;
-
+# generate build_version.h (every time)
+echo "#define UNIBOT_BUILD_VERSION ${BUILD_VERSION}" > src/build_version.h
