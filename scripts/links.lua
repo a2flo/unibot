@@ -15,7 +15,7 @@ function handle_message(origin, target, cmd, parameters)
 		{ "wp", "http://en.wikipedia.org/wiki/Mainpage", "http://en.wikipedia.org/wiki/" },
 		{ "wa", "http://www.wolframalpha.com", "http://www.wolframalpha.com/input/?i=" },
 		{ "dict", "http://www.dict.cc", "http://www.dict.cc/?s=" },
-		{ "v", "http://www.chefkoch.de", "http://www.chefkoch.de/suche.php?wo=0&suche=vegan+" },
+		{ "v", "http://www.chefkoch.de", "http://www.chefkoch.de/suche.php?wo=0&suche=vegan " },
 	}
 	
 	for i = 1, #pages do
