@@ -70,6 +70,8 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(origin, " g [<term>]: outputs a link to google.com [or to the given term]")
 		elseif parameters == "dict" then
 			send_private_msg(origin, " dict [<term>]: outputs a link to dict.cc [or to the given term]")
+		elseif parameters == "v" then
+			send_private_msg(origin, " v [<term>]: outputs a link to chefkoch.de [or to the given term with 'vegan' as prefix]")
 		-- Owner Cmds
 		elseif parameters == "cmd" and is_owner(origin) then
 			send_private_msg(origin, " cmd <irc cmd>: executes the given command, i.e. \"!cmd PRIVMSG #unichannel :bla\"")
