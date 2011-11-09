@@ -15,6 +15,7 @@ case $( uname | tr [:upper:] [:lower:] ) in
 	"linux")
 		UNIBOT_OS="linux"
 		UNIBOT_CPU_COUNT=$(cat /proc/cpuinfo | grep -m 1 'cpu cores' | sed -E 's/.*(: )([:digit:]*)/\2/g')
+		UNIBOT_ARGS="--clang"
 		;;
 	[a-z0-9]*"bsd")
 		UNIBOT_OS="bsd"

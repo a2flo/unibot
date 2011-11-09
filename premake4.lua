@@ -1,6 +1,7 @@
 
 -- vars
 local cygwin = false
+local clang_libcxx = false
 
 -- this function returns the first result of "find basepath -name filename", this is needed on some platforms to determine the include path of a library
 function find_include(filename, base_path)
@@ -44,17 +45,31 @@ project "unibot"
 			-- check if we are building with cygwin/mingw
 			if(_ARGS[argc] ~= nil and _ARGS[argc] == "cygwin") then
 				cygwin = true
+				win_unixenv = true
 			end
+			if(_ARGS[argc] ~= nil and _ARGS[argc] == "mingw") then
+				mingw = true
+				win_unixenv = true
+			end
+		end
+		if(_ARGS[argc] == "--clang") then
+			clang_libcxx = true
 		end
 		argc=argc+1
 	end
 
+	-- os specifics
 	if(not os.is("windows") or cygwin) then
 		includedirs { "/usr/include", "/usr/local/include", "src/", "src/threading/" }
 		buildoptions { "-Wall -x c++ -std=c++0x -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
 		buildoptions { "-msse3" }
 		prebuildcommands { "./build_version.sh" }
 		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
+		if(clang_libcxx) then
+			buildoptions { "-stdlib=libc++" }
+			buildoptions { "-Wno-delete-non-virtual-dtor -Wno-overloaded-virtual" }
+			linkoptions { "-stdlib=libc++ -fvisibility=default" }
+		end
 	end
 	
 	if(cygwin) then
