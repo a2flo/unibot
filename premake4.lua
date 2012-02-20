@@ -66,7 +66,7 @@ project "unibot"
 		prebuildcommands { "./build_version.sh" }
 		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
 		if(clang_libcxx) then
-			buildoptions { "-stdlib=libc++" }
+			buildoptions { "-stdlib=libc++ -integrated-as" }
 			buildoptions { "-Wno-delete-non-virtual-dtor -Wno-overloaded-virtual" }
 			linkoptions { "-stdlib=libc++ -fvisibility=default" }
 		end
@@ -90,11 +90,11 @@ project "unibot"
 			end
 		end
 		
-		links { "SDL2_net", lua_lib.name }
+		links { "SDL2", "SDL2_net", lua_lib.name }
 		if(not cygwin) then
 			libdirs { os.findlib("SDL2"), os.findlib("SDL2_net"), lua_lib.dir }
-			buildoptions { "$(sdl2-config --cflags)" }
-			linkoptions { "$(sdl2-config --libs)" }
+			buildoptions { "`sdl2-config --cflags`" }
+			linkoptions { "`sdl2-config --libs`" }
 		else
 			buildoptions { "`sdl2-config --cflags | sed -E 's/-Dmain=SDL_main//g'`" }
 			linkoptions { "`sdl2-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
