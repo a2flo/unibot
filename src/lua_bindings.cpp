@@ -126,7 +126,7 @@ template<typename arg1, typename arg2, typename arg3, typename arg4> tuple<arg1,
 }
 
 #define HANDLE_LUA_BINDINGS_EXCEPTION \
-catch(lua_bindings_exception& e) { \
+catch(lua_bindings_exception e) { \
 	unibot_error("in function %s: %s", string(__func__), e.what()); \
 	return -1; \
 }
