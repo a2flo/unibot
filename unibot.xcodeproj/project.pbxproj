@@ -400,7 +400,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = unibot_d;
-				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
 				VALID_ARCHS = x86_64;
 				VERSIONING_SYSTEM = "";
@@ -441,7 +440,6 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = unibot;
-				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
 				VALID_ARCHS = x86_64;
 			};
@@ -471,7 +469,7 @@
 					"-stdlib=libc++",
 				);
 				OTHER_LDFLAGS = "-stdlib=libc++";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -497,7 +495,7 @@
 					"-stdlib=libc++",
 				);
 				OTHER_LDFLAGS = "-stdlib=libc++";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};

@@ -64,11 +64,11 @@ extern "C" {
 #include <lua/lauxlib.h>
 }
 #elif defined(__WINDOWS__) // windows
-#include <SDL/SDL.h>
-#include <SDL/SDL_thread.h>
-#include <SDL/SDL_cpuinfo.h>
-#include <SDL/SDL_main.h>
-#include <SDL_net/SDL_net.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_cpuinfo.h>
+#include <SDL2/SDL_main.h>
+#include <SDL2_net/SDL_net.h>
 
 extern "C" {
 #include <lua/lua.hpp>
@@ -76,11 +76,11 @@ extern "C" {
 #include <lua/lauxlib.h>
 }
 #else // unix/linux
-#include <SDL.h>
-#include <SDL_thread.h>
-#include <SDL_cpuinfo.h>
-#include <SDL_main.h>
-#include <SDL_net.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_cpuinfo.h>
+#include <SDL2/SDL_main.h>
+#include <SDL2/SDL_net.h>
 
 extern "C" {
 #include <lua.hpp>

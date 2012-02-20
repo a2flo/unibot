@@ -6,6 +6,14 @@ UNIBOT_MAKE="make"
 UNIBOT_MAKE_PLATFORM="32"
 UNIBOT_ARGS=""
 UNIBOT_CPU_COUNT=1
+UNIBOT_USE_CLANG=0
+
+if [[ $# > 0 && $1 == "gcc" ]]; then
+	UNIBOT_ARGS="--gcc"
+else
+	UNIBOT_ARGS="--clang"
+	UNIBOT_USE_CLANG=1
+fi
 
 case $( uname | tr [:upper:] [:lower:] ) in
 	"darwin")
@@ -15,7 +23,6 @@ case $( uname | tr [:upper:] [:lower:] ) in
 	"linux")
 		UNIBOT_OS="linux"
 		UNIBOT_CPU_COUNT=$(cat /proc/cpuinfo | grep -m 1 'cpu cores' | sed -E 's/.*(: )([:digit:]*)/\2/g')
-		UNIBOT_ARGS="--clang"
 		;;
 	[a-z0-9]*"bsd")
 		UNIBOT_OS="bsd"
@@ -52,6 +59,11 @@ echo "using: premake4 --cc=gcc --os="${UNIBOT_OS}" gmake "${UNIBOT_ARGS}
 
 premake4 --cc=gcc --os=${UNIBOT_OS} gmake ${UNIBOT_ARGS}
 sed -i -e 's/\${MAKE}/\${MAKE} -j '${UNIBOT_CPU_COUNT}'/' Makefile
+
+if [[ $UNIBOT_USE_CLANG == 1 ]]; then
+	sed -i '1i export CC=clang' Makefile
+	sed -i '1i export CXX=clang++' Makefile
+fi
 
 chmod +x build_version.sh
 

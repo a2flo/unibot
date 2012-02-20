@@ -90,19 +90,20 @@ project "unibot"
 			end
 		end
 		
-		links { "SDL_net", lua_lib.name }
+		links { "SDL2_net", lua_lib.name }
 		if(not cygwin) then
-			libdirs { os.findlib("SDL"), os.findlib("SDL_net"), lua_lib.dir }
-			buildoptions { "$(sdl-config --cflags)" }
-			linkoptions { "$(sdl-config --libs)" }
+			libdirs { os.findlib("SDL2"), os.findlib("SDL2_net"), lua_lib.dir }
+			buildoptions { "$(sdl2-config --cflags)" }
+			linkoptions { "$(sdl2-config --libs)" }
 		else
-			buildoptions { "`sdl-config --cflags | sed -E 's/-Dmain=SDL_main//g'`" }
-			linkoptions { "`sdl-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
+			buildoptions { "`sdl2-config --cflags | sed -E 's/-Dmain=SDL_main//g'`" }
+			linkoptions { "`sdl2-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
 		end
+		includedirs { "/usr/include/SDL2", "/usr/local/include/SDL2" }
 		defines { "_GLIBCXX__PTHREADS", "_GLIBCXX_USE_NANOSLEEP" }
 		
 		-- find all necessary headers (in case they aren't in /usr/include)
-		local include_files = { "SDL.h", "SDL_net.h", "lua.h" }
+		local include_files = { "lua.h" }
 		for i = 1, #include_files do
 			if((not os.isfile("/usr/include/"..include_files[i])) and
 			   (not os.isfile("/usr/local/include/"..include_files[i]))) then

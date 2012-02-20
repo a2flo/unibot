@@ -23,7 +23,11 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#if defined(__APPLE__)
 #include <SDL/SDL_atomic.h>
+#else
+#include <SDL2/SDL_atomic.h>
+#endif
 using namespace std;
 
 //! unibot logging functions, use appropriately
