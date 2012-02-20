@@ -167,7 +167,7 @@ void lua::handle_message(const string& origin, const string& target, const strin
 			}
 		}
 	}
-	catch(invalidate_scripts_exception&) {
+	catch(invalidate_scripts_exception& e) {
 		// this breaks the scripts iteration loop (-> no more scripts are handled using the now invalidated script iterator)
 	}
 	catch(...) {

@@ -68,7 +68,11 @@ public:
 		return error_str.c_str();
 	}
 };
-class invalidate_scripts_exception : exception {};
+class invalidate_scripts_exception : exception {
+public:
+	invalidate_scripts_exception() {}
+	~invalidate_scripts_exception() throw() {}
+};
 
 class lua;
 class lua_bindings {
