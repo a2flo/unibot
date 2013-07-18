@@ -90,6 +90,7 @@ bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) : 
 	
 	lua_obj = new lua(n, this, states, conf);
 	
+	this->set_thread_delay(100); // 100ms are enough
 	this->start(); // start thread
 }
 
@@ -97,237 +98,237 @@ bot_handler::~bot_handler() {
 }
 
 void bot_handler::run() {
-	if(n->is_running() && n->is_received_data()) {
-		deque<string> data = n->get_and_clear_received_data();
-		for(auto data_iter = data.begin(); data_iter != data.end(); data_iter++) {
-			// handle the data
-			// cmd_tokens:
-			// [0]: sender
-			// [1]: command
-			// [2]: location
-			// [3+]: data
-			IRC_COMMAND current_cmd = parse_irc_cmd(*data_iter);
-			vector<string> cmd_tokens;
-			tokenize(cmd_tokens, *data_iter, ' ');
-			
-			string cmd_sender = "", cmd_command = "", cmd_location = "", cmd_data = "", cmd_data2 = "", cmd_joined_data = "";
-			if(cmd_tokens.size() > 0) cmd_sender = cmd_tokens[0];
-			if(cmd_tokens.size() > 1) cmd_command = cmd_tokens[1];
-			if(cmd_tokens.size() > 2) cmd_location = cmd_tokens[2];
-			if(cmd_tokens.size() > 3) {
-				cmd_data = cmd_tokens[3];
-				cmd_joined_data = cmd_data;
-			}
-			if(cmd_tokens.size() > 4) {
-				cmd_data2 = cmd_tokens[4];
-				unsigned int pos = (unsigned int)(cmd_tokens[0].length()+cmd_tokens[1].length()+cmd_tokens[2].length()+3);
-				cmd_joined_data = data_iter->substr(pos, data_iter->length()-pos);
-			}
-			
-			switch(current_cmd) {
-				case IRC_COMMAND::NONE:
-					// ignore
-					break;
-				case IRC_COMMAND::CMD_001:
-					states->set_connected(true);
-					unibot_debug("successfully connected to the server!");
-					n->join_channel(conf->get_channel());
-					n->send_identify(conf->get_bot_password());
-					break;
-				case IRC_COMMAND::CMD_004:
-					servername = cmd_data;
-					unibot_debug("server name is: %s", servername);
-					break;
-				case IRC_COMMAND::CMD_352:
-					// this might get nasty, catch exceptions, just to be on the safe side
-					try {
-						size_t colon_pos = cmd_joined_data.find(":");
-						if(colon_pos == string::npos) break;
-						
-						size_t space_pos = cmd_joined_data.find(" ", colon_pos);
-						string real_name = (space_pos == string::npos ? cmd_joined_data.substr(colon_pos+1, cmd_joined_data.length()-colon_pos-1) :
-											cmd_joined_data.substr(space_pos+1, cmd_joined_data.length()-space_pos-1));
-						
-						states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "", "");
-					}
-					catch(...) {
-						unibot_error("CMD_352 failed");
-					}
-					break;
-				case IRC_COMMAND::CMD_353: {
-					// only handle the main channel
-					if(cmd_tokens[4] != conf->get_channel()) break;
-					
-					if(cmd_joined_data.find(':') == string::npos) break;
-					// strip ':' and last ' ' (if there is one)
-					string user_str = trim(cmd_joined_data.substr(cmd_joined_data.find(':') + 1, cmd_joined_data.length() - cmd_joined_data.find(':') - 1));
-					vector<string> users;
-					tokenize(users, user_str, ' ');
-					states->delete_all_users();
-					for(auto user_iter = users.begin(); user_iter != users.end(); user_iter++) {
-						if(user_iter->length() > 0) {
-							if((*user_iter)[0] == '+' || (*user_iter)[0] == '@') {
-								*user_iter = user_iter->substr(1, user_iter->length() - 1);
-							}
-							states->add_user(*user_iter);
-						}
-					}
-				}
-				break;
-				case IRC_COMMAND::PING:
-					n->send("PONG " + servername);
-					unibot_debug("PONG!");
-					break;
-				case IRC_COMMAND::NOTICE:
-					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
-						states->set_identified(true);
-					}
-					else if(strip_user(cmd_sender) == "NickServ") {
-						// acc <nick> info, ACC 3 == nick/user is registered and identified
-						if(cmd_joined_data.find("ACC 3") != string::npos) {
-							// :<nick> ACC 3
-							string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
-							states->update_user_info(reg_user, "", "", "", "yes", "", "");
-						}
-						else if(cmd_joined_data.find(" ACC ") != string::npos) {
-							// :<nick> ACC # (# != 3) == unregistered
-							string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
-							states->update_user_info(reg_user, "", "", "", "no", "", "");
-						}
-					}
-					// ctcp notice
-					else if(cmd_joined_data.length() >= 2 &&
-							(cmd_joined_data[0] == ':' && cmd_joined_data[1] == 0x01 && cmd_joined_data[cmd_joined_data.length()-1] == 1)) {
-						string ctcp_msg = cmd_joined_data.substr(2, cmd_joined_data.length()-3);
-						
-						size_t space_pos = ctcp_msg.find(" ");
-						if(space_pos != string::npos && space_pos < ctcp_msg.length()-1) {
-							string ctcp_type = ctcp_msg.substr(0, space_pos);
-							string ctcp_info = ctcp_msg.substr(space_pos+1, ctcp_msg.length()-space_pos-1);
-							
-							if(ctcp_type == "VERSION") {
-								states->update_user_info(strip_user(cmd_sender), "", "", "", "", "yes", ctcp_info);
-							}
-						}
-					}
-					break;
-				case IRC_COMMAND::JOIN:
-					// only handle the main channel
-					if(conf->get_channel() == cmd_tokens[2]) {
-						// if the bot joined the channel, set the flag and send a "hi there ;)" message
-						if(strip_user(cmd_sender) == conf->get_bot_name()) {
-							unibot_debug("joined the channel");
-							states->set_joined(true);
-							n->send_channel_msg("hi there ;)");
-							
-							// check if bot got kicked
-							if(states->is_kicked()) {
-								// random kick message
-								const char* kick_messages[] = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" };
-								
-								// wait for 2 seconds before kicking the user
-								SDL_Delay(2000);
-								
-								unibot_debug("kicking: %s", states->get_kick_user());
-								n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
-							}
-						}
-						// if another user joined the channel, greet him
-						else {
-							if(!(states->is_silenced())) {
-								n->send_channel_msg("hey, " + strip_user(cmd_sender));
-							}
-							states->add_user(strip_user(cmd_sender));
-						}
-					}
-					break;
-				case IRC_COMMAND::PART:
-					// only handle the main channel
-					if(conf->get_channel() == cmd_tokens[2]) {
-						states->delete_user(strip_user(cmd_sender));
-						if(strip_user(cmd_sender) == conf->get_bot_name()) {
-							states->set_parted(true);
-						}
-					}
-					break;
-				case IRC_COMMAND::QUIT:
-					states->delete_user(strip_user(cmd_sender));
-					break;
-				case IRC_COMMAND::PRIVMSG: {
-					// handle the message (also trim the leading ':')
-					string msg = cmd_joined_data.substr(1, cmd_joined_data.length()-1);
-					handle_message(cmd_sender, cmd_location, msg);
-					if(cmd_location == conf->get_channel()) {
-						// update msg store
-						if(msg_store.size() > keep_msg_count) {
-							msg_store.pop_front();
-						}
-						msg_store.push_back(strip_special_chars(cmd_joined_data));
-						
-						// update user info
-						states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "", "");
-						
-						// log msg
-						unibot_msg("%s: %s", strip_user(cmd_sender), msg);
-					}
-				}
-				break;
-				case IRC_COMMAND::MODE:
-					// only handle mode stuff in the bots host channel
-					if(cmd_location == conf->get_channel()) {
-						// mode for the bot was set
-						if(cmd_data2 == conf->get_bot_name()) {
-							// bot was given op
-							if(cmd_data == "+o") {
-								states->set_op(true);
-							}
-							// op was taken from bot
-							if(cmd_data == "-o") {
-								states->set_op(false);
-							}
-						}
-					}
-					break;
-				case IRC_COMMAND::KICK:
-					// check if bot was kicked
-					if(cmd_data == conf->get_bot_name()) {
-						// check if the user who kicked the bot is the owner
-						if(conf->is_owner(strip_user(cmd_sender))) {
-							// if not, rejoin the channel and kick the user who kicked the bot
-							n->join_channel(conf->get_channel());
-							
-							states->set_kick_user(strip_user(cmd_sender));
-							unibot_debug("to get kicked: %s", states->get_kick_user());
-							states->set_kicked(true);
-						}
-					}
-					else {
-						states->delete_user(cmd_data);
-					}
-					break;
-				case IRC_COMMAND::NICK:
-					states->update_user_name(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
-					break;
-				case IRC_COMMAND::TOPIC:
-					break;
-				default:
-					break;
-			}
-			
-			// TODO: add lua events
-			
-			if(states->is_parted() && states->is_quit()) {
-				n->quit();
-				
-				// and finally finish both threads
-				set_thread_should_finish();
-				n->set_thread_should_finish();
-			}
-			
-			unibot_debug("%s", *data_iter);
+	if(!n->is_running() || !n->is_received_data()) return;
+	
+	deque<string> data = n->get_and_clear_received_data();
+	for(auto data_iter = data.begin(); data_iter != data.end(); data_iter++) {
+		// handle the data
+		// cmd_tokens:
+		// [0]: sender
+		// [1]: command
+		// [2]: location
+		// [3+]: data
+		IRC_COMMAND current_cmd = parse_irc_cmd(*data_iter);
+		vector<string> cmd_tokens;
+		tokenize(cmd_tokens, *data_iter, ' ');
+		
+		string cmd_sender = "", cmd_command = "", cmd_location = "", cmd_data = "", cmd_data2 = "", cmd_joined_data = "";
+		if(cmd_tokens.size() > 0) cmd_sender = cmd_tokens[0];
+		if(cmd_tokens.size() > 1) cmd_command = cmd_tokens[1];
+		if(cmd_tokens.size() > 2) cmd_location = cmd_tokens[2];
+		if(cmd_tokens.size() > 3) {
+			cmd_data = cmd_tokens[3];
+			cmd_joined_data = cmd_data;
 		}
-		n->clear_received_data();
+		if(cmd_tokens.size() > 4) {
+			cmd_data2 = cmd_tokens[4];
+			unsigned int pos = (unsigned int)(cmd_tokens[0].length()+cmd_tokens[1].length()+cmd_tokens[2].length()+3);
+			cmd_joined_data = data_iter->substr(pos, data_iter->length()-pos);
+		}
+		
+		switch(current_cmd) {
+			case IRC_COMMAND::NONE:
+				// ignore
+				break;
+			case IRC_COMMAND::CMD_001:
+				states->set_connected(true);
+				unibot_debug("successfully connected to the server!");
+				n->join_channel(conf->get_channel());
+				n->send_identify(conf->get_bot_password());
+				break;
+			case IRC_COMMAND::CMD_004:
+				servername = cmd_data;
+				unibot_debug("server name is: %s", servername);
+				break;
+			case IRC_COMMAND::CMD_352:
+				// this might get nasty, catch exceptions, just to be on the safe side
+				try {
+					size_t colon_pos = cmd_joined_data.find(":");
+					if(colon_pos == string::npos) break;
+					
+					size_t space_pos = cmd_joined_data.find(" ", colon_pos);
+					string real_name = (space_pos == string::npos ? cmd_joined_data.substr(colon_pos+1, cmd_joined_data.length()-colon_pos-1) :
+										cmd_joined_data.substr(space_pos+1, cmd_joined_data.length()-space_pos-1));
+					
+					states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "", "");
+				}
+				catch(...) {
+					unibot_error("CMD_352 failed");
+				}
+				break;
+			case IRC_COMMAND::CMD_353: {
+				// only handle the main channel
+				if(cmd_tokens[4] != conf->get_channel()) break;
+				
+				if(cmd_joined_data.find(':') == string::npos) break;
+				// strip ':' and last ' ' (if there is one)
+				string user_str = trim(cmd_joined_data.substr(cmd_joined_data.find(':') + 1, cmd_joined_data.length() - cmd_joined_data.find(':') - 1));
+				vector<string> users;
+				tokenize(users, user_str, ' ');
+				states->delete_all_users();
+				for(auto user_iter = users.begin(); user_iter != users.end(); user_iter++) {
+					if(user_iter->length() > 0) {
+						if((*user_iter)[0] == '+' || (*user_iter)[0] == '@') {
+							*user_iter = user_iter->substr(1, user_iter->length() - 1);
+						}
+						states->add_user(*user_iter);
+					}
+				}
+			}
+				break;
+			case IRC_COMMAND::PING:
+				n->send("PONG " + servername);
+				unibot_debug("PONG!");
+				break;
+			case IRC_COMMAND::NOTICE:
+				if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
+					states->set_identified(true);
+				}
+				else if(strip_user(cmd_sender) == "NickServ") {
+					// acc <nick> info, ACC 3 == nick/user is registered and identified
+					if(cmd_joined_data.find("ACC 3") != string::npos) {
+						// :<nick> ACC 3
+						string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
+						states->update_user_info(reg_user, "", "", "", "yes", "", "");
+					}
+					else if(cmd_joined_data.find(" ACC ") != string::npos) {
+						// :<nick> ACC # (# != 3) == unregistered
+						string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
+						states->update_user_info(reg_user, "", "", "", "no", "", "");
+					}
+				}
+				// ctcp notice
+				else if(cmd_joined_data.length() >= 2 &&
+						(cmd_joined_data[0] == ':' && cmd_joined_data[1] == 0x01 && cmd_joined_data[cmd_joined_data.length()-1] == 1)) {
+					string ctcp_msg = cmd_joined_data.substr(2, cmd_joined_data.length()-3);
+					
+					size_t space_pos = ctcp_msg.find(" ");
+					if(space_pos != string::npos && space_pos < ctcp_msg.length()-1) {
+						string ctcp_type = ctcp_msg.substr(0, space_pos);
+						string ctcp_info = ctcp_msg.substr(space_pos+1, ctcp_msg.length()-space_pos-1);
+						
+						if(ctcp_type == "VERSION") {
+							states->update_user_info(strip_user(cmd_sender), "", "", "", "", "yes", ctcp_info);
+						}
+					}
+				}
+				break;
+			case IRC_COMMAND::JOIN:
+				// only handle the main channel
+				if(conf->get_channel() == cmd_tokens[2]) {
+					// if the bot joined the channel, set the flag and send a "hi there ;)" message
+					if(strip_user(cmd_sender) == conf->get_bot_name()) {
+						unibot_debug("joined the channel");
+						states->set_joined(true);
+						n->send_channel_msg("hi there ;)");
+						
+						// check if bot got kicked
+						if(states->is_kicked()) {
+							// random kick message
+							const char* kick_messages[] = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" };
+							
+							// wait for 2 seconds before kicking the user
+							SDL_Delay(2000);
+							
+							unibot_debug("kicking: %s", states->get_kick_user());
+							n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
+						}
+					}
+					// if another user joined the channel, greet him
+					else {
+						if(!(states->is_silenced())) {
+							n->send_channel_msg("hey, " + strip_user(cmd_sender));
+						}
+						states->add_user(strip_user(cmd_sender));
+					}
+				}
+				break;
+			case IRC_COMMAND::PART:
+				// only handle the main channel
+				if(conf->get_channel() == cmd_tokens[2]) {
+					states->delete_user(strip_user(cmd_sender));
+					if(strip_user(cmd_sender) == conf->get_bot_name()) {
+						states->set_parted(true);
+					}
+				}
+				break;
+			case IRC_COMMAND::QUIT:
+				states->delete_user(strip_user(cmd_sender));
+				break;
+			case IRC_COMMAND::PRIVMSG: {
+				// handle the message (also trim the leading ':')
+				string msg = cmd_joined_data.substr(1, cmd_joined_data.length()-1);
+				handle_message(cmd_sender, cmd_location, msg);
+				if(cmd_location == conf->get_channel()) {
+					// update msg store
+					if(msg_store.size() > keep_msg_count) {
+						msg_store.pop_front();
+					}
+					msg_store.push_back(strip_special_chars(cmd_joined_data));
+					
+					// update user info
+					states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "", "");
+					
+					// log msg
+					unibot_msg("%s: %s", strip_user(cmd_sender), msg);
+				}
+			}
+				break;
+			case IRC_COMMAND::MODE:
+				// only handle mode stuff in the bots host channel
+				if(cmd_location == conf->get_channel()) {
+					// mode for the bot was set
+					if(cmd_data2 == conf->get_bot_name()) {
+						// bot was given op
+						if(cmd_data == "+o") {
+							states->set_op(true);
+						}
+						// op was taken from bot
+						if(cmd_data == "-o") {
+							states->set_op(false);
+						}
+					}
+				}
+				break;
+			case IRC_COMMAND::KICK:
+				// check if bot was kicked
+				if(cmd_data == conf->get_bot_name()) {
+					// check if the user who kicked the bot is the owner
+					if(conf->is_owner(strip_user(cmd_sender))) {
+						// if not, rejoin the channel and kick the user who kicked the bot
+						n->join_channel(conf->get_channel());
+						
+						states->set_kick_user(strip_user(cmd_sender));
+						unibot_debug("to get kicked: %s", states->get_kick_user());
+						states->set_kicked(true);
+					}
+				}
+				else {
+					states->delete_user(cmd_data);
+				}
+				break;
+			case IRC_COMMAND::NICK:
+				states->update_user_name(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
+				break;
+			case IRC_COMMAND::TOPIC:
+				break;
+			default:
+				break;
+		}
+		
+		// TODO: add lua events
+		
+		if(states->is_parted() && states->is_quit()) {
+			n->quit();
+			
+			// and finally finish both threads
+			set_thread_should_finish();
+			n->set_thread_should_finish();
+		}
+		
+		unibot_debug("%s", *data_iter);
 	}
+	n->clear_received_data();
 }
 
 bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {

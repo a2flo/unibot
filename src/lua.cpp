@@ -81,7 +81,7 @@ void lua::reload_scripts() {
 		folders.pop_front();
 	}
 #else
-	struct dirent** namelist;
+	struct dirent** namelist = nullptr;
 	
 	deque<string> folders;
 	folders.push_back(".");
@@ -91,7 +91,9 @@ void lua::reload_scripts() {
 	for(;;) {
 		if(folders.size() == 0) break;
 		
-		int n = scandir(lua_script_folder(folders.front().c_str()).c_str(), &namelist, 0, alphasort);
+		namelist = nullptr;
+		const string folder_name = lua_script_folder(folders.front());
+		int n = scandir(folder_name.c_str(), &namelist, 0, alphasort);
 		const string path = folders.front() + '/';
 		if(n > 0) {
 			for(int j = 1; j < n; j++) {
@@ -109,8 +111,12 @@ void lua::reload_scripts() {
 					folders.push_back(full_fname);
 				}
 			}
-			
-			delete [] namelist;
+		}
+		if(namelist != nullptr) {
+			for(int i = 0; i < n; i++) {
+				free(namelist[i]);
+			}
+			free(namelist);
 		}
 		folders.pop_front();
 	}
@@ -127,9 +133,10 @@ void lua::reload_script(const string& filename) {
 		script_store.erase(script_filename);
 	}
 	
-	script_store[script_filename] = new lua_script(script_filename);
-	register_functions(script_store[script_filename]);
-	script_store[script_filename]->load_script();
+	lua_script* script = new lua_script(script_filename);
+	script_store.emplace(script_filename, script);
+	register_functions(script);
+	script->load_script();
 }
 
 void lua::check_scripts() {

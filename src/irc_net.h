@@ -60,7 +60,7 @@ typedef irc_net<UNIBOT_NET_PROTOCOL> unibot_irc_net;
 template <class protocol_policy> irc_net<protocol_policy>::irc_net(config* conf) :
 net<protocol_policy>(conf) {
 	packets_per_second = 5;
-	this->set_thread_delay(20); // 20ms should suffice
+	this->set_thread_delay(100); // 100ms should suffice
 }
 
 template <class protocol_policy> void irc_net<protocol_policy>::send(string data) {

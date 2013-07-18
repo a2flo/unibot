@@ -107,6 +107,7 @@ protected:
 					script_string = "package.path = package.path .. \";" + script_path + "\"\n" + script_string;
 #endif
 					luaL_loadstring(state, script_string.c_str());
+					delete [] script_data;
 				}
 			}
 			else load_error = true;
