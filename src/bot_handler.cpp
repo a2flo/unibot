@@ -213,7 +213,7 @@ void bot_handler::run() {
 					break;
 				case IRC_COMMAND::JOIN:
 					// only handle the main channel
-					if(conf->get_channel() == cmd_tokens[2].substr(1, cmd_tokens[2].length()-1)) {
+					if(conf->get_channel() == cmd_tokens[2]) {
 						// if the bot joined the channel, set the flag and send a "hi there ;)" message
 						if(strip_user(cmd_sender) == conf->get_bot_name()) {
 							unibot_debug("joined the channel");
