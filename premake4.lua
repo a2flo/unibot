@@ -61,14 +61,14 @@ project "unibot"
 	-- os specifics
 	if(not os.is("windows") or cygwin) then
 		includedirs { "/usr/include", "/usr/local/include", "src/", "src/threading/" }
-		buildoptions { "-Wall -x c++ -std=c++0x -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
+		buildoptions { "-Wall -x c++ -std=c++11 -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
 		buildoptions { "-msse3" }
 		prebuildcommands { "./build_version.sh" }
 		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
 		if(clang_libcxx) then
-			buildoptions { "-stdlib=libc++ -integrated-as" }
+			buildoptions { "-stdlib=libc++" }
 			buildoptions { "-Wno-delete-non-virtual-dtor -Wno-overloaded-virtual" }
-			linkoptions { "-stdlib=libc++ -fvisibility=default" }
+			linkoptions { "-stdlib=libc++" }
 		end
 	end
 	
@@ -100,7 +100,6 @@ project "unibot"
 			linkoptions { "`sdl2-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
 		end
 		includedirs { "/usr/include/SDL2", "/usr/local/include/SDL2" }
-		defines { "_GLIBCXX__PTHREADS", "_GLIBCXX_USE_NANOSLEEP" }
 		
 		-- find all necessary headers (in case they aren't in /usr/include)
 		local include_files = { "lua.h" }
