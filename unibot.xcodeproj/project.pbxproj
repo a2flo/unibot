@@ -18,9 +18,10 @@
 		5C58098B130CBD6C002D56DF /* thread_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58097C130CBD6C002D56DF /* thread_base.cpp */; };
 		5C58098C130CBD6C002D56DF /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58097E130CBD6C002D56DF /* watchdog.cpp */; };
 		5C58098D130CBD6C002D56DF /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580981130CBD6C002D56DF /* util.cpp */; };
+		5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F517984FA70075DC99 /* SDL2.framework */; };
+		5C8906F817984FA70075DC99 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F617984FA70075DC99 /* SDL2_net.framework */; };
+		5C8906FC179858630075DC99 /* task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8906FA179858630075DC99 /* task.cpp */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
-		5CFAD305100E374800CEA98D /* SDL_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD304100E374800CEA98D /* SDL_net.framework */; };
-		5CFAD44C100E503B00CEA98D /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD44B100E503B00CEA98D /* SDL.framework */; };
 		5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4AB100E514F00CEA98D /* Cocoa.framework */; };
 		5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4B1100E519700CEA98D /* AppKit.framework */; };
 /* End PBXBuildFile section */
@@ -90,6 +91,11 @@
 		5C713C40117679E7001B6645 /* ticket.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ticket.lua; sourceTree = "<group>"; };
 		5C749B691125BBEF0079A57A /* system.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = system.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C749B6A1125BBEF0079A57A /* time.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
+		5C8906F517984FA70075DC99 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Library/Frameworks/SDL2.framework; sourceTree = SDKROOT; };
+		5C8906F617984FA70075DC99 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = Library/Frameworks/SDL2_net.framework; sourceTree = SDKROOT; };
+		5C8906F9179856830075DC99 /* cpp_headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cpp_headers.h; path = src/cpp_headers.h; sourceTree = "<group>"; };
+		5C8906FA179858630075DC99 /* task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = task.cpp; sourceTree = "<group>"; };
+		5C8906FB179858630075DC99 /* task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = task.h; sourceTree = "<group>"; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
 		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		5C95C40F1184EDEF005864D0 /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bindings_test.lua; sourceTree = "<group>"; };
@@ -118,8 +124,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5CFAD305100E374800CEA98D /* SDL_net.framework in Frameworks */,
-				5CFAD44C100E503B00CEA98D /* SDL.framework in Frameworks */,
+				5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */,
+				5C8906F817984FA70075DC99 /* SDL2_net.framework in Frameworks */,
 				5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */,
 				5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */,
 				5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */,
@@ -173,6 +179,7 @@
 				5C58096C130CBD6C002D56DF /* functor.h */,
 				5C580980130CBD6C002D56DF /* type_list.h */,
 				5C58097A130CBD6C002D56DF /* platform.h */,
+				5C8906F9179856830075DC99 /* cpp_headers.h */,
 				5C58097B130CBD6C002D56DF /* threading */,
 			);
 			name = Source;
@@ -207,6 +214,8 @@
 		5C58097B130CBD6C002D56DF /* threading */ = {
 			isa = PBXGroup;
 			children = (
+				5C8906FA179858630075DC99 /* task.cpp */,
+				5C8906FB179858630075DC99 /* task.h */,
 				5C58097C130CBD6C002D56DF /* thread_base.cpp */,
 				5C58097D130CBD6C002D56DF /* thread_base.h */,
 				5C58097E130CBD6C002D56DF /* watchdog.cpp */,
@@ -273,6 +282,8 @@
 		5CFAD475100E504500CEA98D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C8906F517984FA70075DC99 /* SDL2.framework */,
+				5C8906F617984FA70075DC99 /* SDL2_net.framework */,
 				5CFAD4B1100E519700CEA98D /* AppKit.framework */,
 				5CFAD4AB100E514F00CEA98D /* Cocoa.framework */,
 				5CFAD44B100E503B00CEA98D /* SDL.framework */,
@@ -360,6 +371,7 @@
 				5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */,
 				5C580989130CBD6C002D56DF /* lua.cpp in Sources */,
 				5C58098A130CBD6C002D56DF /* main.cpp in Sources */,
+				5C8906FC179858630075DC99 /* task.cpp in Sources */,
 				5C58098B130CBD6C002D56DF /* thread_base.cpp in Sources */,
 				5C58098C130CBD6C002D56DF /* watchdog.cpp in Sources */,
 				5C58098D130CBD6C002D56DF /* util.cpp in Sources */,
@@ -373,7 +385,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CONFIGURATION_BUILD_DIR = .;
@@ -410,7 +421,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CONFIGURATION_BUILD_DIR = .;
@@ -449,7 +459,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -463,13 +477,43 @@
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "-std=c++0x";
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-stdlib=libc++",
+				SDKROOT = macosx;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				WARNING_CFLAGS = (
+					"-Weverything",
+					"-Wno-c++98-compat",
+					"-Wno-c++98-compat-pedantic",
+					"-Wno-c99-extensions",
+					"-Wno-header-hygiene",
+					"-Wno-gnu",
+					"-Wno-float-equal",
+					"-Wno-documentation",
+					"-Wno-system-headers",
+					"-Wno-global-constructors",
+					"-Wno-padded",
+					"-Wno-packed",
+					"-Wno-switch-enum",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-exit-time-destructors",
+					"-Wno-unknown-warning-option",
+					"-Wmissing-field-initializers",
+					"-Wmissing-prototypes",
+					"-Wreturn-type",
+					"-Woverloaded-virtual",
+					"-Wmissing-braces",
+					"-Wunused-function",
+					"-Wunused-label",
+					"-Wunused-parameter",
+					"-Wunused-variable",
+					"-Wuninitialized",
+					"-Wunknown-pragmas",
+					"-Wfour-char-constants",
+					"-Wshorten-64-to-32",
+					"-Wnewline-eof",
+					"-Wnon-virtual-dtor",
+					"-Wno-nested-anon-types",
 				);
-				OTHER_LDFLAGS = "-stdlib=libc++";
-				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -477,7 +521,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -489,13 +537,43 @@
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				OTHER_CFLAGS = "-std=c++0x";
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-stdlib=libc++",
+				SDKROOT = macosx;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				WARNING_CFLAGS = (
+					"-Weverything",
+					"-Wno-c++98-compat",
+					"-Wno-c++98-compat-pedantic",
+					"-Wno-c99-extensions",
+					"-Wno-header-hygiene",
+					"-Wno-gnu",
+					"-Wno-float-equal",
+					"-Wno-documentation",
+					"-Wno-system-headers",
+					"-Wno-global-constructors",
+					"-Wno-padded",
+					"-Wno-packed",
+					"-Wno-switch-enum",
+					"-Wno-sign-conversion",
+					"-Wno-conversion",
+					"-Wno-exit-time-destructors",
+					"-Wno-unknown-warning-option",
+					"-Wmissing-field-initializers",
+					"-Wmissing-prototypes",
+					"-Wreturn-type",
+					"-Woverloaded-virtual",
+					"-Wmissing-braces",
+					"-Wunused-function",
+					"-Wunused-label",
+					"-Wunused-parameter",
+					"-Wunused-variable",
+					"-Wuninitialized",
+					"-Wunknown-pragmas",
+					"-Wfour-char-constants",
+					"-Wshorten-64-to-32",
+					"-Wnewline-eof",
+					"-Wnon-virtual-dtor",
+					"-Wno-nested-anon-types",
 				);
-				OTHER_LDFLAGS = "-stdlib=libc++";
-				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};

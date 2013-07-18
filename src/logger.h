@@ -16,42 +16,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __LOGGER_H__
-#define __LOGGER_H__
+#ifndef __UNIBOT_LOGGER_H__
+#define __UNIBOT_LOGGER_H__
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-#if defined(__APPLE__)
-#include <SDL/SDL_atomic.h>
-#else
-#include <SDL2/SDL_atomic.h>
-#endif
+#include "cpp_headers.h"
 using namespace std;
 
 //! unibot logging functions, use appropriately
 //! note that you don't actually have to use a specific character for %_ to print the
 //! correct type (the ostream operator<< is used and the %_ character is ignored - except
 //! for %x and %X which will print out an integer in hex format)
-#define unibot_error(...) logger::log(logger::LT_ERROR, __FILE__, __func__, __VA_ARGS__)
-#define unibot_debug(...) logger::log(logger::LT_DEBUG, __FILE__, __func__, __VA_ARGS__)
-#define unibot_msg(...) logger::log(logger::LT_MSG, __FILE__, __func__, __VA_ARGS__)
-#define unibot_log(...) logger::log(logger::LT_NONE, __FILE__, __func__, __VA_ARGS__)
-
-// check if atomics and sdl 1.3 are available
-#if !defined(_SDL_atomic_h_ ) || (SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION < 3)
-#error "UniBot requires SDL 1.3 with support for atomics"
-#endif
+#define unibot_error(...) logger::log(logger::LOG_TYPE::ERROR_MSG, __FILE__, __func__, __VA_ARGS__)
+#define unibot_debug(...) logger::log(logger::LOG_TYPE::DEBUG_MSG, __FILE__, __func__, __VA_ARGS__)
+#define unibot_msg(...) logger::log(logger::LOG_TYPE::SIMPLE_MSG, __FILE__, __func__, __VA_ARGS__)
+#define unibot_log(...) logger::log(logger::LOG_TYPE::NONE, __FILE__, __func__, __VA_ARGS__)
 
 class config;
 class logger {
 public:
-	enum LOG_TYPE {
-		LT_NONE,	//!< enum message with no prefix
-		LT_MSG,		//!< enum simple message
-		LT_ERROR,	//!< enum error message
-		LT_DEBUG	//!< enum debug message
+	enum class LOG_TYPE : size_t {
+		NONE,		//!< enum message with no prefix
+		SIMPLE_MSG,	//!< enum simple message
+		ERROR_MSG,	//!< enum error message
+		DEBUG_MSG	//!< enum debug message
 	};
 	
 	static void init();
@@ -61,12 +48,12 @@ public:
 	//
 	static const char* type_to_str(const LOG_TYPE& type) {
 		switch(type) {
-			case LT_NONE: return ""; break;
-			case LT_MSG: return "MSG"; break;
-			case LT_ERROR: return "ERROR"; break;
-			case LT_DEBUG: return "DEBUG"; break;
-			default: break;
+			case LOG_TYPE::NONE: return "";
+			case LOG_TYPE::SIMPLE_MSG: return "[ MSG ]";
+			case LOG_TYPE::ERROR_MSG: return "[ERROR]";
+			case LOG_TYPE::DEBUG_MSG: return "[DEBUG]";
 		}
+		assert(false && "invalid log type");
 		return "UNKNOWN";
 	}
 	
@@ -77,43 +64,53 @@ public:
 		if(!prepare_log(buffer, type, file, func)) return;
 		_log(buffer, type, str, std::forward<Args>(args)...);
 	}
-
-protected:
-	logger(const logger& l);
-	~logger();
-	logger& operator=(const logger& l);
 	
-	static fstream log_file;
-	static fstream msg_file;
-	static SDL_atomic_t err_counter;
-	static SDL_SpinLock slock;
-	static const config* conf;
-
+protected:
+	logger(const logger& l) = delete;
+	~logger() = delete;
+	logger& operator=(const logger& l) = delete;
+	
 	//
 	static bool prepare_log(stringstream& buffer, const LOG_TYPE& type, const char* file, const char* func);
 	
 	//! handles the log format
 	//! only %x and %X are supported at the moment, in all other cases the standard ostream operator<< is used!
+	template <bool is_enum_flag, typename U> struct enum_helper_type {
+		typedef U type;
+	};
+	template <typename U> struct enum_helper_type<true, U> {
+		typedef typename underlying_type<U>::type type;
+	};
 	template <typename T> static void handle_format(stringstream& buffer, const char& format, T value) {
+		typedef typename conditional<is_enum<T>::value,
+									 typename enum_helper_type<is_enum<T>::value, T>::type,
+									 typename conditional<is_pointer<T>::value &&
+														  !is_same<T, char*>::value &&
+														  !is_same<T, const char*>::value &&
+														  !is_same<T, unsigned char*>::value &&
+														  !is_same<T, const unsigned char*>::value,
+														  size_t,
+														  T>::type>::type print_type;
+		
 		switch(format) {
 			case 'x':
-				buffer << "0x" << hex << value << dec;
+				buffer << hex << "0x" << (print_type)value << dec;
 				break;
 			case 'X':
-				buffer << "0x" << hex << uppercase << value << nouppercase << dec;
+				buffer << hex << uppercase << "0x" << (print_type)value << nouppercase << dec;
 				break;
 			default:
-				buffer << value;
+				buffer << (print_type)value;
 				break;
 		}
 	}
 	
 	// internal logging functions
 	static void _log(stringstream& buffer, const LOG_TYPE& type, const char* str); // will be called in the end (when there are no more args)
-	template<typename T, typename... Args> static void _log(stringstream& buffer, const LOG_TYPE& type, const char* str, T t, Args&&... args) {
+	template<typename T, typename... Args> static void _log(stringstream& buffer, const LOG_TYPE& type, const char* str, T value, Args&&... args) {
 		while(*str) {
 			if(*str == '%' && *(++str) != '%') {
-				handle_format(buffer, *str, t);
+				handle_format(buffer, *str, value);
 				_log(buffer, type, ++str, std::forward<Args>(args)...);
 				return;
 			}
@@ -121,7 +118,7 @@ protected:
 		}
 		cout << "LOG ERROR: unused extra arguments specified in: \"" << buffer.str() << "\"!" << endl;
 	}
-
+	
 };
 
 #endif

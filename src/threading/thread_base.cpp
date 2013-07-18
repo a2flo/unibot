@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,12 +17,10 @@
  */
 
 #include "thread_base.h"
-#include <chrono>
 
-thread_base::thread_base() : thread_obj(NULL), thread_lock(), thread_status(thread_base::INIT),
-thread_should_finish_flag(false), thread_delay(1) {
+thread_base::thread_base(const string name) : thread_name(name), thread_obj(nullptr), thread_lock(), thread_status(THREAD_STATUS::INIT), thread_delay(50) {
 	this->lock(); // lock thread, so start (or unlock) must be called before the thread starts running
-	thread_obj = new thread(_thread_run, this);
+	thread_obj = new std::thread(&thread_base::_thread_run, this);
 }
 
 thread_base::~thread_base() {
@@ -30,13 +28,22 @@ thread_base::~thread_base() {
 }
 
 void thread_base::start() {
-	if(thread_status != thread_base::INIT) {
+	if(thread_status != THREAD_STATUS::INIT) {
 		// something is wrong, return (thread status must be init!)
+		cout << "ERROR: thread error: thread status must be INIT before starting the thread!" << endl;
 		return;
 	}
 	
-	thread_status = thread_base::RUNNING;
+	thread_status = THREAD_STATUS::RUNNING;
 	this->unlock();
+}
+
+void thread_base::restart() {
+	thread_should_finish_flag = false;
+	this->lock();
+	thread_status = THREAD_STATUS::INIT;
+	thread_obj = new thread(_thread_run, this);
+	start();
 }
 
 int thread_base::_thread_run(thread_base* this_thread_obj) {
@@ -46,31 +53,38 @@ int thread_base::_thread_run(thread_base* this_thread_obj) {
 			this_thread_obj->unlock();
 			
 			// reduce system load and make other locks possible
-			this_thread::sleep_for(chrono::milliseconds(this_thread_obj->get_thread_delay()));
+			const size_t thread_delay = this_thread_obj->get_thread_delay();
+			if(thread_delay > 0) {
+				this_thread::sleep_for(chrono::milliseconds(thread_delay));
+			}
+			else this_thread::yield(); // just yield when delay == 0
 		}
+		else this_thread::yield();
 		
 		if(this_thread_obj->thread_should_finish()) {
 			break;
 		}
 	}
-	this_thread_obj->set_thread_status(thread_base::FINISHED);
+	this_thread_obj->set_thread_status(THREAD_STATUS::FINISHED);
 	
 	return 0;
 }
 
 void thread_base::finish() {
+	if(get_thread_status() == THREAD_STATUS::FINISHED && !thread_obj->joinable()) {
+		return; // nothing to do here
+	}
+	
 	// signal thread to finish
 	set_thread_should_finish();
 	
 	// wait a few ms
-	this_thread::sleep_for(chrono::milliseconds(50));
+	this_thread::sleep_for(chrono::milliseconds(100));
 	
 	// this will block until the thread is finished
-	// TODO: since the thread can't be killed and join doesn't have a timeout, start an extra thread
-	// to join so we don't block forever if the thread gets unexpectedly blocked/terminated/...?
-	thread_obj->join();
+	if(thread_obj->joinable()) thread_obj->join();
 	
-	set_thread_status(thread_base::FINISHED);
+	set_thread_status(THREAD_STATUS::FINISHED);
 }
 
 void thread_base::lock() {
@@ -116,32 +130,30 @@ void thread_base::set_thread_status(const thread_base::THREAD_STATUS status) {
 	this->unlock();
 }
 
-const thread_base::THREAD_STATUS thread_base::get_thread_status() {
+thread_base::THREAD_STATUS thread_base::get_thread_status() const {
 	return thread_status;
 }
 
-bool thread_base::is_running() {
+bool thread_base::is_running() const {
 	// copy before use
 	const THREAD_STATUS status = thread_status;
-	return (status == thread_base::RUNNING || status == thread_base::INIT);
+	return (status == THREAD_STATUS::RUNNING || status == THREAD_STATUS::INIT);
 }
 
 void thread_base::set_thread_should_finish() {
-	this->lock();
 	thread_should_finish_flag = true;
-	this->unlock();
 }
 
 bool thread_base::thread_should_finish() {
 	return thread_should_finish_flag;
 }
 
-void thread_base::set_thread_delay(const size_t delay) {
+void thread_base::set_thread_delay(const unsigned int delay) {
 	this->lock();
 	thread_delay = delay;
 	this->unlock();
 }
 
-const size_t thread_base::get_thread_delay() {
+size_t thread_base::get_thread_delay() const {
 	return thread_delay;
 }

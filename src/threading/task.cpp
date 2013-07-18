@@ -16,28 +16,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "event_handler.h"
+#include "task.h"
 
-event_handler_base* event_handler = nullptr;
-void init_event_handler() {
-	if(event_handler != nullptr) {
-		event_handler = new event_handler_base();
-	}
-}
-void destroy_event_handler() {
-	if(event_handler != nullptr) {
-		delete event_handler;
-		event_handler = nullptr;
-	}
+task::task(std::function<void()> op_) :
+op(op_),
+thread_obj(&task::run, this, [this]() {
+	while(!initialized) { this_thread::yield(); }
+	op();
+}) {
+	thread_obj.detach();
+	initialized = true;
 }
 
-event_handler_base::event_handler_base() : thread_base() {
-	this->start();
-}
+task::~task() {}
 
-event_handler_base::~event_handler_base() {
-}
-
-void event_handler_base::run() {
-	//
+void task::run(task* this_task, std::function<void()> task_op) {
+	task_op();
+	delete this_task;
 }

@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __LUA_BINDINGS_H__
-#define __LUA_BINDINGS_H__
+#ifndef __UNIBOT_LUA_BINDINGS_H__
+#define __UNIBOT_LUA_BINDINGS_H__
 
 #include "platform.h"
 #include "net.h"
@@ -62,16 +62,14 @@ class lua_bindings_exception : public exception {
 protected:
 	string error_str;
 public:
-	lua_bindings_exception(const string& error_str) : error_str(error_str) {}
-	~lua_bindings_exception() throw() {}
-    virtual const char* what() const throw () {
-		return error_str.c_str();
-	}
+	lua_bindings_exception(const string& error_str);
+	~lua_bindings_exception() throw();
+    virtual const char* what() const throw ();
 };
 class invalidate_scripts_exception : exception {
 public:
-	invalidate_scripts_exception() {}
-	~invalidate_scripts_exception() throw() {}
+	invalidate_scripts_exception();
+	~invalidate_scripts_exception() throw();
 };
 
 class lua;
@@ -82,7 +80,7 @@ public:
 	lua_bindings(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts);
 	~lua_bindings();
 	
-	__LUA_FUNCTION_BINDINGS(LUA_FUNCTION_DEFINITION);
+	__LUA_FUNCTION_BINDINGS(LUA_FUNCTION_DEFINITION)
 	
 protected:
 	static unibot_irc_net* n;

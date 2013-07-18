@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,23 +29,23 @@ int main(int argc, char* argv[]) {
 	init_event_handler();
 	
 	// config
-	config* conf;
+	config* conf = nullptr;
 	const string conf_name = (argc > 1 ? argv[1] : "unibot.conf");
-	const string config_filenames[][2] = {
-		{ "/etc/"+conf_name, "unix" },
-		{ "C:/"+conf_name, "windows" }
-	};
-	for(size_t i = 0; i < ARRAY_LENGTH(config_filenames); i++) {
+	const array<array<string, 2>, 2> config_filenames {{
+		{{ "/etc/"+conf_name, "unix" }},
+		{{ "C:/"+conf_name, "windows" }}
+	}};
+	for(size_t i = 0; i < config_filenames.size(); i++) {
 		try {
 			conf = new config(config_filenames[i][0], config_filenames[i][1], (ssize_t)argc, (const char**)argv);
 			break;
 		}
 		catch(...) {
-			conf = NULL;
+			conf = nullptr;
 			continue;
 		}
 	}
-	if(conf == NULL) {
+	if(conf == nullptr) {
 		cout << "ERROR: couldn't open the unibot config file!" << endl;
 		exit(-1);
 	}
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 		exit(-1);
 	}
 	
-	srand((unsigned int)time(NULL));
+	srand((unsigned int)time(nullptr));
 	
 	// initialize net
 	unibot_irc_net* irc = new unibot_irc_net(conf);
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
 		const size_t slash_pos = binary.rfind('/');
 		if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
 		
-		string restart_cmd = "killall "+binary+" >/dev/null 2>&1 && sleep 1 && "+string(argv[0]);
+		string restart_cmd = "killall "+binary+" >/dev/nullptr 2>&1 && sleep 1 && "+string(argv[0]);
 		system(restart_cmd.c_str());
 	}
 #endif

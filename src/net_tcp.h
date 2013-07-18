@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,28 +16,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __NET_TCP_H__
-#define __NET_TCP_H__
+#ifndef __UNIBOT_NET_TCP_H__
+#define __UNIBOT_NET_TCP_H__
 
 #include "platform.h"
 #include "net_protocol.h"
 
 template<> struct std_protocol<TCPsocket> {
-	std_protocol<TCPsocket>() : server_set(false), client_set(false), valid(true), server_socket(NULL), client_socket(NULL) {
+	std_protocol<TCPsocket>() : server_set(false), client_set(false), valid(true), server_socket(nullptr), client_socket(nullptr) {
 		// initialize socket set
 		socketset = SDLNet_AllocSocketSet(2);
-		if(socketset == NULL) {
+		if(socketset == nullptr) {
 			unibot_error("couldn't create socket set: %s", SDLNet_GetError());
 			valid = false;
 		}
 	}
-	virtual ~std_protocol<TCPsocket>() {
-		if(socketset != NULL) {
-			if(server_socket != NULL) {
+	~std_protocol<TCPsocket>() {
+		if(socketset != nullptr) {
+			if(server_socket != nullptr) {
 				SDLNet_TCP_DelSocket(socketset, server_socket);
 				SDLNet_TCP_Close(server_socket);
 			}
-			if(client_socket != NULL) {
+			if(client_socket != nullptr) {
 				SDLNet_TCP_DelSocket(socketset, client_socket);
 				SDLNet_TCP_Close(client_socket);
 			}
@@ -45,9 +45,9 @@ template<> struct std_protocol<TCPsocket> {
 	}
 	
 	bool is_valid() {
-		if(socketset == NULL) valid = false;
-		if(server_set && server_socket == NULL) valid = false;
-		if(client_set && client_socket == NULL) valid = false;	
+		if(socketset == nullptr) valid = false;
+		if(server_set && server_socket == nullptr) valid = false;
+		if(client_set && client_socket == nullptr) valid = false;	
 		return valid;
 	}
 	
@@ -70,7 +70,7 @@ template<> struct std_protocol<TCPsocket> {
 		server_set = true;
 		
 		server_socket = SDLNet_TCP_Open(&server_ip);
-		if(server_socket == NULL) {
+		if(server_socket == nullptr) {
 			unibot_error("server socket error: %s", SDLNet_GetError());
 			return false;
 		}
@@ -83,7 +83,7 @@ template<> struct std_protocol<TCPsocket> {
 		client_set = true;
 		
 		client_socket = SDLNet_TCP_Open(&client_ip);
-		if(client_socket == NULL) {
+		if(client_socket == nullptr) {
 			unibot_error("client socket error: %s", SDLNet_GetError());
 			return false;
 		}

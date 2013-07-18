@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __WATCHDOG_H__
-#define __WATCHDOG_H__
+#ifndef __UNIBOT_WATCHDOG_H__
+#define __UNIBOT_WATCHDOG_H__
 
 #include "platform.h"
 #include "thread_base.h"

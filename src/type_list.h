@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __TYPE_LIST_H__
-#define __TYPE_LIST_H__
+#ifndef __UNIBOT_TYPE_LIST_H__
+#define __UNIBOT_TYPE_LIST_H__
 
 using namespace std;
 
-class null_type {};
+class nullptr_type {};
 struct empty_type {};
 
 // define typelists
@@ -32,18 +32,18 @@ template <typename T, typename... Args> struct type_list<T, Args...> {
 };
 template <typename T> struct type_list<T> {
 	typedef T head;
-	typedef null_type tail;
+	typedef nullptr_type tail;
 };
 template <> struct type_list<> {
-	typedef null_type head;
-	typedef null_type tail;
+	typedef nullptr_type head;
+	typedef nullptr_type tail;
 };
 
 // typelist namespace and functions
 namespace tl {
 	// typelist length definitions
 	template <class tlist> struct length;
-	template <> struct length<null_type> {
+	template <> struct length<nullptr_type> {
 		enum { value = 0 };
 	};
 	
@@ -68,7 +68,7 @@ namespace tl {
 	};
 	
 	// typelist indexed access (non-strict)
-	template <class tlist, size_t index, typename default_type = null_type> struct type_at_non_strict {
+	template <class tlist, size_t index, typename default_type = nullptr_type> struct type_at_non_strict {
 		typedef default_type result;
 	};
 	
@@ -87,7 +87,7 @@ namespace tl {
 	// TODO: migrate these to c++0x/variadic type lists when needed
 	/*// typelist searching
 	template <class tlist, class T> struct index_of;
-	template <class T> struct index_of<null_type, T> {
+	template <class T> struct index_of<nullptr_type, T> {
 		enum { value = -1 };
 	};
 	
@@ -104,15 +104,15 @@ namespace tl {
 	
 	// typelist appending
 	template <class tlist, class T> struct append;
-	template <> struct append<null_type, null_type> {
-		typedef null_type result;
+	template <> struct append<nullptr_type, nullptr_type> {
+		typedef nullptr_type result;
 	};
 	
-	template <class T> struct append<null_type, T> {
+	template <class T> struct append<nullptr_type, T> {
 		typedef type_list<T> result;
 	};
 	
-	template <class head, class tail> struct append<null_type, type_list<head, tail>> {
+	template <class head, class tail> struct append<nullptr_type, type_list<head, tail>> {
 		typedef type_list<head, tail> result;
 	};
 	
@@ -122,8 +122,8 @@ namespace tl {
 	
 	// typelist erasing
 	template <class tlist, class T> struct erase;
-	template <class T> struct erase<null_type, T> {
-		typedef null_type result;
+	template <class T> struct erase<nullptr_type, T> {
+		typedef nullptr_type result;
 	};
 	
 	template <class T, class tail> struct erase<type_list<T, tail>, T> {
@@ -137,8 +137,8 @@ namespace tl {
 	// typelist erase all
 	template <class tlist, class T> struct erase_all;
 	
-	template <class T> struct erase_all<null_type, T> {
-		typedef null_type result;
+	template <class T> struct erase_all<nullptr_type, T> {
+		typedef nullptr_type result;
 	};
 	
 	template <class T, class tail> struct erase_all<type_list<T, tail>, T> {
@@ -152,8 +152,8 @@ namespace tl {
 	// typelist unique/no-duplicates
 	template <class tlist> struct unique;
 	
-	template <> struct unique<null_type> {
-		typedef null_type result;
+	template <> struct unique<nullptr_type> {
+		typedef nullptr_type result;
 	};
 	
 	template <class head, class tail> struct unique<type_list<head, tail>> {
@@ -168,8 +168,8 @@ namespace tl {
 	// typelist replace
 	template <class tlist, class T, class U> struct replace;
 	
-	template <class T, class U> struct replace<null_type, T, U> {
-		typedef null_type result;
+	template <class T, class U> struct replace<nullptr_type, T, U> {
+		typedef nullptr_type result;
 	};
 	
 	template <class T, class tail, class U> struct replace<type_list<T, tail>, T, U> {
@@ -183,8 +183,8 @@ namespace tl {
 	// typelist replace all
 	template <class tlist, class T, class U> struct replace_all;
 	
-	template <class T, class U> struct replace_all<null_type, T, U> {
-		typedef null_type result;
+	template <class T, class U> struct replace_all<nullptr_type, T, U> {
+		typedef nullptr_type result;
 	};
 	
 	template <class T, class tail, class U> struct replace_all<type_list<T, tail>, T, U> {

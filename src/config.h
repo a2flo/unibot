@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __UNIBOT_CONFIG_H__
+#define __UNIBOT_CONFIG_H__
 
 #include "platform.h"
 
 #define UNIBOT_CONFIG_VERSION 2
-
-class invalid_config_exception : exception {};
 
 class config {
 public:
@@ -41,7 +39,7 @@ public:
 	string get_hostname();
 	unsigned short int get_port();
 	string get_channel();
-	const size_t get_verbosity() const;
+	logger::LOG_TYPE get_verbosity() const;
 	
 	bool is_owner(string user);
 	

@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,11 +52,11 @@
 
 // general includes
 #ifdef __APPLE__
-#include <SDL/SDL.h>
-#include <SDL/SDL_thread.h>
-#include <SDL/SDL_cpuinfo.h>
-#include <SDL/SDL_main.h>
-#include <SDL_net/SDL_net.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_cpuinfo.h>
+#include <SDL2/SDL_main.h>
+#include <SDL2_net/SDL_net.h>
 
 extern "C" {
 #include <lua/lua.hpp>

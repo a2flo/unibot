@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,10 +19,20 @@
 #include "lua_bindings.h"
 #include "lua.h"
 
+//
+lua_bindings_exception::lua_bindings_exception(const string& error_str) : error_str(error_str) {}
+lua_bindings_exception::~lua_bindings_exception() throw() {}
+const char* lua_bindings_exception::what() const throw () {
+	return error_str.c_str();
+}
+
+invalidate_scripts_exception::invalidate_scripts_exception() {}
+invalidate_scripts_exception::~invalidate_scripts_exception() throw() {}
+
 /////////////////////////////////////////////////////
 // helper functions
 
-template<typename T> bool check_lua_type(lua_State* state, const size_t& arg_num) {
+template<typename T> bool check_lua_type(lua_State* state unibot_unused, const size_t& arg_num) {
 	throw lua_bindings_exception(string("unknown argument type, argument #"+to_str(arg_num)+", user data types are not supported yet!"));
 	return false;
 }
@@ -56,7 +66,7 @@ template<> bool check_lua_type<bool>(lua_State* state, const size_t& arg_num) {
 	return (lua_isboolean(state, (int)arg_num) == 1);
 }
 
-template<typename T> T get_lua_arg(lua_State* state, const size_t& arg_num) {
+template<typename T> T get_lua_arg(lua_State* state unibot_unused, const size_t& arg_num) {
 	throw lua_bindings_exception(string("unknown argument type, argument #"+to_str(arg_num)+", user data types are not supported yet!"));
 	return (T)0;
 }
@@ -90,7 +100,7 @@ template<> bool get_lua_arg<bool>(lua_State* state, const size_t& arg_num) {
 	return bool(lua_toboolean(state, (int)arg_num) == 0 ? false : true);
 }
 
-void check_lua_stack(lua_State* state, const size_t& expected_size) {
+static void check_lua_stack(lua_State* state, const size_t& expected_size) {
 	if(lua_gettop(state) != (int)expected_size) {
 		throw lua_bindings_exception(string("invalid lua stack size, expected "+to_str(expected_size)+"!"));
 	}
@@ -134,12 +144,12 @@ catch(lua_bindings_exception e) { \
 /////////////////////////////////////////////////////
 // lua bindings
 
-unibot_irc_net* lua_bindings::n = NULL;
-bot_handler* lua_bindings::handler = NULL;
-bot_states* lua_bindings::states = NULL;
-config* lua_bindings::conf = NULL;
-lua* lua_bindings::l = NULL;
-lua_bindings::fp_reload_scripts lua_bindings::lua_reload_scripts = NULL;
+unibot_irc_net* lua_bindings::n = nullptr;
+bot_handler* lua_bindings::handler = nullptr;
+bot_states* lua_bindings::states = nullptr;
+config* lua_bindings::conf = nullptr;
+lua* lua_bindings::l = nullptr;
+lua_bindings::fp_reload_scripts lua_bindings::lua_reload_scripts = nullptr;
 
 lua_bindings::lua_bindings(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
 	lua_bindings::n = n;
@@ -270,7 +280,7 @@ int lua_bindings::get_users(lua_State* state) {
 			lua_pushstring(state, user_iter->first.c_str());
 			
 			// value (-> new table, containing two strings)
-			size_t arg = 0;
+			int arg = 0;
 			lua_createtable(state, 2, arg++);
 			lua_pushstring(state, user_iter->second->nick.c_str());
 			lua_rawseti(state, -2, arg++);
@@ -412,7 +422,7 @@ static FILE* cygwin_popen(const char* dir, char** cmd, pid_t* p_pid) {
 
 	if(pipe(thepipe) < 0) {
 		unibot_error("error creating pipes");
-		return NULL;
+		return nullptr;
 	}
 
 	pid = fork();
@@ -432,7 +442,7 @@ static FILE* cygwin_popen(const char* dir, char** cmd, pid_t* p_pid) {
 	}
 	if(pid < 0) {
 		unibot_error("error starting subprocess");
-		return NULL;
+		return nullptr;
 	}
 
 	close(thepipe[1]);
@@ -454,7 +464,7 @@ int lua_bindings::execute_command(lua_State* state) {
 		if(conf->get_config_entry("environment") == "unix") {
 #endif
 			FILE* proc = popen(get<0>(args).c_str(), "r");
-			while(fgets(buffer, buffer_size, proc) != NULL) {
+			while(fgets(buffer, buffer_size, proc) != nullptr) {
 				output += buffer;
 			}
 			pclose(proc);
@@ -479,7 +489,7 @@ int lua_bindings::execute_command(lua_State* state) {
 			for(size_t i = 0; i < argv.size(); i++) {
 				cargv[i] = argv[i].c_str();
 			}
-			cargv[argv.size()] = NULL;
+			cargv[argv.size()] = nullptr;
 			
 			// finally:
 			FILE* proc = cygwin_popen(".", (char**)cargv, &proc_pid);

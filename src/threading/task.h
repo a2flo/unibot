@@ -16,28 +16,32 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "event_handler.h"
+#ifndef __UNIBOT_TASK_H__
+#define __UNIBOT_TASK_H__
 
-event_handler_base* event_handler = nullptr;
-void init_event_handler() {
-	if(event_handler != nullptr) {
-		event_handler = new event_handler_base();
+#include "platform.h"
+#include <thread>
+
+class task {
+public:
+	task(std::function<void()> op);
+	
+	static void spawn(std::function<void()> op) {
+		new task(op);
 	}
-}
-void destroy_event_handler() {
-	if(event_handler != nullptr) {
-		delete event_handler;
-		event_handler = nullptr;
-	}
-}
+	
+protected:
+	const std::function<void()> op;
+	thread thread_obj;
+	atomic<bool> initialized { false };
+	
+	static void run(task* this_task, std::function<void()> task_op);
+	
+	// prevent destruction from the outside, since we'll self-destruct
+	~task();
+	task(const task& tsk) = delete;
+	task& operator=(const task& tsk) = delete;
+	
+};
 
-event_handler_base::event_handler_base() : thread_base() {
-	this->start();
-}
-
-event_handler_base::~event_handler_base() {
-}
-
-void event_handler_base::run() {
-	//
-}
+#endif

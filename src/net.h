@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 // http://jcatki.no-ip.org:8080/SDL_net/SDL_net_frame.html
 
-#ifndef __NET_H__
-#define __NET_H__
+#ifndef __UNIBOT_NET_H__
+#define __UNIBOT_NET_H__
 
 #include "platform.h"
 #include "event_handler.h"
@@ -85,7 +85,7 @@ template <class protocol_policy> net<protocol_policy>::~net() {
 	unibot_debug("net deleted!");
 }
 
-template <class protocol_policy> bool net<protocol_policy>::connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port) {
+template <class protocol_policy> bool net<protocol_policy>::connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port unibot_unused) {
 	lock(); // we need to lock the net class, so run() isn't called while we're connecting
 	
 	try {
@@ -98,7 +98,7 @@ template <class protocol_policy> bool net<protocol_policy>::connect_to_server(co
 		
 		// currently useless for an irc bot ...
 #if 0
-		if(SDLNet_ResolveHost(&local_ip, NULL, local_port) == -1) {
+		if(SDLNet_ResolveHost(&local_ip, nullptr, local_port) == -1) {
 			unibot_error("SDLNet_ResolveHost(client): %s", SDLNet_GetError());
 			throw exception();
 		}
@@ -204,7 +204,7 @@ template <class protocol_policy> int net<protocol_policy>::receive_packet(char* 
 	return len;
 }
 
-template <class protocol_policy> int net<protocol_policy>::process_packet(const string& data, const unsigned int max_len) {
+template <class protocol_policy> int net<protocol_policy>::process_packet(const string& data, const unsigned int max_len unibot_unused) {
 	size_t old_pos = 0, pos = 0;
 	size_t lb_offset = 1;
 	const size_t len = data.length();
@@ -243,7 +243,7 @@ template <class protocol_policy> void net<protocol_policy>::send_packet(const ch
 	if(!protocol.server_send(data, len)) {
 		unibot_error("couldn't send packet!");
 	}
-	else if(conf->get_verbosity() >= logger::LT_DEBUG) {
+	else if(conf->get_verbosity() >= logger::LOG_TYPE::DEBUG_MSG) {
 		unibot_debug("send (%i): %s", len, string(data).substr(0, len-1));
 	}
 }

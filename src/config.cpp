@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 config::config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv) {
 	// default values
-	config_data["verbosity"] = to_str(logger::LT_MSG);
+	config_data["verbosity"] = to_str((size_t)logger::LOG_TYPE::SIMPLE_MSG);
 	config_data["environment"] = environment;
 	
 	string binary = clean_path(argv[0]);
@@ -36,7 +36,7 @@ config::config(const string& config_file, const string& environment, const ssize
 	logger::set_config(this);
 	
 	if(!load_config(config_file)) {
-		throw invalid_config_exception();
+		throw runtime_error("invalid config file");
 	}
 }
 
@@ -159,7 +159,7 @@ string config::get_hostname() {
 }
 
 unsigned short int config::get_port() {
-	return (unsigned short int)strtoul(config_data["port"].c_str(), NULL, 10);
+	return (unsigned short int)strtoul(config_data["port"].c_str(), nullptr, 10);
 }
 
 string config::get_channel() {
@@ -181,6 +181,6 @@ bool config::is_owner(string user) {
 	return false;
 }
 
-const size_t config::get_verbosity() const {
-	return strtoul(config_data.find("verbosity")->second.c_str(), NULL, 10);
+logger::LOG_TYPE config::get_verbosity() const {
+	return (logger::LOG_TYPE)strtoul(config_data.find("verbosity")->second.c_str(), nullptr, 10);
 }

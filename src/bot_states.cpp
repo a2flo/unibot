@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General License as published by
@@ -156,7 +156,7 @@ void bot_states::set_kick_user(string kick_user) {
 }
 
 bot_states::user_info* bot_states::get_user(string name) {
-	if(user_list.count(name) == 0) return NULL;
+	if(user_list.count(name) == 0) return nullptr;
 	return user_list[name];
 }
 
@@ -166,7 +166,7 @@ bool bot_states::is_user(string name) {
 
 bool bot_states::is_user_registered(string name) {
 	bot_states::user_info* user = get_user(name);
-	return (user != NULL && user->registered == "yes");
+	return (user != nullptr && user->registered == "yes");
 }
 
 bool bot_states::is_silenced() {

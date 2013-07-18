@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) : 
 	
 	unsigned int cmd_size = sizeof(IRC_COMMAND_STR) / sizeof(const char*);
 	for(unsigned int i = 0; i < cmd_size; i++) {
-		irc_commands.insert(pair<string, IRC_COMMAND>(IRC_COMMAND_STR[i], (bot_handler::IRC_COMMAND)(bot_handler::CMD_NONE + i)));
+		irc_commands.emplace(IRC_COMMAND_STR[i], (bot_handler::IRC_COMMAND)(i));
 	}
 	
 	lua_obj = new lua(n, this, states, conf);
@@ -125,20 +125,20 @@ void bot_handler::run() {
 			}
 			
 			switch(current_cmd) {
-				case CMD_NONE:
+				case IRC_COMMAND::NONE:
 					// ignore
 					break;
-				case CMD_001:
+				case IRC_COMMAND::CMD_001:
 					states->set_connected(true);
 					unibot_debug("successfully connected to the server!");
 					n->join_channel(conf->get_channel());
 					n->send_identify(conf->get_bot_password());
 					break;
-				case CMD_004:
+				case IRC_COMMAND::CMD_004:
 					servername = cmd_data;
 					unibot_debug("server name is: %s", servername);
 					break;
-				case CMD_352:
+				case IRC_COMMAND::CMD_352:
 					// this might get nasty, catch exceptions, just to be on the safe side
 					try {
 						size_t colon_pos = cmd_joined_data.find(":");
@@ -154,7 +154,7 @@ void bot_handler::run() {
 						unibot_error("CMD_352 failed");
 					}
 					break;
-				case CMD_353: {
+				case IRC_COMMAND::CMD_353: {
 					// only handle the main channel
 					if(cmd_tokens[4] != conf->get_channel()) break;
 					
@@ -174,11 +174,11 @@ void bot_handler::run() {
 					}
 				}
 				break;
-				case CMD_PING:
+				case IRC_COMMAND::PING:
 					n->send("PONG " + servername);
 					unibot_debug("PONG!");
 					break;
-				case CMD_NOTICE:
+				case IRC_COMMAND::NOTICE:
 					if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
 						states->set_identified(true);
 					}
@@ -211,7 +211,7 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case CMD_JOIN:
+				case IRC_COMMAND::JOIN:
 					// only handle the main channel
 					if(conf->get_channel() == cmd_tokens[2].substr(1, cmd_tokens[2].length()-1)) {
 						// if the bot joined the channel, set the flag and send a "hi there ;)" message
@@ -241,7 +241,7 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case CMD_PART:
+				case IRC_COMMAND::PART:
 					// only handle the main channel
 					if(conf->get_channel() == cmd_tokens[2]) {
 						states->delete_user(strip_user(cmd_sender));
@@ -250,10 +250,10 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case CMD_QUIT:
+				case IRC_COMMAND::QUIT:
 					states->delete_user(strip_user(cmd_sender));
 					break;
-				case CMD_PRIVMSG: {
+				case IRC_COMMAND::PRIVMSG: {
 					// handle the message (also trim the leading ':')
 					string msg = cmd_joined_data.substr(1, cmd_joined_data.length()-1);
 					handle_message(cmd_sender, cmd_location, msg);
@@ -272,7 +272,7 @@ void bot_handler::run() {
 					}
 				}
 				break;
-				case CMD_MODE:
+				case IRC_COMMAND::MODE:
 					// only handle mode stuff in the bots host channel
 					if(cmd_location == conf->get_channel()) {
 						// mode for the bot was set
@@ -288,7 +288,7 @@ void bot_handler::run() {
 						}
 					}
 					break;
-				case CMD_KICK:
+				case IRC_COMMAND::KICK:
 					// check if bot was kicked
 					if(cmd_data == conf->get_bot_name()) {
 						// check if the user who kicked the bot is the owner
@@ -305,10 +305,10 @@ void bot_handler::run() {
 						states->delete_user(cmd_data);
 					}
 					break;
-				case CMD_NICK:
+				case IRC_COMMAND::NICK:
 					states->update_user_name(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
 					break;
-				case CMD_TOPIC:
+				case IRC_COMMAND::TOPIC:
 					break;
 				default:
 					break;
@@ -333,7 +333,7 @@ void bot_handler::run() {
 bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {
 	vector<string> cmd_tokens;
 	tokenize(cmd_tokens, cmd, ' ');
-	IRC_COMMAND irc_cmd = bot_handler::CMD_NONE;
+	IRC_COMMAND irc_cmd = bot_handler::IRC_COMMAND::NONE;
 	
 	// check for normal irc command, some commands are in the first token ...
 	if(cmd_tokens.size() > 0 && irc_commands.count(cmd_tokens[0]) > 0) {
@@ -344,7 +344,7 @@ bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {
 	}
 	else if(cmd_tokens.size() > 1 && cmd_tokens[1].length() == 3) {
 		// check for numbered irc command
-		unsigned int num = (unsigned int)strtoul(cmd_tokens[1].c_str(), NULL, 10);
+		unsigned int num = (unsigned int)strtoul(cmd_tokens[1].c_str(), nullptr, 10);
 		if(num <= 999) {
 			irc_cmd = irc_commands[cmd_tokens[1]];
 		}
@@ -506,8 +506,8 @@ string bot_handler::handle_args_chronological(const string& msg, const size_t& o
 		vector<string> arg_tokens;
 		tokenize(arg_tokens, args, ' ');
 		int msg_offset = 0, word_offset = 0;
-		if(arg_tokens.size() > 0) msg_offset = (unsigned int)strtoul(arg_tokens[0].c_str(), NULL, 10);
-		if(arg_tokens.size() > 1) word_offset = (unsigned int)strtoul(arg_tokens[1].c_str(), NULL, 10);
+		if(arg_tokens.size() > 0) msg_offset = (unsigned int)strtoul(arg_tokens[0].c_str(), nullptr, 10);
+		if(arg_tokens.size() > 1) word_offset = (unsigned int)strtoul(arg_tokens[1].c_str(), nullptr, 10);
 		
 		if(msg_offset != 0) {
 			ret_msg = extract_word(msg_offset, word_offset);

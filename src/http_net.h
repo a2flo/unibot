@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __HTTP_NET_H__
-#define __HTTP_NET_H__
+#ifndef __UNIBOT_HTTP_NET_H__
+#define __UNIBOT_HTTP_NET_H__
 
 #include "platform.h"
 #include "net.h"
@@ -122,7 +122,7 @@ template <class protocol_policy> void http_net<protocol_policy>::open_url(const 
 	unsigned short int port = 80;
 	const size_t colon_pos = server_name.find(":");
 	if(colon_pos != string::npos) {
-		port = strtoul(server_name.substr(colon_pos+1, server_name.length()-colon_pos-1).c_str(), NULL, 10);
+		port = strtoul(server_name.substr(colon_pos+1, server_name.length()-colon_pos-1).c_str(), nullptr, 10);
 		server_name = server_name.substr(0, colon_pos);
 	}
 	if(!this->connect_to_server(server_name.c_str(), port)) {
@@ -183,14 +183,14 @@ template <class protocol_policy> void http_net<protocol_policy>::run() {
 				// a second time to write the chunk data to page_data
 				for(auto line = receive_store.begin(); line != receive_store.end(); line++) {
 					// get chunk length
-					size_t chunk_len = strtoull(line->c_str(), NULL, 16);
+					size_t chunk_len = strtoull(line->c_str(), nullptr, 16);
 					if(chunk_len == 0 && line->length() == 1) {
 						if(packet_complete) break; // second run is complete, break
 						packet_complete = true;
 						
 						// packet complete, start again, add data to page_data this time
 						line = receive_store.begin();
-						chunk_len = strtoull(line->c_str(), NULL, 16);
+						chunk_len = strtoull(line->c_str(), nullptr, 16);
 					}
 					
 					size_t chunk_received_len = 0;
@@ -230,7 +230,7 @@ template <class protocol_policy> void http_net<protocol_policy>::check_header() 
 	// first line contains status code
 	const size_t space_1 = line->find(" ")+1;
 	const size_t space_2 = line->find(" ", space_1);
-	status_code = (HTTP_STATUS_CODE)strtoul(line->substr(space_1, space_2-space_1).c_str(), NULL, 10);
+	status_code = (HTTP_STATUS_CODE)strtoul(line->substr(space_1, space_2-space_1).c_str(), nullptr, 10);
 	if(status_code != SC_200) {
 		unibot_error("%s%s: received status code %i!", server_name, server_url, status_code);
 		this->set_thread_should_finish();
@@ -253,7 +253,7 @@ template <class protocol_policy> void http_net<protocol_policy>::check_header() 
 				const size_t cl_space = line_str.find(" ")+1;
 				size_t non_digit = line_str.find_first_not_of("0123456789", cl_space);
 				if(non_digit == string::npos) non_digit = line_str.length();
-				content_length = strtoull(line_str.substr(cl_space, non_digit-cl_space).c_str(), NULL, 10);
+				content_length = strtoull(line_str.substr(cl_space, non_digit-cl_space).c_str(), nullptr, 10);
 			}
 		}
 	}

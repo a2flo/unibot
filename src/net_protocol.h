@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 // http://jcatki.no-ip.org:8080/SDL_net/SDL_net_frame.html
 
-#ifndef __NET_PROTOCOL_H__
-#define __NET_PROTOCOL_H__
+#ifndef __UNIBOT_NET_PROTOCOL_H__
+#define __UNIBOT_NET_PROTOCOL_H__
 
 #include "platform.h"
 
@@ -29,7 +29,7 @@ struct std_protocol {
 	// or getting an overview of it, i put these here
 	
 public:
-	std_protocol() : valid(true), server_socket(NULL), client_socket(NULL), socketset(NULL) {};
+	std_protocol() : valid(true), server_socket(nullptr), client_socket(nullptr), socketset(nullptr) {}
 	
 	bool is_valid();
 	bool valid_sockets();

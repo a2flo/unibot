@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __BOT_HANDLER_H__
-#define __BOT_HANDLER_H__
+#ifndef __UNIBOT_BOT_HANDLER_H__
+#define __UNIBOT_BOT_HANDLER_H__
 
 #include "platform.h"
 #include "event_handler.h"
@@ -29,8 +29,8 @@
 #include "threading/thread_base.h"
 
 #define UNIBOT_MAJOR_VERSION "0"
-#define UNIBOT_MINOR_VERSION "3"
-#define UNIBOT_REVISION_VERSION "0d4"
+#define UNIBOT_MINOR_VERSION "4"
+#define UNIBOT_REVISION_VERSION "0d1"
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
@@ -59,7 +59,7 @@
 								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+ \
 								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER+UNIBOT_LIBCXX)
 
-#define UNIBOT_SOURCE_URL "http://www.assembla.com/spaces/unibot"
+#define UNIBOT_SOURCE_URL "https://github.com/a2flo/unibot"
 
 class lua;
 class bot_handler : public thread_base {
@@ -67,54 +67,54 @@ public:
 	bot_handler(unibot_irc_net* n, bot_states* states, config* conf);
 	~bot_handler();
 
-	enum IRC_COMMAND {
-		CMD_NONE,
-		CMD_ADMIN,
-		CMD_AWAY,
-		CMD_CONNECT,
-		CMD_DIE,
-		CMD_ERROR, // damn you, msvc!
-		CMD_INFO,
-		CMD_NVITE,
-		CMD_SON,
-		CMD_JOIN,
-		CMD_KICK,
-		CMD_KILL,
-		CMD_LINKS,
-		CMD_LIST,
-		CMD_LUSERS,
-		CMD_MODE,
-		CMD_MOTD,
-		CMD_NAMES,
-		CMD_NICK,
-		CMD_NOTICE,
-		CMD_OPER,
-		CMD_PART,
-		CMD_PASS,
-		CMD_PING,
-		CMD_PONG,
-		CMD_PRIVMSG,
-		CMD_QUIT,
-		CMD_REHASH,
-		CMD_RESTART,
-		CMD_SERVICE,
-		CMD_SERVLIST,
-		CMD_SERVER,
-		CMD_SQUERY,
-		CMD_SQUIT,
-		CMD_STATS,
-		CMD_SUMMON,
-		CMD_TIME,
-		CMD_TOPIC,
-		CMD_TRACE,
-		CMD_USER,
-		CMD_USERHOST,
-		CMD_USERS,
-		CMD_VERSION,
-		CMD_WALLOPS,
-		CMD_WHO,
-		CMD_WHOIS,
-		CMD_WHOWAS,
+	enum class IRC_COMMAND : unsigned int {
+		NONE = 0u,
+		ADMIN,
+		AWAY,
+		CONNECT,
+		DIE,
+		ERROR,
+		INFO,
+		NVITE,
+		SON,
+		JOIN,
+		KICK,
+		KILL,
+		LINKS,
+		LIST,
+		LUSERS,
+		MODE,
+		MOTD,
+		NAMES,
+		NICK,
+		NOTICE,
+		OPER,
+		PART,
+		PASS,
+		PING,
+		PONG,
+		PRIVMSG,
+		QUIT,
+		REHASH,
+		RESTART,
+		SERVICE,
+		SERVLIST,
+		SERVER,
+		SQUERY,
+		SQUIT,
+		STATS,
+		SUMMON,
+		TIME,
+		TOPIC,
+		TRACE,
+		USER,
+		USERHOST,
+		USERS,
+		VERSION,
+		WALLOPS,
+		WHO,
+		WHOIS,
+		WHOWAS,
 		CMD_001,
 		CMD_002,
 		CMD_003,

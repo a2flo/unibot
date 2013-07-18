@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __IRC_NET_H__
-#define __IRC_NET_H__
+#ifndef __UNIBOT_IRC_NET_H__
+#define __UNIBOT_IRC_NET_H__
 
 #include "platform.h"
 #include "net.h"

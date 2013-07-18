@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2011 Florian Ziesche
+ *  Copyright (C) 2009 - 2013 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UTIL_H__
-#define __UTIL_H__
+#ifndef __UNIBOT_UTIL_H__
+#define __UNIBOT_UTIL_H__
 
 #include <iostream>
 #include <fstream>
@@ -43,8 +43,6 @@
 
 #endif
 using namespace std;
-
-#define ARRAY_LENGTH(array) (sizeof(array)/sizeof(array[0]))
 
 template<int i> struct int2type {
 	enum { value = i };
