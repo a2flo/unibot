@@ -22,121 +22,106 @@
 #include "platform.h"
 #include "net_protocol.h"
 
-template<> struct std_protocol<TCPsocket> {
-	std_protocol<TCPsocket>() : server_set(false), client_set(false), valid(true), server_socket(nullptr), client_socket(nullptr) {
-		// initialize socket set
-		socketset = SDLNet_AllocSocketSet(2);
-		if(socketset == nullptr) {
-			unibot_error("couldn't create socket set: %s", SDLNet_GetError());
+template<> struct std_protocol<tcp::socket> {
+	std_protocol<tcp::socket>() : io_service(), resolver(io_service), socket(io_service) {
+	}
+	~std_protocol<tcp::socket>() {
+		socket.close();
+	}
+	
+	bool is_valid() const {
+		return (valid && ((socket_set && socket.is_open()) ||
+						  !socket_set));
+	}
+	
+	bool open_socket(const string& address, const unsigned short int& port) {
+		if(!valid) return false;
+		socket_set = true;
+		
+		boost::system::error_code ec;
+		auto endpoint_iterator = resolver.resolve({ address, to_str(port) });
+		boost::asio::connect(socket, endpoint_iterator, ec);
+		
+		if(ec) {
+			unibot_error("socket connection error: %s", ec.message());
 			valid = false;
+			return false;
 		}
-	}
-	~std_protocol<TCPsocket>() {
-		if(socketset != nullptr) {
-			if(server_socket != nullptr) {
-				SDLNet_TCP_DelSocket(socketset, server_socket);
-				SDLNet_TCP_Close(server_socket);
-			}
-			if(client_socket != nullptr) {
-				SDLNet_TCP_DelSocket(socketset, client_socket);
-				SDLNet_TCP_Close(client_socket);
-			}
-		}
-	}
-	
-	bool is_valid() {
-		if(socketset == nullptr) valid = false;
-		if(server_set && server_socket == nullptr) valid = false;
-		if(client_set && client_socket == nullptr) valid = false;	
-		return valid;
-	}
-	
-	bool valid_sockets() {
-		if(is_valid()) {
-			int active_sockets = SDLNet_CheckSockets(socketset, 0);
-			if((server_set || client_set) && (active_sockets == -1 || active_sockets > 2)) {
-				unibot_error("invalid socket activity!");
-				valid = false;
-				return false;
-			}
-			return true;
-		}
-		unibot_error("invalid sockets!");
-		return false;
-	}
-	
-	bool open_server_socket(IPaddress& server_ip) {
-		if(!is_valid()) return false;
-		server_set = true;
-		
-		server_socket = SDLNet_TCP_Open(&server_ip);
-		if(server_socket == nullptr) {
-			unibot_error("server socket error: %s", SDLNet_GetError());
+		if(!socket.is_open()) {
+			unibot_error("couldn't open socket!");
+			valid = false;
 			return false;
 		}
 		
-		SDLNet_TCP_AddSocket(socketset, server_socket);
+		// set keep-alive flag (this only handles the simple cases and
+		// usually has a big timeout value, but still better than nothing)
+		boost::asio::socket_base::keep_alive option(true);
+		socket.set_option(option);
+		
 		return true;
 	}
-	bool open_client_socket(IPaddress& client_ip) {
-		if(!is_valid()) return false;
-		client_set = true;
-		
-		client_socket = SDLNet_TCP_Open(&client_ip);
-		if(client_socket == nullptr) {
-			unibot_error("client socket error: %s", SDLNet_GetError());
+	
+	int receive(void* data, const unsigned int max_len) {
+		boost::system::error_code ec;
+		auto data_received = socket.receive(boost::asio::buffer(data, max_len), 0, ec);
+		if(ec) {
+			unibot_error("error while receiving data: %s", ec.message());
+			valid = false;
+			return 0;
+		}
+		return (int)data_received;
+	}
+	
+	bool ready() const {
+		if(!socket_set || !valid) return false;
+		return (socket.available() > 0);
+	}
+	
+	bool send(const char* data, const int len) {
+		boost::system::error_code ec;
+		const auto data_sent = boost::asio::write(socket, boost::asio::buffer(data, len), ec);
+		if(ec) {
+			unibot_error("error while sending data: %s", ec.message());
+			valid = false;
 			return false;
 		}
-		
-		SDLNet_TCP_AddSocket(socketset, client_socket);
-		return true;
-	}
-	
-	int server_receive(void* data, const unsigned int max_len) {
-		return SDLNet_TCP_Recv(server_socket, data, max_len);
-	}
-	
-	int client_receive(void* data, const unsigned int max_len) {
-		return SDLNet_TCP_Recv(client_socket, data, max_len);
-	}
-	
-	bool server_ready() {
-		return SDLNet_SocketReady(server_socket);
-	}
-	
-	bool client_ready() {
-		return SDLNet_SocketReady(client_socket);
-	}
-	
-	bool server_send(const char* data, const int len) {
-		int send_len = SDLNet_TCP_Send(server_socket, data, len);
-		if(send_len != len) {
-			unibot_error("invalid data send: %s", SDLNet_GetError());
+		if(data_sent != (size_t)len) {
+			unibot_error("error while sending data: sent data length (%u) != requested data length (%u)!",
+						 data_sent, len);
+			valid = false;
 			return false;
 		}
 		return true;
 	}
 	
-	bool client_send(const char* data, const int len) {
-		int send_len = SDLNet_TCP_Send(client_socket, data, len);
-		if(send_len != len) {
-			unibot_error("invalid data send: %s", SDLNet_GetError());
-			return false;
-		}
-		return true;
+	boost::asio::ip::address get_local_address() const {
+		return socket.local_endpoint().address();
+	}
+	unsigned short int get_local_port() const {
+		return socket.local_endpoint().port();
+	}
+	
+	boost::asio::ip::address get_remote_address() const {
+		return socket.remote_endpoint().address();
+	}
+	unsigned short int get_remote_port() const {
+		return socket.remote_endpoint().port();
+	}
+	
+	void invalidate() {
+		valid = false;
 	}
 	
 protected:
-	bool server_set;
-	bool client_set;
-	bool valid;
-	TCPsocket server_socket;
-	TCPsocket client_socket;
-	SDLNet_SocketSet socketset;
+	atomic<bool> socket_set { false };
+	atomic<bool> valid { true };
+	
+	boost::asio::io_service io_service;
+	tcp::resolver resolver;
+	tcp::socket socket;
 	
 };
 
-typedef std_protocol<TCPsocket> TCP_protocol;
-
+typedef std_protocol<tcp::socket> TCP_protocol;
 
 #endif

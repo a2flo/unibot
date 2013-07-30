@@ -30,7 +30,7 @@
 
 #define UNIBOT_MAJOR_VERSION "0"
 #define UNIBOT_MINOR_VERSION "4"
-#define UNIBOT_REVISION_VERSION "0d1"
+#define UNIBOT_REVISION_VERSION "0d2"
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
@@ -122,7 +122,8 @@ public:
 		CMD_005,
 		CMD_352,
 		CMD_353,
-		CMD_372
+		CMD_372,
+		CMD_433,
 	};
 	static const char* IRC_COMMAND_STR[];
 	
@@ -133,6 +134,9 @@ public:
 	string handle_args_chronological(const string& msg, const size_t& offset);
 	string strip_special_chars(const string& str);
 	
+	const string& get_server_name() const;
+	const unsigned int& get_last_server_pong() const;
+	
 protected:
 	unibot_irc_net* n;
 	map<string, IRC_COMMAND> irc_commands;
@@ -142,11 +146,18 @@ protected:
 	
 	lua* lua_obj;
 	
-	string servername;
-	unsigned long int start_time;
+	string server_name { "" };
+	const unsigned int start_time { SDL_GetTicks() };
+	unsigned int last_server_pong { SDL_GetTicks() };
+	bool sent_server_ping { false };
+	
+	const unsigned int server_ping_interval;
+	const unsigned int server_timeout;
+	
+	string cur_bot_name { "" };
 	
 	deque<string> msg_store;
-	size_t keep_msg_count;
+	const size_t keep_msg_count { std::numeric_limits<size_t>::max() };
 	
 	IRC_COMMAND parse_irc_cmd(string cmd);
 	string strip_user(string str);

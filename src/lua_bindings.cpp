@@ -221,9 +221,8 @@ int lua_bindings::send_kick(lua_State* state) {
 int lua_bindings::get_local_ip(lua_State* state) {
 	try {
 		check_lua_stack(state, 0);
-		IPaddress* lip = n->get_local_ip();
-		lua_pushinteger(state, lip->host);
-		lua_pushinteger(state, lip->port);
+		lua_pushstring(state, n->get_local_address().to_string().c_str());
+		lua_pushinteger(state, n->get_local_port());
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 2;
@@ -232,9 +231,8 @@ int lua_bindings::get_local_ip(lua_State* state) {
 int lua_bindings::get_server_ip(lua_State* state) {
 	try {
 		check_lua_stack(state, 0);
-		IPaddress* sip = n->get_server_ip();
-		lua_pushinteger(state, sip->host);
-		lua_pushinteger(state, sip->port);
+		lua_pushstring(state, n->get_remote_address().to_string().c_str());
+		lua_pushinteger(state, n->get_remote_port());
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 2;

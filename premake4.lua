@@ -90,16 +90,16 @@ project "unibot"
 			end
 		end
 		
-		links { "SDL2", "SDL2_net", lua_lib.name }
+		links { "SDL2", lua_lib.name }
 		if(not cygwin) then
-			libdirs { os.findlib("SDL2"), os.findlib("SDL2_net"), lua_lib.dir }
+			libdirs { os.findlib("SDL2"), lua_lib.dir }
 			buildoptions { "`sdl2-config --cflags`" }
 			linkoptions { "`sdl2-config --libs`" }
 		else
 			buildoptions { "`sdl2-config --cflags | sed -E 's/-Dmain=SDL_main//g'`" }
 			linkoptions { "`sdl2-config --libs | sed -E 's/(-lmingw32|-mwindows)//g'`" }
 		end
-		includedirs { "/usr/include/SDL2", "/usr/local/include/SDL2" }
+		includedirs { "/usr/include/SDL2", "/usr/local/include/SDL2", "/usr/include/boost" }
 		
 		-- find all necessary headers (in case they aren't in /usr/include)
 		local include_files = { "lua.h" }
@@ -120,8 +120,8 @@ project "unibot"
 	end
 	
 	if(os.is("macosx")) then
-		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -mdynamic-no-pic" }
-		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -framework SDL_net -framework SDL -framework lua -framework Cocoa -framework AppKit -framework Foundation" }
+		buildoptions { "-Iinclude -I/usr/local/include -isysroot /Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -gdwarf-2 -mdynamic-no-pic" }
+		linkoptions { "-isysroot /Developer/SDKs/MacOSX10.7.sdk -mmacosx-version-min=10.7 -framework SDL -framework lua -framework Cocoa -framework AppKit -framework Foundation" }
 	end
 	
 	configuration { "x32" }

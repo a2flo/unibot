@@ -30,24 +30,24 @@ public:
 	irc_net(config* conf);
 	virtual ~irc_net() {} 
 	
-	void send(string data);
-	void send_channel_msg(string msg);
-	void send_private_msg(string where, string msg);
-	void send_action_msg(string where, string msg);
-	void send_ctcp_msg(string where, string type, string msg);
-	void send_ctcp_request(string where, string type);
-	void send_kick(string who, string reason);
-	void send_connect(string name, string real_name);
-	void send_identify(string password);
+	void send(const string& data);
+	void send_channel_msg(const string& msg);
+	void send_private_msg(const string& where, const string& msg);
+	void send_action_msg(const string& where, const string& msg);
+	void send_ctcp_msg(const string& where, const string& type, const string& msg);
+	void send_ctcp_request(const string& where, const string& type);
+	void send_kick(const string& who, const string& reason);
+	void send_connect(const string& name, const string& real_name);
+	void send_identify(const string& password);
+	void send_nick(const string& nick);
 	void part();
 	void quit();
-	void join_channel(string channel);
+	void join_channel(const string& channel);
+	void ping(const string& server_name);
 	
 protected:
 	// seems like the compiler needs to know about these when using template inheritance
 	using net<protocol_policy>::conf;
-	using net<protocol_policy>::server_ip;
-	using net<protocol_policy>::local_ip;
 	using net<protocol_policy>::receive_store;
 	using net<protocol_policy>::send_store;
 	using net<protocol_policy>::packets_per_second;
@@ -63,7 +63,7 @@ net<protocol_policy>(conf) {
 	this->set_thread_delay(100); // 100ms should suffice
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send(string data) {
+template <class protocol_policy> void irc_net<protocol_policy>::send(const string& data) {
 	if(data.find("\n") != string::npos) {
 		// treat \n as new msg, split string and send each line as new msg (with the same type -> string till first ':')
 		size_t colon_pos = data.find(":");
@@ -87,36 +87,36 @@ template <class protocol_policy> void irc_net<protocol_policy>::send(string data
 	}
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_connect(string name, string real_name) {
-	send("NICK " + name);
+template <class protocol_policy> void irc_net<protocol_policy>::send_connect(const string& name, const string& real_name) {
+	send_nick(name);
 	send("USER " + name + " 0 * :" + real_name);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_private_msg(string where, string msg) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_private_msg(const string& where, const string& msg) {
 	send("PRIVMSG " + where + " :" + msg);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_action_msg(string where, string msg) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_action_msg(const string& where, const string& msg) {
 	send("PRIVMSG " + where + " :" + (char)0x01 + "ACTION " + msg + (char)0x01);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_ctcp_msg(string where, string type, string msg) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_ctcp_msg(const string& where, const string& type, const string& msg) {
 	send("NOTICE " + where + " :" + (char)0x01 + type + " " + msg + (char)0x01);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_ctcp_request(string where, string type) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_ctcp_request(const string& where, const string& type) {
 	send("PRIVMSG " + where + " :" + (char)0x01 + type + (char)0x01);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_identify(string password) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_identify(const string& password) {
 	send_private_msg("NickServ", "identify " + password);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_channel_msg(string msg) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_channel_msg(const string& msg) {
 	send("PRIVMSG " + conf->get_channel() + " :" + msg);
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::send_kick(string who, string reason) {
+template <class protocol_policy> void irc_net<protocol_policy>::send_kick(const string& who, const string& reason) {
 	send("KICK " + conf->get_channel() + " " + who + " :" + reason);
 }
 
@@ -128,8 +128,16 @@ template <class protocol_policy> void irc_net<protocol_policy>::quit() {
 	send("QUIT :EOL");
 }
 
-template <class protocol_policy> void irc_net<protocol_policy>::join_channel(string channel) {
+template <class protocol_policy> void irc_net<protocol_policy>::join_channel(const string& channel) {
 	send("JOIN " + channel);
+}
+
+template <class protocol_policy> void irc_net<protocol_policy>::ping(const string& server_name) {
+	send("PING " + server_name);
+}
+
+template <class protocol_policy> void irc_net<protocol_policy>::send_nick(const string& nick) {
+	send("NICK " + nick);
 }
 
 #endif

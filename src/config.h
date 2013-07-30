@@ -21,7 +21,7 @@
 
 #include "platform.h"
 
-#define UNIBOT_CONFIG_VERSION 2
+#define UNIBOT_CONFIG_VERSION 3
 
 class config {
 public:
@@ -33,6 +33,7 @@ public:
 	
 	string get_config_entry(const string& name);
 	string get_bot_name();
+	string get_bot_alt_add();
 	string get_bot_realname();
 	string get_bot_password();
 	vector<string> get_owner_names();
@@ -60,7 +61,7 @@ protected:
 	 * arg_#
 	 * environment
 	 */
-	map<string, string> config_data;
+	unordered_map<string, string> config_data;
 	vector<string> owner_names;
 	string bot_password;
 	

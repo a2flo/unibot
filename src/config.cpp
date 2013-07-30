@@ -142,6 +142,10 @@ string config::get_bot_name() {
 	return config_data["bot_name"];
 }
 
+string config::get_bot_alt_add() {
+	return config_data["bot_alt_add"];
+}
+
 string config::get_bot_realname() {
 	return config_data["bot_realname"];
 }

@@ -19,8 +19,8 @@
 		5C58098C130CBD6C002D56DF /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58097E130CBD6C002D56DF /* watchdog.cpp */; };
 		5C58098D130CBD6C002D56DF /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580981130CBD6C002D56DF /* util.cpp */; };
 		5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F517984FA70075DC99 /* SDL2.framework */; };
-		5C8906F817984FA70075DC99 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F617984FA70075DC99 /* SDL2_net.framework */; };
 		5C8906FC179858630075DC99 /* task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8906FA179858630075DC99 /* task.cpp */; };
+		5C89070117987BC20075DC99 /* error_code.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8906FE17987BC20075DC99 /* error_code.cpp */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4AB100E514F00CEA98D /* Cocoa.framework */; };
 		5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4B1100E519700CEA98D /* AppKit.framework */; };
@@ -45,7 +45,6 @@
 		5C26D02C113B0A8F00DE086A /* cmd.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cmd.lua; sourceTree = "<group>"; };
 		5C2AF81C11401E3600254A60 /* eastereggs.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eastereggs.lua; sourceTree = "<group>"; };
 		5C47756211833FFD003EB8BB /* identify.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = identify.lua; sourceTree = "<group>"; };
-		5C47758F11834E6A003EB8BB /* unikram.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = unikram.lua; sourceTree = "<group>"; };
 		5C4776F71183CA0D003EB8BB /* roulette.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = roulette.lua; sourceTree = "<group>"; };
 		5C580963130CBD6C002D56DF /* bot_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bot_handler.cpp; path = src/bot_handler.cpp; sourceTree = "<group>"; };
 		5C580964130CBD6C002D56DF /* bot_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bot_handler.h; path = src/bot_handler.h; sourceTree = "<group>"; };
@@ -78,14 +77,11 @@
 		5C580981130CBD6C002D56DF /* util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = util.cpp; path = src/util.cpp; sourceTree = "<group>"; };
 		5C580982130CBD6C002D56DF /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = src/util.h; sourceTree = "<group>"; };
 		5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = who_is_your_daddy.lua; sourceTree = "<group>"; };
-		5C5F4423113D8663000A2C73 /* upload.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = upload.lua; sourceTree = "<group>"; };
 		5C5F4426113D8663000A2C73 /* spec.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = spec.lua; sourceTree = "<group>"; };
 		5C5F4428113D8663000A2C73 /* ping.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ping.lua; sourceTree = "<group>"; };
 		5C5F4429113D8663000A2C73 /* paste.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = paste.lua; sourceTree = "<group>"; };
-		5C5F442A113D8663000A2C73 /* mensa.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mensa.lua; sourceTree = "<group>"; };
 		5C5F442B113D8663000A2C73 /* links.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = links.lua; sourceTree = "<group>"; };
 		5C5F442C113D8663000A2C73 /* kick.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = kick.lua; sourceTree = "<group>"; };
-		5C5F442D113D8663000A2C73 /* happa.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = happa.lua; sourceTree = "<group>"; };
 		5C5F4441113D86DF000A2C73 /* global.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = global.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		5C5F448A113D8E7F000A2C73 /* src.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = src.lua; sourceTree = "<group>"; };
 		5C713C40117679E7001B6645 /* ticket.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ticket.lua; sourceTree = "<group>"; };
@@ -96,6 +92,8 @@
 		5C8906F9179856830075DC99 /* cpp_headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cpp_headers.h; path = src/cpp_headers.h; sourceTree = "<group>"; };
 		5C8906FA179858630075DC99 /* task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = task.cpp; sourceTree = "<group>"; };
 		5C8906FB179858630075DC99 /* task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = task.h; sourceTree = "<group>"; };
+		5C8906FE17987BC20075DC99 /* error_code.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error_code.cpp; sourceTree = "<group>"; };
+		5C89070017987BC20075DC99 /* local_free_on_destruction.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = local_free_on_destruction.hpp; sourceTree = "<group>"; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
 		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		5C95C40F1184EDEF005864D0 /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bindings_test.lua; sourceTree = "<group>"; };
@@ -105,7 +103,6 @@
 		5CA2C5DE11258F32007EC336 /* lua.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lua.framework; path = Library/Frameworks/lua.framework; sourceTree = SDKROOT; };
 		5CA2C60B112592C9007EC336 /* help.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = help.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5CAD48761188837F00CA1EED /* game_framework.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = game_framework.lua; sourceTree = "<group>"; };
-		5CBE72D6117105E300A6C740 /* add2file.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = add2file.lua; sourceTree = "<group>"; };
 		5CBE72EE11710CB700A6C740 /* users.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = users.lua; sourceTree = "<group>"; };
 		5CC8E3AE116B845000EFA722 /* dice.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dice.lua; sourceTree = "<group>"; };
 		5CC8E3AF116B845000EFA722 /* gitupdate.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gitupdate.lua; sourceTree = "<group>"; };
@@ -125,7 +122,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */,
-				5C8906F817984FA70075DC99 /* SDL2_net.framework in Frameworks */,
 				5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */,
 				5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */,
 				5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */,
@@ -180,6 +176,7 @@
 				5C580980130CBD6C002D56DF /* type_list.h */,
 				5C58097A130CBD6C002D56DF /* platform.h */,
 				5C8906F9179856830075DC99 /* cpp_headers.h */,
+				5C8906FD17987BC20075DC99 /* boost_system */,
 				5C58097B130CBD6C002D56DF /* threading */,
 			);
 			name = Source;
@@ -235,6 +232,16 @@
 			path = include;
 			sourceTree = "<group>";
 		};
+		5C8906FD17987BC20075DC99 /* boost_system */ = {
+			isa = PBXGroup;
+			children = (
+				5C8906FE17987BC20075DC99 /* error_code.cpp */,
+				5C89070017987BC20075DC99 /* local_free_on_destruction.hpp */,
+			);
+			name = boost_system;
+			path = src/boost_system;
+			sourceTree = "<group>";
+		};
 		5C95C40E1184EDEF005864D0 /* tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -251,18 +258,15 @@
 				5C5F4440113D86DF000A2C73 /* include */,
 				5C95C40E1184EDEF005864D0 /* tests */,
 				5C4776F61183CA0D003EB8BB /* games */,
-				5CBE72D6117105E300A6C740 /* add2file.lua */,
 				5C26D02C113B0A8F00DE086A /* cmd.lua */,
 				5CC8E3AE116B845000EFA722 /* dice.lua */,
 				5C2AF81C11401E3600254A60 /* eastereggs.lua */,
 				5CDDFABE113474C800B501B5 /* env.lua */,
 				5CC8E3AF116B845000EFA722 /* gitupdate.lua */,
-				5C5F442D113D8663000A2C73 /* happa.lua */,
 				5CA2C60B112592C9007EC336 /* help.lua */,
 				5C47756211833FFD003EB8BB /* identify.lua */,
 				5C5F442C113D8663000A2C73 /* kick.lua */,
 				5C5F442B113D8663000A2C73 /* links.lua */,
-				5C5F442A113D8663000A2C73 /* mensa.lua */,
 				5C5F4429113D8663000A2C73 /* paste.lua */,
 				5C5F4428113D8663000A2C73 /* ping.lua */,
 				5CC8E3B0116B845000EFA722 /* slap.lua */,
@@ -271,8 +275,6 @@
 				5C749B691125BBEF0079A57A /* system.lua */,
 				5C713C40117679E7001B6645 /* ticket.lua */,
 				5C749B6A1125BBEF0079A57A /* time.lua */,
-				5C47758F11834E6A003EB8BB /* unikram.lua */,
-				5C5F4423113D8663000A2C73 /* upload.lua */,
 				5CBE72EE11710CB700A6C740 /* users.lua */,
 				5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */,
 			);
@@ -321,7 +323,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "unibot" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -369,6 +371,7 @@
 				5C580986130CBD6C002D56DF /* event_handler.cpp in Sources */,
 				5C580987130CBD6C002D56DF /* logger.cpp in Sources */,
 				5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */,
+				5C89070117987BC20075DC99 /* error_code.cpp in Sources */,
 				5C580989130CBD6C002D56DF /* lua.cpp in Sources */,
 				5C58098A130CBD6C002D56DF /* main.cpp in Sources */,
 				5C8906FC179858630075DC99 /* task.cpp in Sources */,
@@ -404,7 +407,10 @@
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/include;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/include/boost,
+				);
 				INSTALL_PATH = /usr/local/bin;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CFLAGS = "";
@@ -443,7 +449,10 @@
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
-				HEADER_SEARCH_PATHS = /usr/local/include;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/usr/include/boost,
+				);
 				INSTALL_PATH = /usr/local/bin;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CFLAGS = "";
@@ -463,12 +472,21 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					.,
@@ -525,11 +543,20 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					.,

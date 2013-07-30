@@ -74,15 +74,16 @@ const char* bot_handler::IRC_COMMAND_STR[] = {
 	"005",
 	"352",
 	"353",
-	"372"
+	"372",
+	"433",
 };
 
-bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) : thread_base(), n(n), states(states), conf(conf) {
-	servername = "";
-	
-	start_time = SDL_GetTicks();
-	keep_msg_count = (std::numeric_limits<size_t>::max)();
-	
+bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) :
+thread_base(), n(n), states(states), conf(conf),
+server_ping_interval((unsigned int)strtoul(conf->get_config_entry("server_ping").c_str(), 0, 10)),
+server_timeout((unsigned int)strtoul(conf->get_config_entry("server_timeout").c_str(), 0, 10))
+{
+	cur_bot_name = conf->get_bot_name();
 	unsigned int cmd_size = sizeof(IRC_COMMAND_STR) / sizeof(const char*);
 	for(unsigned int i = 0; i < cmd_size; i++) {
 		irc_commands.emplace(IRC_COMMAND_STR[i], (bot_handler::IRC_COMMAND)(i));
@@ -98,7 +99,30 @@ bot_handler::~bot_handler() {
 }
 
 void bot_handler::run() {
-	if(!n->is_running() || !n->is_received_data()) return;
+	const auto connection_timeout = server_ping_interval + server_timeout;
+	if((SDL_GetTicks() - last_server_pong) > connection_timeout) {
+		n->get_protocol().invalidate();
+		states->set_parted(true);
+		states->set_restart(true);
+		set_thread_should_finish();
+		unibot_error("server timeout - restarting ...");
+		return;
+	}
+
+	// nothing to do here until a connection has been established
+	if(!n->is_running()) return;
+	
+	//
+	if(!sent_server_ping &&
+	   (SDL_GetTicks() - last_server_pong) > server_ping_interval) {
+		// pretend to have sent a ping, even if we're not connected yet
+		// this will take care of weird server connection problems
+		if(server_name != "") n->ping(server_name);
+		sent_server_ping = true;
+	}
+	
+	// if there are no messages to handle, return
+	if(!n->is_received_data()) return;
 	
 	deque<string> data = n->get_and_clear_received_data();
 	for(auto data_iter = data.begin(); data_iter != data.end(); data_iter++) {
@@ -126,6 +150,9 @@ void bot_handler::run() {
 			cmd_joined_data = data_iter->substr(pos, data_iter->length()-pos);
 		}
 		
+		// any received server msg == "pong"
+		last_server_pong = SDL_GetTicks();
+		
 		switch(current_cmd) {
 			case IRC_COMMAND::NONE:
 				// ignore
@@ -134,11 +161,19 @@ void bot_handler::run() {
 				states->set_connected(true);
 				unibot_debug("successfully connected to the server!");
 				n->join_channel(conf->get_channel());
-				n->send_identify(conf->get_bot_password());
+				
+				if(cur_bot_name != conf->get_bot_name()) {
+					// connect with a different name -> ghost original bot name
+					n->send("PRIVMSG NickServ :GHOST " + conf->get_bot_name() + " " + conf->get_bot_password());
+				}
+				else {
+					// everything is normal -> send ident
+					n->send_identify(conf->get_bot_password());
+				}
 				break;
 			case IRC_COMMAND::CMD_004:
-				servername = cmd_data;
-				unibot_debug("server name is: %s", servername);
+				server_name = cmd_data;
+				unibot_debug("server name is: %s", server_name);
 				break;
 			case IRC_COMMAND::CMD_352:
 				// this might get nasty, catch exceptions, just to be on the safe side
@@ -177,8 +212,12 @@ void bot_handler::run() {
 			}
 				break;
 			case IRC_COMMAND::PING:
-				n->send("PONG " + servername);
+				n->send("PONG " + server_name);
 				unibot_debug("PONG!");
+				break;
+			case IRC_COMMAND::PONG:
+				last_server_pong = SDL_GetTicks();
+				sent_server_ping = false;
 				break;
 			case IRC_COMMAND::NOTICE:
 				if(cmd_joined_data.find("You are now identified for", 0) != string::npos && cmd_joined_data.find(conf->get_bot_name(), 0) != string::npos) {
@@ -195,6 +234,11 @@ void bot_handler::run() {
 						// :<nick> ACC # (# != 3) == unregistered
 						string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
 						states->update_user_info(reg_user, "", "", "", "no", "", "");
+					}
+					else if(cmd_joined_data.find("has been ghosted") != string::npos) {
+						// old session has been ghost -> reset nick to the original name and identify
+						n->send_nick(conf->get_bot_name());
+						n->send_identify(conf->get_bot_password());
 					}
 				}
 				// ctcp notice
@@ -311,6 +355,17 @@ void bot_handler::run() {
 				states->update_user_name(strip_user(cmd_sender), cmd_location.substr(1, cmd_location.length()-1));
 				break;
 			case IRC_COMMAND::TOPIC:
+				break;
+			case IRC_COMMAND::ERROR:
+				unibot_error("received server error - restarting ...");
+				states->set_restart(true);
+				quit_bot();
+				set_thread_should_finish();
+				break;
+			case IRC_COMMAND::CMD_433:
+				// "Nickname is already in use" -> set alt nick, ghost orig nick later on
+				cur_bot_name += conf->get_bot_alt_add();
+				n->send_nick(cur_bot_name);
 				break;
 			default:
 				break;
@@ -565,4 +620,8 @@ string bot_handler::get_prev_msg(const size_t& offset) {
 		return "";
 	}
 	return msg_store[msg_store.size() - offset];
+}
+
+const string& bot_handler::get_server_name() const {
+	return server_name;
 }

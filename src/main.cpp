@@ -59,22 +59,34 @@ int main(int argc, char* argv[]) {
 	srand((unsigned int)time(nullptr));
 	
 	// initialize net
-	unibot_irc_net* irc = new unibot_irc_net(conf);
-	irc->connect_to_server(conf->get_hostname().c_str(), conf->get_port());
-	
-	bot_states* states = new bot_states(irc);
-	bot_handler* bot = new bot_handler(irc, states, conf);
-	
-	irc->send_connect(conf->get_bot_name(), conf->get_bot_realname());
-	
-	while(irc->is_running() || bot->is_running()) {
-		SDL_Delay(100); // no need to be fast here
-	}
-	bool restart = states->is_restart();
-	
-	delete bot;
-	delete states;
-	delete irc;
+	bool restart_bot = false;
+	do {
+		if(restart_bot) {
+			unibot_debug("restarting bot ...");
+		}
+		
+		unibot_irc_net* irc = new unibot_irc_net(conf);
+		if(irc->connect_to_server(conf->get_hostname().c_str(), conf->get_port())) {
+			bot_states* states = new bot_states(irc);
+			bot_handler* bot = new bot_handler(irc, states, conf);
+			
+			irc->send_connect(conf->get_bot_name(), conf->get_bot_realname());
+			
+			while(irc->is_running() || bot->is_running()) {
+				SDL_Delay(1000); // no need to be fast here
+			}
+			restart_bot = states->is_restart();
+			
+			delete bot;
+			delete states;
+		}
+		else {
+			// connection failed, wait 5s before reconnect
+			SDL_Delay(5000);
+			restart_bot = true;
+		}
+		delete irc;
+	} while(restart_bot);
 	
 	SDL_Quit();
 
@@ -82,20 +94,6 @@ int main(int argc, char* argv[]) {
 	delete conf;
 	
 	destroy_event_handler();
-	
-#ifndef __WINDOWS__
-	if(restart) {
-		cout << "restarting bot ..." << endl;
-		
-		// get binary name
-		string binary = clean_path(argv[0]);
-		const size_t slash_pos = binary.rfind('/');
-		if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
-		
-		string restart_cmd = "killall "+binary+" >/dev/nullptr 2>&1 && sleep 1 && "+string(argv[0]);
-		system(restart_cmd.c_str());
-	}
-#endif
 	
 	return 0;
 }

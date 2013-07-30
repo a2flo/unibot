@@ -72,7 +72,7 @@ function handle_message(origin, target, cmd, parameters)
 				"stabs "..name.." repeatedly with a bear",
 				"bashes "..name.." repeatedly with a small vacuum",
 				"beats "..name.." with a big list of IRC slaps",
-				"haut "..name.." mit einem Löblichen aufn Deckel",
+				"haut "..name.." mit einem Löffelchen aufn Deckel",
 				"überollt "..name.." mit einem großen Panzer",
 				"fesselt "..name.." an eine Laterne und geht weg",
 				"pinkelt "..name.." ans Bein",

@@ -5,7 +5,8 @@
 require "global"
 
 function handle_message(origin, target, cmd, parameters)
-	if is_owner(origin) then
+	-- TODO: update this
+	--[[ if is_owner(origin) then
 		if cmd == "gitupdate" then
 			-- git pull
 			local git_output = execute_command("git pull origin master 2>&1")
@@ -32,6 +33,6 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(target, "git pull successful - reloading scripts")
 			reload_scripts()
 		end
-	end
+	end ]]--
 	return 0
 end

@@ -56,7 +56,6 @@
 #include <SDL2/SDL_thread.h>
 #include <SDL2/SDL_cpuinfo.h>
 #include <SDL2/SDL_main.h>
-#include <SDL2_net/SDL_net.h>
 
 extern "C" {
 #include <lua/lua.hpp>
@@ -68,7 +67,6 @@ extern "C" {
 #include <SDL2/SDL_thread.h>
 #include <SDL2/SDL_cpuinfo.h>
 #include <SDL2/SDL_main.h>
-#include <SDL2_net/SDL_net.h>
 
 extern "C" {
 #include <lua/lua.hpp>
@@ -80,7 +78,6 @@ extern "C" {
 #include <SDL2/SDL_thread.h>
 #include <SDL2/SDL_cpuinfo.h>
 #include <SDL2/SDL_main.h>
-#include <SDL2/SDL_net.h>
 
 extern "C" {
 #include <lua.hpp>
@@ -130,8 +127,8 @@ using namespace std;
 // compiler checks:
 // msvc check
 #if defined(_MSC_VER)
-#if (_MSC_VER <= 1700)
-#error "Sorry, but you need MSVC 12.0+ to compile UniBot"
+#if (_MSC_VER <= 1800)
+#error "Sorry, but you need MSVC 13.0+ (VS 2014+) to compile UniBot"
 #endif
 
 // clang check
@@ -145,8 +142,8 @@ using namespace std;
 
 // gcc check
 #elif defined(__GNUC__)
-#if (__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 6)
-#error "Sorry, but you need GCC 4.6+ to compile UniBot"
+#if (__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 9)
+#error "Sorry, but you need GCC 4.9+ to compile UniBot"
 #endif
 
 // just fall through ...

@@ -28,6 +28,7 @@ bot_states::bot_states(unibot_irc_net* n) : n(n) {
 	states["identified"] = false;
 	states["silenced"] = true;
 	states["quit"] = false;
+	states["restart"] = true;
 	
 	kick_user = "";
 }

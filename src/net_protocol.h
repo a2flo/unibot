@@ -16,12 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-// http://jcatki.no-ip.org:8080/SDL_net/SDL_net_frame.html
-
 #ifndef __UNIBOT_NET_PROTOCOL_H__
 #define __UNIBOT_NET_PROTOCOL_H__
 
 #include "platform.h"
+
+#include <boost/asio.hpp>
+using boost::asio::ip::tcp;
 
 template <class socket_type>
 struct std_protocol {
@@ -29,28 +30,18 @@ struct std_protocol {
 	// or getting an overview of it, i put these here
 	
 public:
-	std_protocol() : valid(true), server_socket(nullptr), client_socket(nullptr), socketset(nullptr) {}
-	
 	bool is_valid();
-	bool valid_sockets();
+	bool ready();
 	
-	bool server_ready();
-	bool client_ready();
+	bool open_socket(const string& address, const string& port);
 	
-	bool open_server_socket(IPaddress& server_ip);
-	bool open_client_socket(IPaddress& client_ip);
-	
-	int server_receive(void* data, const unsigned int max_len);
-	int client_receive(void* data, const unsigned int max_len);
-	
-	bool server_send(const char* data, const int len);
-	bool client_send(const char* data, const int len);
+	int receive(void* data, const unsigned int max_len);
+	bool send(const char* data, const int len);
 	
 protected:
-	bool valid;
-	socket_type* server_socket;
-	socket_type* client_socket;
-	SDLNet_SocketSet socketset;
+	bool valid { false };
+	socket_type socket {};
+	
 };
 
 #endif

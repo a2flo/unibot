@@ -16,8 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-// http://jcatki.no-ip.org:8080/SDL_net/SDL_net_frame.html
-
 #ifndef __UNIBOT_NET_H__
 #define __UNIBOT_NET_H__
 
@@ -29,11 +27,9 @@
 #include "logger.h"
 #include "threading/thread_base.h"
 
-typedef std_protocol<UDPsocket> UDP_protocol;
-
 #define PACKET_MAX_LEN 65536
 
-template <class protocol_policy> class net : public protocol_policy, public thread_base {
+template <class protocol_policy> class net : public thread_base {
 public:
 	net(config* conf);
 	virtual ~net();
@@ -41,19 +37,22 @@ public:
 	virtual void run();
 	virtual bool connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port = 65535);
 	
-	virtual bool is_received_data();
+	virtual bool is_received_data() const;
 	virtual deque<string> get_and_clear_received_data();
 	virtual void clear_received_data();
 	
-	virtual IPaddress* get_local_ip();
-	virtual IPaddress* get_server_ip();
+	virtual boost::asio::ip::address get_local_address() const;
+	virtual unsigned short int get_local_port() const;
+	virtual boost::asio::ip::address get_remote_address() const;
+	virtual unsigned short int get_remote_port() const;
+	
+	virtual const protocol_policy& get_protocol() const;
+	virtual protocol_policy& get_protocol();
 
 protected:
 	config* conf;
 	protocol_policy protocol;
-	
-	IPaddress server_ip;
-	IPaddress local_ip;
+	atomic<bool> connected { false };
 	
 	string last_packet_remains;
 	size_t received_length;
@@ -70,50 +69,30 @@ protected:
 };
 
 template <class protocol_policy> net<protocol_policy>::net(config* conf) :
-thread_base(), conf(conf), last_packet_remains(""), received_length(0), packets_per_second(0), last_packet_send(0) {
-	if(SDLNet_Init() == -1) {
-		unibot_error("couldn't initialize net: %s", SDLNet_GetError());
-		return;
-	}
-	
+thread_base(), conf(conf), protocol(), last_packet_remains(""), received_length(0), packets_per_second(0), last_packet_send(0) {
 	unibot_debug("net initialized!");
 	this->start(); // start thread
 }
 
 template <class protocol_policy> net<protocol_policy>::~net() {
-	SDLNet_Quit();
 	unibot_debug("net deleted!");
 }
 
-template <class protocol_policy> bool net<protocol_policy>::connect_to_server(const char* server_name, const unsigned short int port, const unsigned short int local_port unibot_unused) {
+template <class protocol_policy>
+bool net<protocol_policy>::connect_to_server(const char* server_name,
+											 const unsigned short int port,
+											 const unsigned short int local_port unibot_unused) {
 	lock(); // we need to lock the net class, so run() isn't called while we're connecting
 	
 	try {
 		if(!protocol.is_valid()) throw exception();
 		
-		if(SDLNet_ResolveHost(&server_ip, server_name, port) == -1) {
-			unibot_error("SDLNet_ResolveHost(server): %s", SDLNet_GetError());
-			throw exception();
-		}
-		
-		// currently useless for an irc bot ...
-#if 0
-		if(SDLNet_ResolveHost(&local_ip, nullptr, local_port) == -1) {
-			unibot_error("SDLNet_ResolveHost(client): %s", SDLNet_GetError());
-			throw exception();
-		}
-#endif
-		
 		// create server socket
-		if(!protocol.open_server_socket(server_ip)) throw exception();
-		
-#if 0
-		// create client socket
-		if(!protocol.open_client_socket(local_ip)) throw exception();
-#endif
+		if(!protocol.open_socket(server_name, port)) throw exception();
 		
 		// connection created - data transfer is now possible
 		unibot_debug("successfully connected to server!");
+		connected = true;
 	}
 	catch(...) {
 		unibot_error("failed to connect to server!");
@@ -127,12 +106,13 @@ template <class protocol_policy> bool net<protocol_policy>::connect_to_server(co
 }
 
 template <class protocol_policy> void net<protocol_policy>::run() {
-	int len = 0, used = 0;
+	if(!connected) return;
 	
 	// receive data - if possible
+	int len = 0, used = 0;
 	try {
-		if(protocol.valid_sockets()) {
-			if(protocol.server_ready()) {
+		if(protocol.is_valid()) {
+			if(protocol.ready()) {
 				//cout << "server_ready" << endl;
 				memset(receive_data, 0, PACKET_MAX_LEN);
 				len = receive_packet(receive_data, PACKET_MAX_LEN);
@@ -157,7 +137,12 @@ template <class protocol_policy> void net<protocol_policy>::run() {
 				}
 			}
 		}
-		else throw exception();
+		else throw runtime_error("invalid protocol");
+	}
+	catch(exception& e) {
+		unibot_error("net error: %s", e.what());
+		set_thread_should_finish();
+		return;
 	}
 	catch(...) {
 		// something is wrong, finsh and return
@@ -194,7 +179,7 @@ template <class protocol_policy> int net<protocol_policy>::receive_packet(char* 
 	}
 	
 	// receive the package
-	int len = protocol.server_receive(data, max_len);
+	int len = protocol.receive(data, max_len);
 	// received packet length is equal or less than zero, return -1
 	if(len <= 0) {
 		unibot_error("invalid data received!");
@@ -240,7 +225,7 @@ template <class protocol_policy> int net<protocol_policy>::process_packet(const 
 }
 
 template <class protocol_policy> void net<protocol_policy>::send_packet(const char* data, const unsigned int len) {
-	if(!protocol.server_send(data, len)) {
+	if(!protocol.send(data, len)) {
 		unibot_error("couldn't send packet!");
 	}
 	else if(conf->get_verbosity() >= logger::LOG_TYPE::DEBUG_MSG) {
@@ -248,7 +233,7 @@ template <class protocol_policy> void net<protocol_policy>::send_packet(const ch
 	}
 }
 
-template <class protocol_policy> bool net<protocol_policy>::is_received_data() {
+template <class protocol_policy> bool net<protocol_policy>::is_received_data() const {
 	return !receive_store.empty();
 }
 
@@ -265,12 +250,26 @@ template <class protocol_policy> void net<protocol_policy>::clear_received_data(
 	receive_store.clear();
 }
 
-template <class protocol_policy> IPaddress* net<protocol_policy>::get_local_ip() {
-	return &local_ip;
+template <class protocol_policy> boost::asio::ip::address net<protocol_policy>::get_local_address() const {
+	return protocol.get_local_address();
+}
+template <class protocol_policy> unsigned short int net<protocol_policy>::get_local_port() const {
+	return protocol.get_local_port();
 }
 
-template <class protocol_policy> IPaddress* net<protocol_policy>::get_server_ip() {
-	return &server_ip;
+template <class protocol_policy> boost::asio::ip::address net<protocol_policy>::get_remote_address() const {
+	return protocol.get_remote_address();
+}
+template <class protocol_policy> unsigned short int net<protocol_policy>::get_remote_port() const {
+	return protocol.get_remote_port();
+}
+
+template <class protocol_policy> const protocol_policy& net<protocol_policy>::get_protocol() const {
+	return protocol;
+}
+
+template <class protocol_policy> protocol_policy& net<protocol_policy>::get_protocol() {
+	return protocol;
 }
 
 #endif
