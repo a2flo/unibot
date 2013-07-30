@@ -235,7 +235,9 @@ void bot_handler::run() {
 						string reg_user = cmd_joined_data.substr(1, cmd_joined_data.find(" ")-1);
 						states->update_user_info(reg_user, "", "", "", "no", "", "");
 					}
-					else if(cmd_joined_data.find("has been ghosted") != string::npos) {
+					else if(cmd_joined_data.find("has been ghosted") != string::npos ||
+							(cur_bot_name != conf->get_bot_name() &&
+							 cmd_joined_data.find("is not online") != string::npos)) {
 						// old session has been ghost -> reset nick to the original name and identify
 						n->send_nick(conf->get_bot_name());
 						n->send_identify(conf->get_bot_password());
