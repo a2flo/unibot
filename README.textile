@@ -1,0 +1,18 @@
+*UniBot*
+
+UniBot is a small IRC bot written in C++11 with support for lua scripting.
+
+For built-in/example scripts look through the "scripts/" folder, documentation can be found in "doc/lua_bindings.html".
+
+The configuration file (etc/unibot.conf) must reside in the system "/etc" folder.
+You can also specify the config location relative from the "/etc" folder when starting the bot: "$ unibot somefolder/unibot.conf".
+
+*Build Instructions:*
+on Linux:
+* install all dependencies (clang 3.2+, libc++, SDL2, boost, lua)
+* run ./premake.sh
+* make
+
+on OS X:
+* install Xcode 4.6+, Xquartz, SDL2, boost (headers suffice) and lua
+* open unibot.xcodeproj and build

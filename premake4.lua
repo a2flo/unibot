@@ -68,7 +68,11 @@ project "unibot"
 		if(clang_libcxx) then
 			buildoptions { "-stdlib=libc++" }
 			buildoptions { "-Wno-delete-non-virtual-dtor -Wno-overloaded-virtual" }
-			linkoptions { "-stdlib=libc++" }
+			if(os.is("linux") then
+			   linkoptions { "-stdlib=libc++ -lc++abi" }
+			else
+			   linkoptions { "-stdlib=libc++" }
+			end
 		end
 	end
 	
