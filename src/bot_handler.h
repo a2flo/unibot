@@ -147,7 +147,6 @@ protected:
 	lua* lua_obj;
 	
 	string server_name { "" };
-	const unsigned int start_time { SDL_GetTicks() };
 	unsigned int last_server_pong { SDL_GetTicks() };
 	bool sent_server_ping { false };
 	

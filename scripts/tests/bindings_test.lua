@@ -22,6 +22,7 @@ function handle_message(origin, target, cmd, parameters)
 		set_bot_state("silenced", xor(silenced, true))
 		local new_silenced = get_bot_state("silenced")
 		send_private_msg(target, "bot state test: "..tostring(silenced)..", "..tostring(new_silenced))
+		set_bot_state("silenced", xor(silenced, true))
 		
 		-- config
 		local owners = get_config_entry("owner_names")

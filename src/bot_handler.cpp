@@ -19,6 +19,8 @@
 #include "bot_handler.h"
 #include "lua.h"
 
+static unsigned int bot_start_time { 0 };
+
 const char* bot_handler::IRC_COMMAND_STR[] = {
 	"NONE",
 	"ADMIN",
@@ -83,6 +85,10 @@ thread_base(), n(n), states(states), conf(conf),
 server_ping_interval((unsigned int)strtoul(conf->get_config_entry("server_ping").c_str(), 0, 10)),
 server_timeout((unsigned int)strtoul(conf->get_config_entry("server_timeout").c_str(), 0, 10))
 {
+	if(bot_start_time == 0) {
+		bot_start_time = SDL_GetTicks();
+	}
+	
 	cur_bot_name = conf->get_bot_name();
 	unsigned int cmd_size = sizeof(IRC_COMMAND_STR) / sizeof(const char*);
 	for(unsigned int i = 0; i < cmd_size; i++) {
@@ -266,7 +272,9 @@ void bot_handler::run() {
 					if(strip_user(cmd_sender) == conf->get_bot_name()) {
 						unibot_debug("joined the channel");
 						states->set_joined(true);
-						n->send_channel_msg("hi there ;)");
+						if(!states->is_silenced()) {
+							n->send_channel_msg("hi there ;)");
+						}
 						
 						// check if bot got kicked
 						if(states->is_kicked()) {
@@ -456,7 +464,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		size_t cmd_end = msg.find(' ', 0);
 		string cmd = (cmd_end != string::npos ? msg.substr(0, cmd_end) : msg);
 		if(cmd == "uptime") {
-			unsigned long int uptime = SDL_GetTicks() - start_time;
+			unsigned long int uptime = SDL_GetTicks() - bot_start_time;
 			string uptime_str = "";
 			
 			unsigned long int t_day = 1000*60*60*24;
