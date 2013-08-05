@@ -19,7 +19,14 @@
 #include "bot_handler.h"
 #include "lua.h"
 
-static unsigned int bot_start_time { 0 };
+// stores the time of when the bot was first started
+// note that this has to be stored in a 64-bit uint, because it would overflow after
+// 49 days when simply using SDL_GetTicks + a 32-bit uint
+// -> use SDL_GetPerformanceCounter instead
+// however, this way we don't know the time scale of this until runtime
+// "best" case: 1000000000 ticks/s, "worst" case: 1000 tick/s
+// -> overflow after: 213503 days, 213503982334 days
+static unsigned long long int bot_start_time { 0 };
 
 const char* bot_handler::IRC_COMMAND_STR[] = {
 	"NONE",
@@ -86,7 +93,7 @@ server_ping_interval((unsigned int)strtoul(conf->get_config_entry("server_ping")
 server_timeout((unsigned int)strtoul(conf->get_config_entry("server_timeout").c_str(), 0, 10))
 {
 	if(bot_start_time == 0) {
-		bot_start_time = SDL_GetTicks();
+		bot_start_time = SDL_GetPerformanceCounter();
 	}
 	
 	cur_bot_name = conf->get_bot_name();
@@ -464,13 +471,13 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		size_t cmd_end = msg.find(' ', 0);
 		string cmd = (cmd_end != string::npos ? msg.substr(0, cmd_end) : msg);
 		if(cmd == "uptime") {
-			unsigned long int uptime = SDL_GetTicks() - bot_start_time;
+			unsigned long long int uptime = SDL_GetPerformanceCounter() - bot_start_time;
+			uptime /= SDL_GetPerformanceFrequency(); // to seconds
 			string uptime_str = "";
 			
-			unsigned long int t_day = 1000*60*60*24;
-			unsigned long int t_hour = 1000*60*60;
-			unsigned long int t_minute = 1000*60;
-			unsigned long int t_second = 1000;
+			constexpr unsigned long long int t_day = 60ULL * 60ULL * 24ULL;
+			constexpr unsigned long long int t_hour = 60ULL * 60ULL;
+			constexpr unsigned long long int t_minute = 60ULL;
 			
 			uptime_str += to_str(uptime / t_day) + "d ";
 			uptime %= t_day;
@@ -478,7 +485,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			uptime %= t_hour;
 			uptime_str += to_str(uptime / t_minute) + "m ";
 			uptime %= t_minute;
-			uptime_str += to_str(uptime / t_second) + "s";
+			uptime_str += to_str(uptime) + "s";
 			
 			n->send_private_msg(target, uptime_str);
 		}
