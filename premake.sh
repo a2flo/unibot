@@ -8,7 +8,7 @@ UNIBOT_ARGS=""
 UNIBOT_CPU_COUNT=1
 UNIBOT_USE_CLANG=0
 
-if [[ $# > 0 && $1 == "gcc" ]]; then
+if [ $# -gt 0 ] && [ "$1" == "gcc" ]; then
 	UNIBOT_ARGS="--gcc"
 else
 	UNIBOT_ARGS="--clang"
@@ -18,7 +18,7 @@ fi
 case $( uname | tr [:upper:] [:lower:] ) in
 	"darwin")
 		UNIBOT_OS="macosx"
-		UNIBOT_CPU_COUNT=$(sysctl -a | grep 'machdep.cpu.thread_count' | sed -E 's/.*(: )([:digit:]*)/\2/g')
+		UNIBOT_CPU_COUNT=$(sysctl machdep.cpu.thread_count | sed -E 's/.*(: )([:digit:]*)/\2/g')
 		;;
 	"linux")
 		UNIBOT_OS="linux"
@@ -27,7 +27,7 @@ case $( uname | tr [:upper:] [:lower:] ) in
 	[a-z0-9]*"bsd")
 		UNIBOT_OS="bsd"
 		UNIBOT_MAKE="gmake"
-		# TODO: get cpu/thread count on *bsd
+		UNIBOT_CPU_COUNT=$(sysctl hw.ncpu | sed -E 's/.*(: )([:digit:]*)/\2/g')
 		;;
 	"cygwin"* | "mingw"*)
 		UNIBOT_OS="windows"
@@ -60,9 +60,14 @@ echo "using: premake4 --cc=gcc --os="${UNIBOT_OS}" gmake "${UNIBOT_ARGS}
 premake4 --cc=gcc --os=${UNIBOT_OS} gmake ${UNIBOT_ARGS}
 sed -i -e 's/\${MAKE}/\${MAKE} -j '${UNIBOT_CPU_COUNT}'/' Makefile
 
-if [[ $UNIBOT_USE_CLANG == 1 ]]; then
-	sed -i '1i export CC=clang' Makefile
-	sed -i '1i export CXX=clang++' Makefile
+if [ $UNIBOT_USE_CLANG == 1 ]; then
+	# this seems to be the most portable way of insert chars in front of a file
+	# note that "sed -i "1i ..." file" is not portable!
+	mv Makefile Makefile.tmp
+	echo "export CC=clang" > Makefile
+	echo "export CXX=clang++" >> Makefile
+	cat Makefile.tmp >> Makefile
+	rm Makefile.tmp
 fi
 
 chmod +x build_version.sh

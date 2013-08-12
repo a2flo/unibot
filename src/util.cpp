@@ -84,6 +84,7 @@ string trim(const string& str) {
 		pos = ret.length()-1;
 		while(pos < ret.length() && (ret[pos] == ' ' || ret[pos] == '\t' || ret[pos] == '\r' || ret[pos] == '\n')) {
 			ret.erase(pos, 1);
+			if(pos > 0) pos--;
 		}
 	}
 	return ret;

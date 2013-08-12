@@ -18,6 +18,7 @@
 #include <boost/system/config.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/cerrno.hpp>
+#include <boost/version.hpp>
 #include <vector>
 #include <cstdlib>
 #include <cassert>
@@ -47,7 +48,7 @@ namespace
   {
   public:
     generic_error_category(){}
-    const char *   name() const BOOST_SYSTEM_NOEXCEPT;
+    const char *   name() const noexcept;
     std::string    message( int ev ) const;
   };
 
@@ -55,14 +56,14 @@ namespace
   {
   public:
     system_error_category(){}
-    const char *        name() const BOOST_SYSTEM_NOEXCEPT;
+    const char *        name() const noexcept;
     std::string         message( int ev ) const;
-    error_condition     default_error_condition( int ev ) const BOOST_SYSTEM_NOEXCEPT;
+    error_condition     default_error_condition( int ev ) const noexcept;
   };
 
   //  generic_error_category implementation  ---------------------------------//
 
-  const char * generic_error_category::name() const BOOST_SYSTEM_NOEXCEPT
+  const char * generic_error_category::name() const noexcept
   {
     return "generic";
   }
@@ -160,12 +161,12 @@ namespace
   }
   //  system_error_category implementation  --------------------------------// 
 
-  const char * system_error_category::name() const BOOST_SYSTEM_NOEXCEPT
+  const char * system_error_category::name() const noexcept
   {
     return "system";
   }
 
-  error_condition system_error_category::default_error_condition( int ev ) const BOOST_SYSTEM_NOEXCEPT
+  error_condition system_error_category::default_error_condition( int ev ) const noexcept
   {
     using namespace boost::system::errc;
 #if defined(__PGI)
@@ -421,13 +422,19 @@ namespace
                                          //  address for comparison purposes
 # endif
 
-    BOOST_SYSTEM_DECL const error_category & system_category() BOOST_SYSTEM_NOEXCEPT
+    BOOST_SYSTEM_DECL const error_category & system_category()
+#if BOOST_VERSION >= 105400
+        noexcept
+#endif
     {
       static const system_error_category  system_category_const;
       return system_category_const;
     }
 
-    BOOST_SYSTEM_DECL const error_category & generic_category() BOOST_SYSTEM_NOEXCEPT
+    BOOST_SYSTEM_DECL const error_category & generic_category()
+#if BOOST_VERSION >= 105400
+        noexcept
+#endif
     {
       static const generic_error_category generic_category_const;
       return generic_category_const;
