@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "bot_states.h"
+#include "bot_states.hpp"
 
 bot_states::bot_states(floor_irc_net* n) : n(n) {
 	states["connected"] = false;

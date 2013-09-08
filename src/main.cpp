@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "main.h"
+#include "main.hpp"
 
 int main(int argc, char* argv[]) {
 	// init floor in console only mode (TODO: !)

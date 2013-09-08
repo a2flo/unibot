@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "lua_bindings.h"
-#include "lua.h"
+#include "lua_bindings.hpp"
+#include "lua.hpp"
 #include "core/core.hpp"
 
 //

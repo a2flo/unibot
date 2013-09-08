@@ -16,18 +16,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_MAIN_H__
-#define __UNIBOT_MAIN_H__
+#ifndef __UNIBOT_MAIN_HPP__
+#define __UNIBOT_MAIN_HPP__
 
 #include "floor/floor.hpp"
 #include "core/platform.hpp"
-#include "event_handler.h"
+#include "event_handler.hpp"
 #include "net/net.hpp"
 #include "net/irc_net.hpp"
 #include "net/http_net.hpp"
-#include "bot_handler.h"
-#include "bot_states.h"
-#include "config.h"
-#include "lua.h"
+#include "bot_handler.hpp"
+#include "bot_states.hpp"
+#include "config.hpp"
+#include "lua.hpp"
 
 #endif

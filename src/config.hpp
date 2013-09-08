@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_CONFIG_H__
-#define __UNIBOT_CONFIG_H__
+#ifndef __UNIBOT_CONFIG_HPP__
+#define __UNIBOT_CONFIG_HPP__
 
 #include "core/platform.hpp"
 

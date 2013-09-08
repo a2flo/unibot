@@ -16,16 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_BOT_HANDLER_H__
-#define __UNIBOT_BOT_HANDLER_H__
+#ifndef __UNIBOT_BOT_HANDLER_HPP__
+#define __UNIBOT_BOT_HANDLER_HPP__
 
 #include "core/platform.hpp"
-#include "event_handler.h"
+#include "event_handler.hpp"
 #include "net/net.hpp"
 #include "net/irc_net.hpp"
-#include "bot_states.h"
-#include "config.h"
-#include "build_version.h"
+#include "bot_states.hpp"
+#include "config.hpp"
+#include "build_version.hpp"
 #include "threading/thread_base.hpp"
 
 #define UNIBOT_MAJOR_VERSION "0"

@@ -16,16 +16,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_LUA_BINDINGS_H__
-#define __UNIBOT_LUA_BINDINGS_H__
+#ifndef __UNIBOT_LUA_BINDINGS_HPP__
+#define __UNIBOT_LUA_BINDINGS_HPP__
 
 #include "core/platform.hpp"
 #include "net/net.hpp"
 #include "net/irc_net.hpp"
-#include "bot_states.h"
-#include "bot_handler.h"
-#include "config.h"
-#include "util.h"
+#include "bot_states.hpp"
+#include "bot_handler.hpp"
+#include "config.hpp"
+#include "core/util.hpp"
 
 // lua includes
 #if defined(__APPLE__)

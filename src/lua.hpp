@@ -16,17 +16,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_LUA_H__
-#define __UNIBOT_LUA_H__
+#ifndef __UNIBOT_LUA_HPP__
+#define __UNIBOT_LUA_HPP__
 
 #include "core/platform.hpp"
 #include "net/net.hpp"
 #include "net/irc_net.hpp"
-#include "bot_states.h"
-#include "bot_handler.h"
-#include "config.h"
-#include "util.h"
-#include "lua_bindings.h"
+#include "bot_states.hpp"
+#include "bot_handler.hpp"
+#include "config.hpp"
+#include "core/util.hpp"
+#include "lua_bindings.hpp"
 
 #define LUA_SCRIPT_FOLDER "scripts" FLOOR_OS_DIR_SLASH
 #define UNIBOT_MAX_LUA_SCRIPT_SIZE (16 * 1024 * 1024)

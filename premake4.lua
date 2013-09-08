@@ -34,7 +34,7 @@ project "unibot"
 	targetname "unibot"
 	kind "ConsoleApp"
 	language "C++"
-	files { "src/**.h", "src/**.cpp" }
+	files { "src/**.hpp", "src/**.cpp" }
 	platforms { "x64", "x32" }
 	
 	-- scan args

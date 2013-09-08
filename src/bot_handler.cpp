@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "bot_handler.h"
-#include "lua.h"
+#include "bot_handler.hpp"
+#include "lua.hpp"
 #include "core/core.hpp"
 
 // stores the time of when the bot was first started

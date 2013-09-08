@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_BOT_STATES_H__
-#define __UNIBOT_BOT_STATES_H__
+#ifndef __UNIBOT_BOT_STATES_HPP__
+#define __UNIBOT_BOT_STATES_HPP__
 
 #include "core/platform.hpp"
 #include "net/net.hpp"

@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "config.h"
+#include "config.hpp"
 #include "floor/floor.hpp"
 
 config::config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv) {

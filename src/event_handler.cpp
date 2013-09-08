@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "event_handler.h"
+#include "event_handler.hpp"
 
 event_handler_base* event_handler = nullptr;
 void init_event_handler() {
