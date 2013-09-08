@@ -19,13 +19,13 @@
 #ifndef __UNIBOT_BOT_STATES_H__
 #define __UNIBOT_BOT_STATES_H__
 
-#include "platform.h"
-#include "net.h"
-#include "irc_net.h"
+#include "core/platform.hpp"
+#include "net/net.hpp"
+#include "net/irc_net.hpp"
 
 class bot_states {
 public:
-	bot_states(unibot_irc_net* n);
+	bot_states(floor_irc_net* n);
 	~bot_states();
 	
 	struct user_info {
@@ -81,7 +81,7 @@ public:
 	void set(const string& state_name, bool new_state);
 	
 protected:
-	unibot_irc_net* n;
+	floor_irc_net* n;
 	
 	/* available bot states:
 	 * connected

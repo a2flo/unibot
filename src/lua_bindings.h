@@ -19,13 +19,34 @@
 #ifndef __UNIBOT_LUA_BINDINGS_H__
 #define __UNIBOT_LUA_BINDINGS_H__
 
-#include "platform.h"
-#include "net.h"
-#include "irc_net.h"
+#include "core/platform.hpp"
+#include "net/net.hpp"
+#include "net/irc_net.hpp"
 #include "bot_states.h"
 #include "bot_handler.h"
 #include "config.h"
 #include "util.h"
+
+// lua includes
+#if defined(__APPLE__)
+extern "C" {
+#include <lua/lua.hpp>
+#include <lua/lualib.h>
+#include <lua/lauxlib.h>
+}
+#elif defined(__WINDOWS__) // windows
+extern "C" {
+#include <lua/lua.hpp>
+#include <lua/lualib.h>
+#include <lua/lauxlib.h>
+}
+#else // unix/linux
+extern "C" {
+#include <lua.hpp>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+#endif // __APPLE__
 
 #define __LUA_FUNCTION_BINDINGS(F) \
 /* net.h bindings */ \
@@ -77,13 +98,13 @@ class lua_bindings {
 public:
 	typedef void (lua::*fp_reload_scripts)();
 	
-	lua_bindings(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts);
+	lua_bindings(floor_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts);
 	~lua_bindings();
 	
 	__LUA_FUNCTION_BINDINGS(LUA_FUNCTION_DEFINITION)
 	
 protected:
-	static unibot_irc_net* n;
+	static floor_irc_net* n;
 	static bot_handler* handler;
 	static bot_states* states;
 	static config* conf;

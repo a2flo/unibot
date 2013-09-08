@@ -19,8 +19,8 @@
 #ifndef __UNIBOT_EVENT_HANDLER_H__
 #define __UNIBOT_EVENT_HANDLER_H__
 
-#include "platform.h"
-#include "threading/thread_base.h"
+#include "core/platform.hpp"
+#include "threading/thread_base.hpp"
 
 void init_event_handler();
 void destroy_event_handler();

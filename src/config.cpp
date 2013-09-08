@@ -17,23 +17,22 @@
  */
 
 #include "config.h"
+#include "floor/floor.hpp"
 
 config::config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv) {
 	// default values
-	config_data["verbosity"] = to_str((size_t)logger::LOG_TYPE::SIMPLE_MSG);
+	config_data["verbosity"] = size_t2string((size_t)logger::LOG_TYPE::SIMPLE_MSG);
 	config_data["environment"] = environment;
 	
-	string binary = clean_path(argv[0]);
+	string binary = core::strip_path(argv[0]);
 	const size_t slash_pos = binary.rfind('/');
 	if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
 	
-	config_data["argc"] = to_str(argc);
-	config_data["arg_0"] = clean_path(get_absolute_path()+binary);
+	config_data["argc"] = ssize_t2string(argc);
+	config_data["arg_0"] = core::strip_path(floor::get_absolute_path()+binary);
 	for(ssize_t i = 1; i < argc; i++) {
-		config_data["arg_"+to_str(i)] = argv[i];
+		config_data["arg_"+ssize_t2string(i)] = argv[i];
 	}
-	
-	logger::set_config(this);
 	
 	if(!load_config(config_file)) {
 		throw runtime_error("invalid config file");
@@ -47,7 +46,7 @@ bool config::load_config() {
 	file.open(config_file.c_str(), fstream::in);
 	if(!file.is_open()) {
 		file.clear();
-		unibot_error("couldn't open config file %s!", config_file);
+		log_error("couldn't open config file %s!", config_file);
 		return false;
 	}
 	
@@ -69,8 +68,7 @@ bool config::load_config() {
 	file.close();
 	
 	// parse config file
-	vector<string> lines;
-	tokenize(lines, data_str.str(), '\n');
+	vector<string> lines { core::tokenize(data_str.str(), '\n') };
 	bool bot_block = false;
 	bool config_version_found = false;
 	size_t assign_pos = 0;
@@ -79,14 +77,14 @@ bool config::load_config() {
 		else if(line_iter->find("[unibot]") == 0) bot_block = true;
 		else if(line_iter->find("[") == 0 && line_iter->find("]") != string::npos) bot_block = false;
 		else if(bot_block && (assign_pos = line_iter->find("=")) != string::npos) {
-			string identifier = trim(line_iter->substr(0, assign_pos));
-			string value = trim(line_iter->substr(assign_pos+1, line_iter->length()-assign_pos-1));
+			string identifier = core::trim(line_iter->substr(0, assign_pos));
+			string value = core::trim(line_iter->substr(assign_pos+1, line_iter->length()-assign_pos-1));
 			
 			// check for config version
 			if(identifier == "config_version") {
 				config_version_found = true;
-				if(value != to_str(UNIBOT_CONFIG_VERSION)) {
-					unibot_error("invalid config version %i - current version: %i!", value, UNIBOT_CONFIG_VERSION);
+				if(value != size_t2string(UNIBOT_CONFIG_VERSION)) {
+					log_error("invalid config version %i - current version: %i!", value, UNIBOT_CONFIG_VERSION);
 					return false;
 				}
 			}
@@ -94,7 +92,7 @@ bool config::load_config() {
 			// arg_# and argc are reserved values
 			const string id_4 = identifier.size() >= 4 ? identifier.substr(0, 4) : "";
 			if(id_4 == "arg_" || id_4 == "argc") {
-				unibot_error("%s is a reserved value!", identifier);
+				log_error("%s is a reserved value!", identifier);
 				continue;
 			}
 			
@@ -106,11 +104,11 @@ bool config::load_config() {
 			else bot_password = value;
 			
 			if(identifier == "owner_names") {
-				tokenize(owner_names, value, ',');
+				owner_names = core::tokenize(value, ',');
 				
 				// trim each (array) value
 				for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
-					*owner_iter = trim(*owner_iter);
+					*owner_iter = core::trim(*owner_iter);
 				}
 				
 				// remove empty names
@@ -126,7 +124,7 @@ bool config::load_config() {
 	}
 	
 	if(!config_version_found) {
-		unibot_error("no config version specified!");
+		log_error("no config version specified!");
 		return false;
 	}
 	
@@ -172,7 +170,7 @@ string config::get_channel() {
 
 string config::get_config_entry(const string& name) {
 	if(config_data.count(name) == 0) {
-		unibot_error("unknown config entry name \"%s\"!", name);
+		log_error("unknown config entry name \"%s\"!", name);
 		return "";
 	}
 	return config_data[name];

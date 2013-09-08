@@ -17,6 +17,7 @@
  */
 
 #include "lua.h"
+#include "floor/floor.hpp"
 
 #define __REGISTER_FUNCTION(func_name) lua_register(__current_lua_state, #func_name, &lua_bindings::func_name);
 
@@ -25,7 +26,7 @@
 	__LUA_FUNCTION_BINDINGS(__REGISTER_FUNCTION);	\
 }
 
-lua::lua(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf) : n(n), handler(handler), states(states), conf(conf) {
+lua::lua(floor_irc_net* n, bot_handler* handler, bot_states* states, config* conf) : n(n), handler(handler), states(states), conf(conf) {
 	bindings = new lua_bindings(n, handler, states, conf, this, &lua::reload_scripts);
 	
 	reload_scripts();
@@ -122,7 +123,7 @@ void lua::reload_scripts() {
 	}
 #endif
 
-	unibot_debug("lua scripts loaded!");
+	log_debug("lua scripts loaded!");
 }
 
 void lua::reload_script(const string& filename) {
@@ -142,7 +143,7 @@ void lua::reload_script(const string& filename) {
 void lua::check_scripts() {
 	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
 		if(lua_status(script_iter->second->state) != 0) {
-			unibot_error("erroneous status of script/state \"%s\"!", script_iter->first);
+			log_error("erroneous status of script/state \"%s\"!", script_iter->first);
 		}
 	}
 }
@@ -160,7 +161,7 @@ void lua::handle_message(const string& origin, const string& target, const strin
 			lua_getglobal(script_iter->second->state, "handle_message");
 			if(!lua_isfunction(script_iter->second->state, -1)) {
 				lua_pop(script_iter->second->state, 1);
-				unibot_error("handle_message is no function in script \"%s\"!", script_iter->first);
+				log_error("handle_message is no function in script \"%s\"!", script_iter->first);
 				continue;
 			}
 			
@@ -170,7 +171,7 @@ void lua::handle_message(const string& origin, const string& target, const strin
 			lua_pushstring(script_iter->second->state, parameters.c_str());
 			int err = lua_pcall(script_iter->second->state, 4, 1, -lua_gettop(script_iter->second->state)); // error handler @index #0
 			if(err > 0) {
-				unibot_error("lua error #%i while running script \"%s\"!", err, script_iter->first);
+				log_error("lua error #%i while running script \"%s\"!", err, script_iter->first);
 			}
 		}
 	}
@@ -178,13 +179,13 @@ void lua::handle_message(const string& origin, const string& target, const strin
 		// this breaks the scripts iteration loop (-> no more scripts are handled using the now invalidated script iterator)
 	}
 	catch(...) {
-		unibot_error("unknown exception while executing lua scripts!");
+		log_error("unknown exception while executing lua scripts!");
 	}
 
 }
 
 string lua::lua_script_folder(const string addition) {
-	return string(get_absolute_path() + string(LUA_SCRIPT_FOLDER) + addition);
+	return string(floor::get_absolute_path() + string(LUA_SCRIPT_FOLDER) + addition);
 }
 
 const vector<string> lua::list_scripts() const {

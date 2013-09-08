@@ -19,21 +19,21 @@
 #ifndef __UNIBOT_LUA_H__
 #define __UNIBOT_LUA_H__
 
-#include "platform.h"
-#include "net.h"
-#include "irc_net.h"
+#include "core/platform.hpp"
+#include "net/net.hpp"
+#include "net/irc_net.hpp"
 #include "bot_states.h"
 #include "bot_handler.h"
 #include "config.h"
 #include "util.h"
 #include "lua_bindings.h"
 
-#define LUA_SCRIPT_FOLDER "scripts" OS_DIR_SLASH
+#define LUA_SCRIPT_FOLDER "scripts" FLOOR_OS_DIR_SLASH
 #define UNIBOT_MAX_LUA_SCRIPT_SIZE (16 * 1024 * 1024)
 
 class lua {
 public:
-	lua(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf);
+	lua(floor_irc_net* n, bot_handler* handler, bot_states* states, config* conf);
 	~lua();
 	
 	void reload_scripts();
@@ -43,7 +43,7 @@ public:
 	void handle_message(const string& origin, const string& target, const string& msg);
 	
 protected:
-	unibot_irc_net* n;
+	floor_irc_net* n;
 	bot_handler* handler;
 	bot_states* states;
 	config* conf;
@@ -64,7 +64,7 @@ protected:
 		const char* error_str = lua_tostring(state, -1);
 		
 		// print error message
-		unibot_error("lua error: %s, in line %i\nsrc:\n%s", (error_str != nullptr ? error_str : "<unknown>"), dbg.currentline, dbg.short_src);
+		log_error("lua error: %s, in line %i\nsrc:\n%s", (error_str != nullptr ? error_str : "<unknown>"), dbg.currentline, dbg.short_src);
 		return 0;
 	}
 	
@@ -92,7 +92,7 @@ protected:
 				
 				if(script_size > UNIBOT_MAX_LUA_SCRIPT_SIZE) {
 					load_error = true;
-					unibot_error("lua script %s is too large (size: %u, allowed: %u)!", script_filename, script_size, UNIBOT_MAX_LUA_SCRIPT_SIZE);
+					log_error("lua script %s is too large (size: %u, allowed: %u)!", script_filename, script_size, UNIBOT_MAX_LUA_SCRIPT_SIZE);
 				}
 				else {
 					script.seekg(0, ios::beg);
@@ -115,7 +115,7 @@ protected:
 
 			load_error |= (lua_pcall(state, 0, 0, -lua_gettop(state)) == 0 ? false : true); // error handler @index #0
 			if(load_error) {
-				unibot_error("error loading lua script \"%s\"!", script_filename);
+				log_error("error loading lua script \"%s\"!", script_filename);
 				lua_pop(state, 1);
 			}
 			

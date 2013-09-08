@@ -11,16 +11,10 @@
 		5C580984130CBD6C002D56DF /* bot_states.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580965130CBD6C002D56DF /* bot_states.cpp */; };
 		5C580985130CBD6C002D56DF /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580968130CBD6C002D56DF /* config.cpp */; };
 		5C580986130CBD6C002D56DF /* event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58096A130CBD6C002D56DF /* event_handler.cpp */; };
-		5C580987130CBD6C002D56DF /* logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58096F130CBD6C002D56DF /* logger.cpp */; };
 		5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580971130CBD6C002D56DF /* lua_bindings.cpp */; };
 		5C580989130CBD6C002D56DF /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580973130CBD6C002D56DF /* lua.cpp */; };
 		5C58098A130CBD6C002D56DF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580975130CBD6C002D56DF /* main.cpp */; };
-		5C58098B130CBD6C002D56DF /* thread_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58097C130CBD6C002D56DF /* thread_base.cpp */; };
-		5C58098C130CBD6C002D56DF /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58097E130CBD6C002D56DF /* watchdog.cpp */; };
-		5C58098D130CBD6C002D56DF /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580981130CBD6C002D56DF /* util.cpp */; };
 		5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F517984FA70075DC99 /* SDL2.framework */; };
-		5C8906FC179858630075DC99 /* task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8906FA179858630075DC99 /* task.cpp */; };
-		5C89070117987BC20075DC99 /* error_code.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C8906FE17987BC20075DC99 /* error_code.cpp */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4AB100E514F00CEA98D /* Cocoa.framework */; };
 		5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4B1100E519700CEA98D /* AppKit.framework */; };
@@ -54,28 +48,12 @@
 		5C580969130CBD6C002D56DF /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/config.h; sourceTree = "<group>"; };
 		5C58096A130CBD6C002D56DF /* event_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = event_handler.cpp; path = src/event_handler.cpp; sourceTree = "<group>"; };
 		5C58096B130CBD6C002D56DF /* event_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = event_handler.h; path = src/event_handler.h; sourceTree = "<group>"; };
-		5C58096C130CBD6C002D56DF /* functor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = functor.h; path = src/functor.h; sourceTree = "<group>"; };
-		5C58096D130CBD6C002D56DF /* http_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = http_net.h; path = src/http_net.h; sourceTree = "<group>"; };
-		5C58096E130CBD6C002D56DF /* irc_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = irc_net.h; path = src/irc_net.h; sourceTree = "<group>"; };
-		5C58096F130CBD6C002D56DF /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = logger.cpp; path = src/logger.cpp; sourceTree = "<group>"; };
-		5C580970130CBD6C002D56DF /* logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = logger.h; path = src/logger.h; sourceTree = "<group>"; };
 		5C580971130CBD6C002D56DF /* lua_bindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_bindings.cpp; path = src/lua_bindings.cpp; sourceTree = "<group>"; };
 		5C580972130CBD6C002D56DF /* lua_bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua_bindings.h; path = src/lua_bindings.h; sourceTree = "<group>"; };
 		5C580973130CBD6C002D56DF /* lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua.cpp; path = src/lua.cpp; sourceTree = "<group>"; };
 		5C580974130CBD6C002D56DF /* lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua.h; path = src/lua.h; sourceTree = "<group>"; };
 		5C580975130CBD6C002D56DF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = "<group>"; };
 		5C580976130CBD6C002D56DF /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = src/main.h; sourceTree = "<group>"; };
-		5C580977130CBD6C002D56DF /* net_protocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net_protocol.h; path = src/net_protocol.h; sourceTree = "<group>"; };
-		5C580978130CBD6C002D56DF /* net_tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net_tcp.h; path = src/net_tcp.h; sourceTree = "<group>"; };
-		5C580979130CBD6C002D56DF /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = src/net.h; sourceTree = "<group>"; };
-		5C58097A130CBD6C002D56DF /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.h; path = src/platform.h; sourceTree = "<group>"; };
-		5C58097C130CBD6C002D56DF /* thread_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = thread_base.cpp; sourceTree = "<group>"; };
-		5C58097D130CBD6C002D56DF /* thread_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thread_base.h; sourceTree = "<group>"; };
-		5C58097E130CBD6C002D56DF /* watchdog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = watchdog.cpp; sourceTree = "<group>"; };
-		5C58097F130CBD6C002D56DF /* watchdog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = watchdog.h; sourceTree = "<group>"; };
-		5C580980130CBD6C002D56DF /* type_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = type_list.h; path = src/type_list.h; sourceTree = "<group>"; };
-		5C580981130CBD6C002D56DF /* util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = util.cpp; path = src/util.cpp; sourceTree = "<group>"; };
-		5C580982130CBD6C002D56DF /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = src/util.h; sourceTree = "<group>"; };
 		5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = who_is_your_daddy.lua; sourceTree = "<group>"; };
 		5C5F4426113D8663000A2C73 /* spec.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = spec.lua; sourceTree = "<group>"; };
 		5C5F4428113D8663000A2C73 /* ping.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ping.lua; sourceTree = "<group>"; };
@@ -89,11 +67,6 @@
 		5C749B6A1125BBEF0079A57A /* time.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C8906F517984FA70075DC99 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Library/Frameworks/SDL2.framework; sourceTree = SDKROOT; };
 		5C8906F617984FA70075DC99 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = Library/Frameworks/SDL2_net.framework; sourceTree = SDKROOT; };
-		5C8906F9179856830075DC99 /* cpp_headers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cpp_headers.h; path = src/cpp_headers.h; sourceTree = "<group>"; };
-		5C8906FA179858630075DC99 /* task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = task.cpp; sourceTree = "<group>"; };
-		5C8906FB179858630075DC99 /* task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = task.h; sourceTree = "<group>"; };
-		5C8906FE17987BC20075DC99 /* error_code.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = error_code.cpp; sourceTree = "<group>"; };
-		5C89070017987BC20075DC99 /* local_free_on_destruction.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = local_free_on_destruction.hpp; sourceTree = "<group>"; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
 		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		5C95C40F1184EDEF005864D0 /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bindings_test.lua; sourceTree = "<group>"; };
@@ -151,11 +124,6 @@
 			children = (
 				5C580975130CBD6C002D56DF /* main.cpp */,
 				5C580976130CBD6C002D56DF /* main.h */,
-				5C580977130CBD6C002D56DF /* net_protocol.h */,
-				5C580978130CBD6C002D56DF /* net_tcp.h */,
-				5C580979130CBD6C002D56DF /* net.h */,
-				5C58096D130CBD6C002D56DF /* http_net.h */,
-				5C58096E130CBD6C002D56DF /* irc_net.h */,
 				5C580963130CBD6C002D56DF /* bot_handler.cpp */,
 				5C580964130CBD6C002D56DF /* bot_handler.h */,
 				5C580965130CBD6C002D56DF /* bot_states.cpp */,
@@ -168,16 +136,6 @@
 				5C580972130CBD6C002D56DF /* lua_bindings.h */,
 				5C580973130CBD6C002D56DF /* lua.cpp */,
 				5C580974130CBD6C002D56DF /* lua.h */,
-				5C58096F130CBD6C002D56DF /* logger.cpp */,
-				5C580970130CBD6C002D56DF /* logger.h */,
-				5C580981130CBD6C002D56DF /* util.cpp */,
-				5C580982130CBD6C002D56DF /* util.h */,
-				5C58096C130CBD6C002D56DF /* functor.h */,
-				5C580980130CBD6C002D56DF /* type_list.h */,
-				5C58097A130CBD6C002D56DF /* platform.h */,
-				5C8906F9179856830075DC99 /* cpp_headers.h */,
-				5C8906FD17987BC20075DC99 /* boost_system */,
-				5C58097B130CBD6C002D56DF /* threading */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -208,20 +166,6 @@
 			path = games;
 			sourceTree = "<group>";
 		};
-		5C58097B130CBD6C002D56DF /* threading */ = {
-			isa = PBXGroup;
-			children = (
-				5C8906FA179858630075DC99 /* task.cpp */,
-				5C8906FB179858630075DC99 /* task.h */,
-				5C58097C130CBD6C002D56DF /* thread_base.cpp */,
-				5C58097D130CBD6C002D56DF /* thread_base.h */,
-				5C58097E130CBD6C002D56DF /* watchdog.cpp */,
-				5C58097F130CBD6C002D56DF /* watchdog.h */,
-			);
-			name = threading;
-			path = src/threading;
-			sourceTree = "<group>";
-		};
 		5C5F4440113D86DF000A2C73 /* include */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,16 +174,6 @@
 				5CAD48761188837F00CA1EED /* game_framework.lua */,
 			);
 			path = include;
-			sourceTree = "<group>";
-		};
-		5C8906FD17987BC20075DC99 /* boost_system */ = {
-			isa = PBXGroup;
-			children = (
-				5C8906FE17987BC20075DC99 /* error_code.cpp */,
-				5C89070017987BC20075DC99 /* local_free_on_destruction.hpp */,
-			);
-			name = boost_system;
-			path = src/boost_system;
 			sourceTree = "<group>";
 		};
 		5C95C40E1184EDEF005864D0 /* tests */ = {
@@ -369,15 +303,9 @@
 				5C580984130CBD6C002D56DF /* bot_states.cpp in Sources */,
 				5C580985130CBD6C002D56DF /* config.cpp in Sources */,
 				5C580986130CBD6C002D56DF /* event_handler.cpp in Sources */,
-				5C580987130CBD6C002D56DF /* logger.cpp in Sources */,
 				5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */,
-				5C89070117987BC20075DC99 /* error_code.cpp in Sources */,
 				5C580989130CBD6C002D56DF /* lua.cpp in Sources */,
 				5C58098A130CBD6C002D56DF /* main.cpp in Sources */,
-				5C8906FC179858630075DC99 /* task.cpp in Sources */,
-				5C58098B130CBD6C002D56DF /* thread_base.cpp in Sources */,
-				5C58098C130CBD6C002D56DF /* watchdog.cpp in Sources */,
-				5C58098D130CBD6C002D56DF /* util.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,18 +315,12 @@
 		1DEB923208733DC60010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				OTHER_LDFLAGS = "";
 			};
 			name = Debug;
 		};
 		1DEB923308733DC60010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				OTHER_LDFLAGS = "";
 			};
 			name = Release;
 		};
@@ -411,6 +333,7 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -423,8 +346,17 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "UNIBOT_NET_PROTOCOL=TCP_protocol";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					"FLOOR_DEBUG=1",
+					"FLOOR_EXPORT=1",
+					"TCC_LIB_ONLY=1",
+					PLATFORM_X64,
+					"FLOOR_NET_PROTOCOL=TCP_protocol",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -437,17 +369,38 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					.,
-					/usr/local/include,
-					/usr/include/boost,
+					/usr/local/include/floor,
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LINK_WITH_STANDARD_LIBRARIES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/lib,
+					/usr/X11/lib,
+				);
 				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-fparse-all-comments",
+					"-isystem",
+					/usr/X11/include,
+					"-isystem",
+					/usr/include/libxml2,
+					"-isystem",
+					/usr/local/include,
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fno-elide-type",
+					"-fdiagnostics-show-template-tree",
+				);
+				OTHER_LDFLAGS = "-lfloord";
+				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibotd;
 				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				STRIP_STYLE = debugging;
 				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = (
 					"-Weverything",
@@ -496,6 +449,7 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -508,8 +462,15 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
-				GCC_PREPROCESSOR_DEFINITIONS = "UNIBOT_NET_PROTOCOL=TCP_protocol";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"FLOOR_EXPORT=1",
+					"TCC_LIB_ONLY=1",
+					PLATFORM_X64,
+					"FLOOR_NET_PROTOCOL=TCP_protocol",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -522,16 +483,37 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					.,
-					/usr/local/include,
-					/usr/include/boost,
+					/usr/local/include/floor,
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LINK_WITH_STANDARD_LIBRARIES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/lib,
+					/usr/X11/lib,
+				);
 				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CFLAGS = (
+					"-fparse-all-comments",
+					"-isystem",
+					/usr/X11/include,
+					"-isystem",
+					/usr/include/libxml2,
+					"-isystem",
+					/usr/local/include,
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fno-elide-type",
+					"-fdiagnostics-show-template-tree",
+				);
+				OTHER_LDFLAGS = "-lfloor";
+				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibot;
 				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				STRIP_STYLE = debugging;
 				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = (
 					"-Weverything",

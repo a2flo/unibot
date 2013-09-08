@@ -19,11 +19,12 @@
 #ifndef __UNIBOT_MAIN_H__
 #define __UNIBOT_MAIN_H__
 
-#include "platform.h"
+#include "floor/floor.hpp"
+#include "core/platform.hpp"
 #include "event_handler.h"
-#include "net.h"
-#include "irc_net.h"
-#include "http_net.h"
+#include "net/net.hpp"
+#include "net/irc_net.hpp"
+#include "net/http_net.hpp"
 #include "bot_handler.h"
 #include "bot_states.h"
 #include "config.h"

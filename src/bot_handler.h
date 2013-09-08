@@ -19,52 +19,53 @@
 #ifndef __UNIBOT_BOT_HANDLER_H__
 #define __UNIBOT_BOT_HANDLER_H__
 
-#include "platform.h"
+#include "core/platform.hpp"
 #include "event_handler.h"
-#include "net.h"
-#include "irc_net.h"
+#include "net/net.hpp"
+#include "net/irc_net.hpp"
 #include "bot_states.h"
 #include "config.h"
 #include "build_version.h"
-#include "threading/thread_base.h"
+#include "threading/thread_base.hpp"
 
 #define UNIBOT_MAJOR_VERSION "0"
-#define UNIBOT_MINOR_VERSION "4"
-#define UNIBOT_REVISION_VERSION "0d2"
+#define UNIBOT_MINOR_VERSION "5"
+#define UNIBOT_REVISION_VERSION "0d1"
 #define UNIBOT_BUILD_TIME __TIME__
 #define UNIBOT_BUILD_DATE __DATE__
 
 #if defined(_MSC_VER)
-#define UNIBOT_COMPILER "VC++ "+to_str(_MSC_VER)
+#define UNIBOT_COMPILER "VC++ "+size_t2string(_MSC_VER)
 #elif (defined(__GNUC__) && !defined(__llvm__) && !defined(__clang__))
-#define UNIBOT_COMPILER "GCC "+to_str(__VERSION__)
+#define UNIBOT_COMPILER "GCC "+(__VERSION__)
 #elif (defined(__GNUC__) && defined(__llvm__) && !defined(__clang__))
-#define UNIBOT_COMPILER "LLVM-GCC "+to_str(__VERSION__)
+#define UNIBOT_COMPILER "LLVM-GCC "+(__VERSION__)
 #elif defined(__clang__)
-#define UNIBOT_COMPILER "Clang "+to_str(__clang_version__)
+#define UNIBOT_COMPILER "Clang "+(__clang_version__)
 #else
 #define UNIBOT_COMPILER "unknown compiler"
 #endif
 
 #define UNIBOT_LIBCXX_PREFIX " and "
 #if defined(_LIBCPP_VERSION)
-#define UNIBOT_LIBCXX UNIBOT_LIBCXX_PREFIX+"libc++ "+to_str(_LIBCPP_VERSION)
+#define UNIBOT_LIBCXX UNIBOT_LIBCXX_PREFIX+"libc++ "+size_t2string(_LIBCPP_VERSION)
 #elif defined(__GLIBCXX__)
-#define UNIBOT_LIBCXX UNIBOT_LIBCXX_PREFIX+"libstdc++ "+to_str(__GLIBCXX__)
+#define UNIBOT_LIBCXX UNIBOT_LIBCXX_PREFIX+"libstdc++ "+size_t2string(__GLIBCXX__)
 #else
 #define UNIBOT_LIBCXX ""
 #endif
 
-#define UNIBOT_VERSION_STRING ("UniBot "+to_str(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+to_str(UNIBOT_MAJOR_VERSION)+"."+ \
-								to_str(UNIBOT_MINOR_VERSION)+"."+to_str(UNIBOT_REVISION_VERSION)+"-"+to_str(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+ \
-								UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER+UNIBOT_LIBCXX)
+#define UNIBOT_VERSION_STRING \
+(string("UniBot ")+(sizeof(void*) == 4 ? "x86" : (sizeof(void*) == 8 ? "x64" : "unknown"))+" v"+(UNIBOT_MAJOR_VERSION)+"."+ \
+ (UNIBOT_MINOR_VERSION)+"."+(UNIBOT_REVISION_VERSION)+"-"+uint2string(UNIBOT_BUILD_VERSION)+" ("+UNIBOT_BUILD_DATE+" "+ \
+ UNIBOT_BUILD_TIME+") built with "+UNIBOT_COMPILER+UNIBOT_LIBCXX)
 
 #define UNIBOT_SOURCE_URL "https://github.com/a2flo/unibot"
 
 class lua;
 class bot_handler : public thread_base {
 public:
-	bot_handler(unibot_irc_net* n, bot_states* states, config* conf);
+	bot_handler(floor_irc_net* n, bot_states* states, config* conf);
 	~bot_handler();
 
 	enum class IRC_COMMAND : unsigned int {
@@ -138,7 +139,7 @@ public:
 	const unsigned int& get_last_server_pong() const;
 	
 protected:
-	unibot_irc_net* n;
+	floor_irc_net* n;
 	map<string, IRC_COMMAND> irc_commands;
 	bot_states* states;
 	config* conf;

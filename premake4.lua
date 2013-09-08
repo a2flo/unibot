@@ -64,7 +64,7 @@ project "unibot"
 		buildoptions { "-Wall -x c++ -std=c++11 -fmessage-length=0 -pipe -Wno-trigraphs -Wreturn-type -Wunused-variable -funroll-loops" }
 		buildoptions { "-msse3" }
 		prebuildcommands { "./build_version.sh" }
-		defines { "UNIBOT_NET_PROTOCOL=TCP_protocol" }
+		defines { "TODO" }
 		if(clang_libcxx) then
 			buildoptions { "-stdlib=libc++" }
 			buildoptions { "-Wno-delete-non-virtual-dtor -Wno-overloaded-virtual" }

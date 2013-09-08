@@ -18,6 +18,7 @@
 
 #include "lua_bindings.h"
 #include "lua.h"
+#include "core/core.hpp"
 
 //
 lua_bindings_exception::lua_bindings_exception(const string& error_str) : error_str(error_str) {}
@@ -32,8 +33,8 @@ invalidate_scripts_exception::~invalidate_scripts_exception() throw() {}
 /////////////////////////////////////////////////////
 // helper functions
 
-template<typename T> bool check_lua_type(lua_State* state unibot_unused, const size_t& arg_num) {
-	throw lua_bindings_exception(string("unknown argument type, argument #"+to_str(arg_num)+", user data types are not supported yet!"));
+template<typename T> bool check_lua_type(lua_State* state floor_unused, const size_t& arg_num) {
+	throw lua_bindings_exception(string("unknown argument type, argument #"+size_t2string(arg_num)+", user data types are not supported yet!"));
 	return false;
 }
 
@@ -66,8 +67,8 @@ template<> bool check_lua_type<bool>(lua_State* state, const size_t& arg_num) {
 	return (lua_isboolean(state, (int)arg_num) == 1);
 }
 
-template<typename T> T get_lua_arg(lua_State* state unibot_unused, const size_t& arg_num) {
-	throw lua_bindings_exception(string("unknown argument type, argument #"+to_str(arg_num)+", user data types are not supported yet!"));
+template<typename T> T get_lua_arg(lua_State* state floor_unused, const size_t& arg_num) {
+	throw lua_bindings_exception(string("unknown argument type, argument #"+size_t2string(arg_num)+", user data types are not supported yet!"));
 	return (T)0;
 }
 
@@ -102,7 +103,7 @@ template<> bool get_lua_arg<bool>(lua_State* state, const size_t& arg_num) {
 
 static void check_lua_stack(lua_State* state, const size_t& expected_size) {
 	if(lua_gettop(state) != (int)expected_size) {
-		throw lua_bindings_exception(string("invalid lua stack size, expected "+to_str(expected_size)+"!"));
+		throw lua_bindings_exception(string("invalid lua stack size, expected "+size_t2string(expected_size)+"!"));
 	}
 }
 
@@ -110,11 +111,11 @@ template<size_t arg_num, typename T> T get_and_check_lua_arg(lua_State* state) {
 	// get and check number of arguments
 	int argc = lua_gettop(state);
 	if((int)arg_num > argc) {
-		throw lua_bindings_exception(string("invalid argument count "+to_str(argc)+", should be >= "+to_str(arg_num)+"!"));
+		throw lua_bindings_exception(string("invalid argument count "+int2string(argc)+", should be >= "+size_t2string(arg_num)+"!"));
 	}
 	
 	if(!check_lua_type<T>(state, arg_num)) {
-		throw lua_bindings_exception(string("invalid argument type, argument #"+to_str(arg_num)+", should be "+typeid(T).name()+"!"));
+		throw lua_bindings_exception(string("invalid argument type, argument #"+size_t2string(arg_num)+", should be "+typeid(T).name()+"!"));
 	}
 	
 	return get_lua_arg<T>(state, arg_num);
@@ -137,21 +138,21 @@ template<typename arg1, typename arg2, typename arg3, typename arg4> tuple<arg1,
 
 #define HANDLE_LUA_BINDINGS_EXCEPTION \
 catch(lua_bindings_exception e) { \
-	unibot_error("in function %s: %s", string(__func__), e.what()); \
+	log_error("in function %s: %s", string(__func__), e.what()); \
 	return -1; \
 }
 
 /////////////////////////////////////////////////////
 // lua bindings
 
-unibot_irc_net* lua_bindings::n = nullptr;
+floor_irc_net* lua_bindings::n = nullptr;
 bot_handler* lua_bindings::handler = nullptr;
 bot_states* lua_bindings::states = nullptr;
 config* lua_bindings::conf = nullptr;
 lua* lua_bindings::l = nullptr;
 lua_bindings::fp_reload_scripts lua_bindings::lua_reload_scripts = nullptr;
 
-lua_bindings::lua_bindings(unibot_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
+lua_bindings::lua_bindings(floor_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
 	lua_bindings::n = n;
 	lua_bindings::handler = handler;
 	lua_bindings::states = states;
@@ -340,7 +341,7 @@ int lua_bindings::is_owner(lua_State* state) {
 int lua_bindings::url_encode(lua_State* state) {
 	try {
 		tuple<string> args = get_lua_args<string>(state);
-		lua_pushstring(state, encode_url(get<0>(args)).c_str());
+		lua_pushstring(state, core::encode_url(get<0>(args)).c_str());
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 1;
@@ -419,7 +420,7 @@ static FILE* cygwin_popen(const char* dir, char** cmd, pid_t* p_pid) {
 	int thepipe[2];
 
 	if(pipe(thepipe) < 0) {
-		unibot_error("error creating pipes");
+		log_error("error creating pipes");
 		return nullptr;
 	}
 
@@ -439,7 +440,7 @@ static FILE* cygwin_popen(const char* dir, char** cmd, pid_t* p_pid) {
 		else exit(0);
 	}
 	if(pid < 0) {
-		unibot_error("error starting subprocess");
+		log_error("error starting subprocess");
 		return nullptr;
 	}
 
@@ -503,7 +504,7 @@ int lua_bindings::execute_command(lua_State* state) {
 				if(e < 0 && errno == EINTR) continue;
 				ret = WEXITSTATUS(ret);
 				if(ret != 0) {
-					unibot_error("command execution failed with: %i!", ret);
+					log_error("command execution failed with: %i!", ret);
 				}
 				break;
 			}

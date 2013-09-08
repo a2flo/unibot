@@ -19,10 +19,11 @@
 #include "main.h"
 
 int main(int argc, char* argv[]) {
-	// set call path and get absolute path
-	set_call_path(argv[0]);
+	// init floor in console only mode (TODO: !)
+	floor::init(argv[0], "");
+	
 	// set lua script search path
-	const string lua_path = string(get_absolute_path()+LUA_SCRIPT_FOLDER);
+	const string lua_path = string(floor::get_absolute_path()+LUA_SCRIPT_FOLDER);
 	setenv("LUA_PATH", string(lua_path + "include/?.lua;" + lua_path + "?.lua").c_str(), 1);
 	
 	// event handler
@@ -52,7 +53,7 @@ int main(int argc, char* argv[]) {
 	
 	// initialize SDL
 	if(SDL_Init(0) < 0) {
-		unibot_error("couldn't initialize SDL: %s", SDL_GetError());
+		log_error("couldn't initialize SDL: %s", SDL_GetError());
 		exit(-1);
 	}
 	
@@ -62,10 +63,10 @@ int main(int argc, char* argv[]) {
 	bool restart_bot = false;
 	do {
 		if(restart_bot) {
-			unibot_debug("restarting bot ...");
+			log_debug("restarting bot ...");
 		}
 		
-		unibot_irc_net* irc = new unibot_irc_net(conf);
+		floor_irc_net* irc = new floor_irc_net();
 		if(irc->connect_to_server(conf->get_hostname().c_str(), conf->get_port())) {
 			bot_states* states = new bot_states(irc);
 			bot_handler* bot = new bot_handler(irc, states, conf);
@@ -90,7 +91,7 @@ int main(int argc, char* argv[]) {
 	
 	SDL_Quit();
 
-	unibot_debug(">> eol");
+	log_debug(">> eol");
 	delete conf;
 	
 	destroy_event_handler();

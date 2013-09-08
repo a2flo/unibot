@@ -19,7 +19,7 @@
 #ifndef __UNIBOT_CONFIG_H__
 #define __UNIBOT_CONFIG_H__
 
-#include "platform.h"
+#include "core/platform.hpp"
 
 #define UNIBOT_CONFIG_VERSION 3
 

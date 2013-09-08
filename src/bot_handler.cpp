@@ -18,6 +18,7 @@
 
 #include "bot_handler.h"
 #include "lua.h"
+#include "core/core.hpp"
 
 // stores the time of when the bot was first started
 // note that this has to be stored in a 64-bit uint, because it would overflow after
@@ -87,7 +88,7 @@ const char* bot_handler::IRC_COMMAND_STR[] = {
 	"433",
 };
 
-bot_handler::bot_handler(unibot_irc_net* n, bot_states* states, config* conf) :
+bot_handler::bot_handler(floor_irc_net* n, bot_states* states, config* conf) :
 thread_base(), n(n), states(states), conf(conf),
 server_ping_interval((unsigned int)strtoul(conf->get_config_entry("server_ping").c_str(), 0, 10)),
 server_timeout((unsigned int)strtoul(conf->get_config_entry("server_timeout").c_str(), 0, 10))
@@ -118,7 +119,7 @@ void bot_handler::run() {
 		states->set_parted(true);
 		states->set_restart(true);
 		set_thread_should_finish();
-		unibot_error("server timeout - restarting ...");
+		log_error("server timeout - restarting ...");
 		return;
 	}
 
@@ -146,8 +147,7 @@ void bot_handler::run() {
 		// [2]: location
 		// [3+]: data
 		IRC_COMMAND current_cmd = parse_irc_cmd(*data_iter);
-		vector<string> cmd_tokens;
-		tokenize(cmd_tokens, *data_iter, ' ');
+		vector<string> cmd_tokens { core::tokenize(*data_iter, ' ') };
 		
 		string cmd_sender = "", cmd_command = "", cmd_location = "", cmd_data = "", cmd_data2 = "", cmd_joined_data = "";
 		if(cmd_tokens.size() > 0) cmd_sender = cmd_tokens[0];
@@ -172,7 +172,7 @@ void bot_handler::run() {
 				break;
 			case IRC_COMMAND::CMD_001:
 				states->set_connected(true);
-				unibot_debug("successfully connected to the server!");
+				log_debug("successfully connected to the server!");
 				n->join_channel(conf->get_channel());
 				
 				if(cur_bot_name != conf->get_bot_name()) {
@@ -186,7 +186,7 @@ void bot_handler::run() {
 				break;
 			case IRC_COMMAND::CMD_004:
 				server_name = cmd_data;
-				unibot_debug("server name is: %s", server_name);
+				log_debug("server name is: %s", server_name);
 				break;
 			case IRC_COMMAND::CMD_352:
 				// this might get nasty, catch exceptions, just to be on the safe side
@@ -201,7 +201,7 @@ void bot_handler::run() {
 					states->update_user_info(cmd_tokens[7], real_name, cmd_tokens[5], cmd_tokens[4], "", "", "");
 				}
 				catch(...) {
-					unibot_error("CMD_352 failed");
+					log_error("CMD_352 failed");
 				}
 				break;
 			case IRC_COMMAND::CMD_353: {
@@ -210,9 +210,8 @@ void bot_handler::run() {
 				
 				if(cmd_joined_data.find(':') == string::npos) break;
 				// strip ':' and last ' ' (if there is one)
-				string user_str = trim(cmd_joined_data.substr(cmd_joined_data.find(':') + 1, cmd_joined_data.length() - cmd_joined_data.find(':') - 1));
-				vector<string> users;
-				tokenize(users, user_str, ' ');
+				string user_str = core::trim(cmd_joined_data.substr(cmd_joined_data.find(':') + 1, cmd_joined_data.length() - cmd_joined_data.find(':') - 1));
+				vector<string> users { core::tokenize(user_str, ' ') };
 				states->delete_all_users();
 				for(auto user_iter = users.begin(); user_iter != users.end(); user_iter++) {
 					if(user_iter->length() > 0) {
@@ -226,7 +225,7 @@ void bot_handler::run() {
 				break;
 			case IRC_COMMAND::PING:
 				n->send("PONG " + server_name);
-				unibot_debug("PONG!");
+				log_debug("PONG!");
 				break;
 			case IRC_COMMAND::PONG:
 				last_server_pong = SDL_GetTicks();
@@ -277,7 +276,7 @@ void bot_handler::run() {
 				if(conf->get_channel() == cmd_tokens[2]) {
 					// if the bot joined the channel, set the flag and send a "hi there ;)" message
 					if(strip_user(cmd_sender) == conf->get_bot_name()) {
-						unibot_debug("joined the channel");
+						log_debug("joined the channel");
 						states->set_joined(true);
 						if(!states->is_silenced()) {
 							n->send_channel_msg("hi there ;)");
@@ -291,7 +290,7 @@ void bot_handler::run() {
 							// wait for 2 seconds before kicking the user
 							SDL_Delay(2000);
 							
-							unibot_debug("kicking: %s", states->get_kick_user());
+							log_debug("kicking: %s", states->get_kick_user());
 							n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
 						}
 					}
@@ -331,7 +330,7 @@ void bot_handler::run() {
 					states->update_user_info(strip_user(cmd_sender), strip_user_realname(cmd_sender), strip_user_host(cmd_sender), "", "", "", "");
 					
 					// log msg
-					unibot_msg("%s: %s", strip_user(cmd_sender), msg);
+					log_msg("%s: %s", strip_user(cmd_sender), msg);
 				}
 			}
 				break;
@@ -360,7 +359,7 @@ void bot_handler::run() {
 						n->join_channel(conf->get_channel());
 						
 						states->set_kick_user(strip_user(cmd_sender));
-						unibot_debug("to get kicked: %s", states->get_kick_user());
+						log_debug("to get kicked: %s", states->get_kick_user());
 						states->set_kicked(true);
 					}
 				}
@@ -374,7 +373,7 @@ void bot_handler::run() {
 			case IRC_COMMAND::TOPIC:
 				break;
 			case IRC_COMMAND::ERROR:
-				unibot_error("received server error - restarting ...");
+				log_error("received server error - restarting ...");
 				states->set_restart(true);
 				quit_bot();
 				set_thread_should_finish();
@@ -398,14 +397,13 @@ void bot_handler::run() {
 			n->set_thread_should_finish();
 		}
 		
-		unibot_debug("%s", *data_iter);
+		log_debug("%s", *data_iter);
 	}
 	n->clear_received_data();
 }
 
 bot_handler::IRC_COMMAND bot_handler::parse_irc_cmd(string cmd) {
-	vector<string> cmd_tokens;
-	tokenize(cmd_tokens, cmd, ' ');
+	vector<string> cmd_tokens { core::tokenize(cmd, ' ') };
 	IRC_COMMAND irc_cmd = bot_handler::IRC_COMMAND::NONE;
 	
 	// check for normal irc command, some commands are in the first token ...
@@ -479,13 +477,13 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			constexpr unsigned long long int t_hour = 60ULL * 60ULL;
 			constexpr unsigned long long int t_minute = 60ULL;
 			
-			uptime_str += to_str(uptime / t_day) + "d ";
+			uptime_str += ull2string(uptime / t_day) + "d ";
 			uptime %= t_day;
-			uptime_str += to_str(uptime / t_hour) + "h ";
+			uptime_str += ull2string(uptime / t_hour) + "h ";
 			uptime %= t_hour;
-			uptime_str += to_str(uptime / t_minute) + "m ";
+			uptime_str += ull2string(uptime / t_minute) + "m ";
 			uptime %= t_minute;
-			uptime_str += to_str(uptime) + "s";
+			uptime_str += ull2string(uptime) + "s";
 			
 			n->send_private_msg(target, uptime_str);
 		}
@@ -519,7 +517,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(msg.find("reload_script ") == 0 && msg.length() > 14) {
 			string script = msg.substr(14, msg.length()-14);
 			lua_obj->reload_script(script);
-			unibot_debug("script %s reloaded!", script);
+			log_debug("script %s reloaded!", script);
 		}
 		else if(cmd == "list_scripts") {
 			if(conf->is_owner(origin)) {
@@ -546,7 +544,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(stripped_msg == "PING") {
 			time_t timestamp;
 			time(&timestamp);
-			n->send_ctcp_msg(target, "PING", to_str(timestamp));
+			n->send_ctcp_msg(target, "PING", size_t2string(timestamp));
 		}
 		else if(stripped_msg == "TIME") {
 			stringstream local_time;
@@ -576,8 +574,7 @@ string bot_handler::handle_args_chronological(const string& msg, const size_t& o
 	string ret_msg = "";
 	if(msg.length() > offset) {
 		string args = msg.substr(offset, msg.length()-offset);
-		vector<string> arg_tokens;
-		tokenize(arg_tokens, args, ' ');
+		vector<string> arg_tokens { core::tokenize(args, ' ') };
 		int msg_offset = 0, word_offset = 0;
 		if(arg_tokens.size() > 0) msg_offset = (unsigned int)strtoul(arg_tokens[0].c_str(), nullptr, 10);
 		if(arg_tokens.size() > 1) word_offset = (unsigned int)strtoul(arg_tokens[1].c_str(), nullptr, 10);
@@ -589,8 +586,7 @@ string bot_handler::handle_args_chronological(const string& msg, const size_t& o
 	}
 	else {
 		// get longest word of last message
-		vector<string> last_msg_tokens;
-		tokenize(last_msg_tokens, msg_store.back(), ' ');
+		vector<string> last_msg_tokens { core::tokenize(msg_store.back(), ' ') };
 		for(auto str_iter = last_msg_tokens.begin(); str_iter != last_msg_tokens.end(); str_iter++) {
 			if(str_iter->length() > msg.length()) ret_msg = *str_iter;
 		}
@@ -608,8 +604,7 @@ string bot_handler::extract_word(ssize_t msg_offset, ssize_t word_offset) {
 		
 		if(word_offset == 0) return msg;
 		
-		vector<string> msg_tokens;
-		tokenize(msg_tokens, msg, ' ');
+		vector<string> msg_tokens { core::tokenize(msg, ' ') };
 		
 		if(word_offset > (ssize_t)msg_tokens.size()) return msg_tokens.back();
 		if(abs_word_offset > msg_tokens.size()) return msg_tokens[0];
@@ -633,7 +628,7 @@ string bot_handler::strip_special_chars(const string& str) {
 
 string bot_handler::get_prev_msg(const size_t& offset) {
 	if(offset == 0 || offset > msg_store.size()) {
-		unibot_error("invalid offset %i!", offset);
+		log_error("invalid offset %i!", offset);
 		return "";
 	}
 	return msg_store[msg_store.size() - offset];
