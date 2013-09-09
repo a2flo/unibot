@@ -20,6 +20,14 @@
 #include "lua.hpp"
 #include "core/core.hpp"
 
+#include "floor/floor_version.hpp"
+
+#define UNIBOT_VERSION_STRING (string("UniBot ")+FLOOR_PLATFORM+FLOOR_DEBUG_STR \
+" v"+(UNIBOT_MAJOR_VERSION)+"."+(UNIBOT_MINOR_VERSION)+"."+(UNIBOT_REVISION_VERSION)+(UNIBOT_DEV_STAGE_VERSION)+"-"+size_t2string(UNIBOT_BUILD_VERSION)+\
+" ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+") built with "+string(FLOOR_COMPILER+FLOOR_LIBCXX))
+
+#define UNIBOT_SOURCE_URL "https://github.com/a2flo/unibot"
+
 // stores the time of when the bot was first started
 // note that this has to be stored in a 64-bit uint, because it would overflow after
 // 49 days when simply using SDL_GetTicks + a 32-bit uint
