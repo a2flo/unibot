@@ -287,7 +287,7 @@ void bot_handler::run() {
 						log_debug("joined the channel");
 						states->set_joined(true);
 						if(!states->is_silenced()) {
-							n->send_channel_msg("hi there ;)");
+							n->send_channel_msg(conf->get_channel(), "hi there ;)");
 						}
 						
 						// check if bot got kicked
@@ -299,13 +299,14 @@ void bot_handler::run() {
 							SDL_Delay(2000);
 							
 							log_debug("kicking: %s", states->get_kick_user());
-							n->send_kick(states->get_kick_user(), kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
+							n->send_kick(conf->get_channel(), states->get_kick_user(),
+										 kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
 						}
 					}
 					// if another user joined the channel, greet him
 					else {
 						if(!(states->is_silenced())) {
-							n->send_channel_msg("hey, " + strip_user(cmd_sender));
+							n->send_channel_msg(conf->get_channel(), "hey, " + strip_user(cmd_sender));
 						}
 						states->add_user(strip_user(cmd_sender));
 					}
@@ -458,7 +459,7 @@ string bot_handler::strip_user_host(string str) {
 }
 
 void bot_handler::quit_bot() {
-	n->part();
+	n->part(conf->get_channel());
 }
 
 void bot_handler::handle_message(string sender, string location, string msg) {
@@ -511,7 +512,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				}
 				else {
 					if(states->is_op()) {
-						n->send_kick(origin, "you're no bot owner!");
+						n->send_kick(conf->get_channel(), origin, "you're no bot owner!");
 					}
 				}
 			}

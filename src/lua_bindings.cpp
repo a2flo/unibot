@@ -177,7 +177,7 @@ int lua_bindings::send(lua_State* state) {
 int lua_bindings::send_channel_msg(lua_State* state) {
 	try {
 		tuple<string> args = get_lua_args<string>(state);
-		n->send_channel_msg(get<0>(args));
+		n->send_channel_msg(conf->get_channel(), get<0>(args));
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 0;
@@ -213,7 +213,7 @@ int lua_bindings::send_ctcp_request(lua_State* state) {
 int lua_bindings::send_kick(lua_State* state) {
 	try {
 		tuple<string, string> args = get_lua_args<string, string>(state);
-		n->send_kick(get<0>(args), get<1>(args));
+		n->send_kick(conf->get_channel(), get<0>(args), get<1>(args));
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 0;
