@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE config PUBLIC "-//FLOOR//DTD config 1.0//EN" "config.dtd">
+<config>
+	<!-- unibot options
+	 name: irc user name of the bot
+	 realname: the bots "real name" (specified when connecting to a server or on CTCP requests)
+	 alt_add: if an irc user (which might be a previous bot) with the same name as the bot is already connected,
+	          add the specified character(s) to the bots name until it can connect
+	 password: the bots password (used to authenticate/identify to the irc server/nickserv)
+	-->
+	<unibot name="[unibot]" realname="UniBot" alt_add="_" password="PASSWORD" />
+	
+	<!-- irc server options
+	 hostname: irc server/host to connect to (can also be an IPv4 or IPv6 address)
+	 post: irc server port to connect to
+	 channel: irc channel name
+	-->
+	<server hostname="irc.freenode.net" port="6667" channel="#unichannel" />
+	
+	<!-- bot owners
+	 names (irc user names): use ',' as a separator, whitespace will be stripped
+	-->
+	<owner names="[flo],[flos_bot],benjo,maid3n,[flo_uni]" />
+	
+	<!-- logging options (apply to both console and file logging)
+	 verbosity: 0 = none, 1 = +error, 2 = +debug, 3 = +msg, 4 = +undecorated output
+	 append_mode: boolean, if enabled, this will, for each logging operation, open the log file in append mode, write to it and close it again
+	 separate_msg_file: boolean, if enabled and verbosity >= 3, this will log msgs into a separate file
+	 log_filename: relative filename of the log file, relative to the current working directory
+	 msg_filename: relative filename of the msg log file, only used/created if separate_msg_file = true
+	-->
+	<logging verbosity="4" append_mode="false" separate_msg_file="false" log_filename="log.txt" msg_filename="msg.txt" />
+	
+	<!-- irc server timeouts
+	 server_ping (in ms): time interval after which the bot will ping the irc server (default: 30s)
+	 server_timeout (in ms): after a server ping, if the server doesn't answer during the specified amount of time (30s), the bot will restart
+	-->
+	<timeouts server_ping="30000" server_timeout="30000" />
+</config>

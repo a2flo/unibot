@@ -1,0 +1,31 @@
+<!ELEMENT config (#PCDATA | unibot | server | owner | logging | timeouts)*>
+<!ELEMENT unibot (#PCDATA)*>
+<!ATTLIST unibot
+	name CDATA #REQUIRED
+	realname CDATA #REQUIRED
+	alt_add CDATA #REQUIRED
+	password CDATA #REQUIRED
+>
+<!ELEMENT server (#PCDATA)*>
+<!ATTLIST server
+	hostname CDATA #REQUIRED
+	port CDATA #REQUIRED
+	channel CDATA #REQUIRED
+>
+<!ELEMENT owner (#PCDATA)*>
+<!ATTLIST owner
+	names CDATA #REQUIRED
+>
+<!ELEMENT logging (#PCDATA)*>
+<!ATTLIST logging
+	verbosity CDATA #REQUIRED
+	separate_msg_file CDATA #REQUIRED
+	append_mode CDATA #REQUIRED
+	log_filename CDATA #REQUIRED
+	msg_filename CDATA #REQUIRED
+>
+<!ELEMENT timeouts (#PCDATA)*>
+<!ATTLIST timeouts
+	server_ping CDATA #REQUIRED
+	server_timeout CDATA #REQUIRED
+>
