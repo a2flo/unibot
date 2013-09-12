@@ -29,7 +29,7 @@
 	 log_filename: relative filename of the log file, relative to the current working directory
 	 msg_filename: relative filename of the msg log file, only used/created if separate_msg_file = true
 	-->
-	<logging verbosity="4" append_mode="false" separate_msg_file="false" log_filename="log.txt" msg_filename="msg.txt" />
+	<logging verbosity="4" append_mode="true" separate_msg_file="true" log_filename="log.txt" msg_filename="msg.txt" />
 	
 	<!-- irc server timeouts
 	 server_ping (in ms): time interval after which the bot will ping the irc server (default: 30s)
