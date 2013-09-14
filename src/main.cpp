@@ -19,8 +19,8 @@
 #include "main.hpp"
 
 int main(int argc, char* argv[]) {
-	// init floor in console only mode (TODO: !)
-	floor::init(argv[0], "");
+	// init floor in console only mode
+	floor::init(argv[0], "", true);
 	
 	// set lua script search path
 	const string lua_path = string(floor::get_absolute_path()+LUA_SCRIPT_FOLDER);
