@@ -17,7 +17,7 @@
  */
 
 #include "lua_bindings.hpp"
-#include "lua.hpp"
+#include "lua_unibot.hpp"
 #include "core/core.hpp"
 
 //

@@ -12,8 +12,8 @@
 		5C580985130CBD6C002D56DF /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580968130CBD6C002D56DF /* config.cpp */; };
 		5C580986130CBD6C002D56DF /* event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C58096A130CBD6C002D56DF /* event_handler.cpp */; };
 		5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580971130CBD6C002D56DF /* lua_bindings.cpp */; };
-		5C580989130CBD6C002D56DF /* lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580973130CBD6C002D56DF /* lua.cpp */; };
 		5C58098A130CBD6C002D56DF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580975130CBD6C002D56DF /* main.cpp */; };
+		5C81C43217E5B2FF00FE6791 /* lua_unibot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */; };
 		5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F517984FA70075DC99 /* SDL2.framework */; };
 		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4AB100E514F00CEA98D /* Cocoa.framework */; };
@@ -41,7 +41,6 @@
 		5C24681317DCECB0007F2D16 /* config.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = config.hpp; path = src/config.hpp; sourceTree = "<group>"; };
 		5C24681417DCECB0007F2D16 /* event_handler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = event_handler.hpp; path = src/event_handler.hpp; sourceTree = "<group>"; };
 		5C24681517DCECB0007F2D16 /* lua_bindings.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = lua_bindings.hpp; path = src/lua_bindings.hpp; sourceTree = "<group>"; };
-		5C24681617DCECB0007F2D16 /* lua.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = lua.hpp; path = src/lua.hpp; sourceTree = "<group>"; };
 		5C24681717DCECB0007F2D16 /* main.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = main.hpp; path = src/main.hpp; sourceTree = "<group>"; };
 		5C26D02C113B0A8F00DE086A /* cmd.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cmd.lua; sourceTree = "<group>"; };
 		5C2AF81C11401E3600254A60 /* eastereggs.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = eastereggs.lua; sourceTree = "<group>"; };
@@ -52,7 +51,6 @@
 		5C580968130CBD6C002D56DF /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = config.cpp; path = src/config.cpp; sourceTree = "<group>"; };
 		5C58096A130CBD6C002D56DF /* event_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = event_handler.cpp; path = src/event_handler.cpp; sourceTree = "<group>"; };
 		5C580971130CBD6C002D56DF /* lua_bindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_bindings.cpp; path = src/lua_bindings.cpp; sourceTree = "<group>"; };
-		5C580973130CBD6C002D56DF /* lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua.cpp; path = src/lua.cpp; sourceTree = "<group>"; };
 		5C580975130CBD6C002D56DF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = "<group>"; };
 		5C5F4422113D8663000A2C73 /* who_is_your_daddy.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = who_is_your_daddy.lua; sourceTree = "<group>"; };
 		5C5F4426113D8663000A2C73 /* spec.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = spec.lua; sourceTree = "<group>"; };
@@ -65,6 +63,8 @@
 		5C713C40117679E7001B6645 /* ticket.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ticket.lua; sourceTree = "<group>"; };
 		5C749B691125BBEF0079A57A /* system.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = system.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5C749B6A1125BBEF0079A57A /* time.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
+		5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_unibot.cpp; path = src/lua_unibot.cpp; sourceTree = "<group>"; };
+		5C81C43117E5B2FF00FE6791 /* lua_unibot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lua_unibot.hpp; path = src/lua_unibot.hpp; sourceTree = "<group>"; };
 		5C8906F517984FA70075DC99 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Library/Frameworks/SDL2.framework; sourceTree = SDKROOT; };
 		5C8906F617984FA70075DC99 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = Library/Frameworks/SDL2_net.framework; sourceTree = SDKROOT; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
@@ -132,8 +132,8 @@
 				5C24681317DCECB0007F2D16 /* config.hpp */,
 				5C58096A130CBD6C002D56DF /* event_handler.cpp */,
 				5C24681417DCECB0007F2D16 /* event_handler.hpp */,
-				5C580973130CBD6C002D56DF /* lua.cpp */,
-				5C24681617DCECB0007F2D16 /* lua.hpp */,
+				5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */,
+				5C81C43117E5B2FF00FE6791 /* lua_unibot.hpp */,
 				5C580971130CBD6C002D56DF /* lua_bindings.cpp */,
 				5C24681517DCECB0007F2D16 /* lua_bindings.hpp */,
 			);
@@ -302,9 +302,9 @@
 				5C580983130CBD6C002D56DF /* bot_handler.cpp in Sources */,
 				5C580984130CBD6C002D56DF /* bot_states.cpp in Sources */,
 				5C580985130CBD6C002D56DF /* config.cpp in Sources */,
+				5C81C43217E5B2FF00FE6791 /* lua_unibot.cpp in Sources */,
 				5C580986130CBD6C002D56DF /* event_handler.cpp in Sources */,
 				5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */,
-				5C580989130CBD6C002D56DF /* lua.cpp in Sources */,
 				5C58098A130CBD6C002D56DF /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

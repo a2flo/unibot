@@ -17,7 +17,7 @@
  */
 
 #include "bot_handler.hpp"
-#include "lua.hpp"
+#include "lua_unibot.hpp"
 #include "core/core.hpp"
 
 #include "floor/floor_version.hpp"

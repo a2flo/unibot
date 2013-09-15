@@ -28,6 +28,6 @@
 #include "bot_handler.hpp"
 #include "bot_states.hpp"
 #include "config.hpp"
-#include "lua.hpp"
+#include "lua_unibot.hpp"
 
 #endif
