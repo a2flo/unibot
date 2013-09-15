@@ -68,10 +68,12 @@ case $( uname -m ) in
 	"i386"|"i486"|"i586"|"i686")
 		UNIBOT_PLATFORM="x32"
 		UNIBOT_MAKE_PLATFORM="32"
+		UNIBOT_ARGS=${UNIBOT_ARGS}" --platform x32"
 		;;
 	"x86_64"|"amd64")
 		UNIBOT_PLATFORM="x64"
 		UNIBOT_MAKE_PLATFORM="64"
+		UNIBOT_ARGS=${UNIBOT_ARGS}" --platform x64"
 		;;
 	*)
 		echo "unknown architecture - using "${UNIBOT_PLATFORM}
