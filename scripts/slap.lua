@@ -89,7 +89,9 @@ function handle_message(origin, target, cmd, parameters)
 				"slaps "..name.." with a FUCKING large trout"
 			}
 			
-			send_action_msg(get_config_entry("channel"), table.random(random_quotes))
+			if string.len(name) > 0 and string.find(name, "%s") == nil then
+				send_action_msg(get_config_entry("channel"), table.random(random_quotes))
+			end
 		end
 	end
 	return 0
