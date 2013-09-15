@@ -293,14 +293,16 @@ void bot_handler::run() {
 						// check if bot got kicked
 						if(states->is_kicked()) {
 							// random kick message
-							const char* kick_messages[] = { "try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!" };
+							static const array<const char*, 5> kick_messages {{
+								"try me!", "booyah!", "bot pwnage!", "don't mess with me!", "nice try!"
+							}};
 							
 							// wait for 2 seconds before kicking the user
 							SDL_Delay(2000);
 							
 							log_debug("kicking: %s", states->get_kick_user());
 							n->send_kick(conf->get_channel(), states->get_kick_user(),
-										 kick_messages[rand() % (sizeof(kick_messages) / sizeof(const char*))]);
+										 kick_messages[core::rand((int)kick_messages.size())]);
 						}
 					}
 					// if another user joined the channel, greet him

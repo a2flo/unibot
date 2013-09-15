@@ -19,10 +19,14 @@
 #include "config.hpp"
 #include "floor/floor.hpp"
 
-config::config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv) {
+config::config(const ssize_t& argc, const char** argv) {
 	// default values
 	config_data["verbosity"] = size_t2string((size_t)logger::LOG_TYPE::SIMPLE_MSG);
-	config_data["environment"] = environment;
+#if !defined(WIN_UNIXENV)
+	config_data["environment"] = "unix";
+#else
+	config_data["environment"] = "windows";
+#endif
 	
 	string binary = core::strip_path(argv[0]);
 	const size_t slash_pos = binary.rfind('/');
@@ -34,106 +38,44 @@ config::config(const string& config_file, const string& environment, const ssize
 		config_data["arg_"+ssize_t2string(i)] = argv[i];
 	}
 	
-	if(!load_config(config_file)) {
-		throw runtime_error("invalid config file");
+	// get config entries from the xml config doc
+	const auto& config_doc = floor::get_config_doc();
+	
+	config_data["bot_name"] = config_doc.get<string>("config.unibot.name", "[unibot]");
+	config_data["bot_realname"] = config_doc.get<string>("config.unibot.realname", "UniBot");
+	config_data["bot_alt_add"] = config_doc.get<string>("config.unibot.alt_add", "_");
+	config_data["password"] = "";
+	bot_password = config_doc.get<string>("config.unibot.password", "");
+	
+	config_data["hostname"] = config_doc.get<string>("config.server.hostname", "irc.freenode.net");
+	config_data["port"] = config_doc.get<string>("config.server.port", "6667");
+	config_data["channel"] = config_doc.get<string>("config.server.channel", "#unichannel");
+	
+	config_data["server_ping"] = config_doc.get<string>("config.timeouts.server_ping", "30000");
+	config_data["server_timeout"] = config_doc.get<string>("config.timeouts.server_timeout", "30000");
+	
+	// owner names handling
+	config_data["owner_names"] = config_doc.get<string>("config.owner.names", "[flo]");
+	owner_names = core::tokenize(config_data["owner_names"], ',');
+	for(auto& owner : owner_names) {
+		// trim each (array) value
+		owner = core::trim(owner);
 	}
+	
+	// remove empty names
+	for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end();) {
+		if(owner_iter->length() == 0) {
+			owner_iter = owner_names.erase(owner_iter);
+		}
+		else owner_iter++;
+	}
+	
+	// remove duplicates
+	sort(owner_names.begin(), owner_names.end());
+	owner_names.resize(unique(owner_names.begin(), owner_names.end()) - owner_names.begin());
 }
 
 config::~config() {
-}
-
-bool config::load_config() {
-	file.open(config_file.c_str(), fstream::in);
-	if(!file.is_open()) {
-		file.clear();
-		log_error("couldn't open config file %s!", config_file);
-		return false;
-	}
-	
-	// get file data
-	stringstream data_str;
-	file.seekg(0, ios::end);
-	unsigned int size = (unsigned int)file.tellg();
-	file.seekg(0, ios::beg);
-	char* data = new char[size+1];
-	memset(data, 0, size+1);
-	file.read(data, size);
-	file.seekg(0, ios::beg);
-	file.seekp(0, ios::beg);
-	file.clear();
-	data_str << data;
-	delete [] data;
-	
-	// data read, close file
-	file.close();
-	
-	// parse config file
-	vector<string> lines { core::tokenize(data_str.str(), '\n') };
-	bool bot_block = false;
-	bool config_version_found = false;
-	size_t assign_pos = 0;
-	for(auto line_iter = lines.begin(); line_iter != lines.end(); line_iter++) {
-		if(line_iter->find(";") == 0 || line_iter->find("#") == 0 || line_iter->find("//") == 0) continue;
-		else if(line_iter->find("[unibot]") == 0) bot_block = true;
-		else if(line_iter->find("[") == 0 && line_iter->find("]") != string::npos) bot_block = false;
-		else if(bot_block && (assign_pos = line_iter->find("=")) != string::npos) {
-			string identifier = core::trim(line_iter->substr(0, assign_pos));
-			string value = core::trim(line_iter->substr(assign_pos+1, line_iter->length()-assign_pos-1));
-			
-			// check for config version
-			if(identifier == "config_version") {
-				config_version_found = true;
-				if(value != size_t2string(UNIBOT_CONFIG_VERSION)) {
-					log_error("invalid config version %i - current version: %i!", value, UNIBOT_CONFIG_VERSION);
-					return false;
-				}
-			}
-			
-			// arg_# and argc are reserved values
-			const string id_4 = identifier.size() >= 4 ? identifier.substr(0, 4) : "";
-			if(id_4 == "arg_" || id_4 == "argc") {
-				log_error("%s is a reserved value!", identifier);
-				continue;
-			}
-			
-			// don't store the password inside the config data ...
-			if(identifier != "bot_password") {
-				config_data.erase(identifier); // erase before insert, this makes the "latest" config setting "active"
-				config_data.insert(pair<string, string>(identifier, value));
-			}
-			else bot_password = value;
-			
-			if(identifier == "owner_names") {
-				owner_names = core::tokenize(value, ',');
-				
-				// trim each (array) value
-				for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
-					*owner_iter = core::trim(*owner_iter);
-				}
-				
-				// remove empty names
-				for(auto owner_iter = owner_names.rbegin(); owner_iter != owner_names.rend(); owner_iter++) {
-					if(owner_iter->length() == 0) owner_names.erase(owner_names.begin() + (owner_names.rend() - owner_iter) - 1);
-				}
-				
-				// remove duplicates
-				sort(owner_names.begin(), owner_names.end());
-				owner_names.resize(unique(owner_names.begin(), owner_names.end()) - owner_names.begin());
-			}
-		}
-	}
-	
-	if(!config_version_found) {
-		log_error("no config version specified!");
-		return false;
-	}
-	
-	return true;
-}
-
-bool config::load_config(const string& config_file) {
-	this->config_file = config_file;
-	return load_config();
 }
 
 string config::get_bot_name() {

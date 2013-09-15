@@ -21,15 +21,10 @@
 
 #include "core/platform.hpp"
 
-#define UNIBOT_CONFIG_VERSION 3
-
 class config {
 public:
-	config(const string& config_file, const string& environment, const ssize_t& argc, const char** argv);
+	config(const ssize_t& argc, const char** argv);
 	~config();
-	
-	bool load_config();
-	bool load_config(const string& config_file);
 	
 	string get_config_entry(const string& name);
 	string get_bot_name();
@@ -45,12 +40,9 @@ public:
 	bool is_owner(string user);
 	
 protected:
-	fstream file;
-	string config_file;
-	
 	/* available config settings:
-	 * config_version
 	 * bot_name
+	 * bot_alt_add
 	 * bot_realname
 	 * owner_names
 	 * hostname
@@ -60,6 +52,8 @@ protected:
 	 * argc
 	 * arg_#
 	 * environment
+	 * server_ping
+	 * server_timeout
 	 */
 	unordered_map<string, string> config_data;
 	vector<string> owner_names;

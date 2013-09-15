@@ -32,7 +32,7 @@ public:
 	
 	virtual void run();
 	
-	enum EVENT_TYPE {
+	enum class EVENT_TYPE {
 		// time base events
 		EVT_MINUTELY,
 		EVT_HOURLY,
@@ -56,7 +56,7 @@ public:
 		// --
 	};
 	
-	enum EVENT_DURATION {
+	enum class EVENT_DURATION {
 		ED_DESTROY,	// destroys the event after it's triggered
 		ED_KEEP		// always keeps the event
 	};

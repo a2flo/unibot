@@ -20,7 +20,13 @@
 
 int main(int argc, char* argv[]) {
 	// init floor in console only mode
-	floor::init(argv[0], "", true);
+	floor::init(argv[0],
+#if !defined(WIN_UNIXENV)
+				"/etc/unibot/",
+#else
+				"/c/unibot/",
+#endif
+				true);
 	
 	// set lua script search path
 	const string lua_path = string(floor::get_absolute_path()+LUA_SCRIPT_FOLDER);
@@ -30,34 +36,7 @@ int main(int argc, char* argv[]) {
 	init_event_handler();
 	
 	// config
-	config* conf = nullptr;
-	const string conf_name = (argc > 1 ? argv[1] : "unibot.conf");
-	const array<array<string, 2>, 2> config_filenames {{
-		{{ "/etc/"+conf_name, "unix" }},
-		{{ "C:/"+conf_name, "windows" }}
-	}};
-	for(size_t i = 0; i < config_filenames.size(); i++) {
-		try {
-			conf = new config(config_filenames[i][0], config_filenames[i][1], (ssize_t)argc, (const char**)argv);
-			break;
-		}
-		catch(...) {
-			conf = nullptr;
-			continue;
-		}
-	}
-	if(conf == nullptr) {
-		cout << "ERROR: couldn't open the unibot config file!" << endl;
-		exit(-1);
-	}
-	
-	// initialize SDL
-	if(SDL_Init(0) < 0) {
-		log_error("couldn't initialize SDL: %s", SDL_GetError());
-		exit(-1);
-	}
-	
-	srand((unsigned int)time(nullptr));
+	config* conf = new config((ssize_t)argc, (const char**)argv);
 	
 	// initialize net
 	bool restart_bot = false;
@@ -88,13 +67,12 @@ int main(int argc, char* argv[]) {
 		}
 		delete irc;
 	} while(restart_bot);
-	
-	SDL_Quit();
 
+	// cleanup/destroy
 	log_debug(">> eol");
 	delete conf;
-	
 	destroy_event_handler();
+	floor::destroy();
 	
 	return 0;
 }

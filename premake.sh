@@ -6,32 +6,49 @@ UNIBOT_MAKE="make"
 UNIBOT_MAKE_PLATFORM="32"
 UNIBOT_ARGS=""
 UNIBOT_CPU_COUNT=1
-UNIBOT_USE_CLANG=0
+UNIBOT_USE_CLANG=1
 
-if [ $# -gt 0 ] && [ "$1" == "gcc" ]; then
-	UNIBOT_ARGS="--gcc"
-else
-	UNIBOT_ARGS="--clang"
-	UNIBOT_USE_CLANG=1
+for arg in "$@"; do
+	case $arg in
+		"gcc")
+			UNIBOT_ARGS=${UNIBOT_ARGS}" --gcc"
+			UNIBOT_USE_CLANG=0
+			;;
+		"windows")
+			UNIBOT_ARGS=${UNIBOT_ARGS}" --windows"
+			;;
+		*)
+			;;
+	esac
+done
+
+if [ $UNIBOT_USE_CLANG == 1 ]; then
+	UNIBOT_ARGS=${UNIBOT_ARGS}" --clang"
 fi
 
 case $( uname | tr [:upper:] [:lower:] ) in
 	"darwin")
 		UNIBOT_OS="macosx"
-		UNIBOT_CPU_COUNT=$(sysctl machdep.cpu.thread_count | sed -E 's/.*(: )([:digit:]*)/\2/g')
+		UNIBOT_CPU_COUNT=$(sysctl 'machdep.cpu.thread_count' | sed -E 's/.*(: )([:digit:]*)/\2/g')
 		;;
 	"linux")
 		UNIBOT_OS="linux"
-		UNIBOT_CPU_COUNT=$(cat /proc/cpuinfo | grep -m 1 'cpu cores' | sed -E 's/.*(: )([:digit:]*)/\2/g')
+		# note that this includes hyper-threading and multi-socket systems
+		UNIBOT_CPU_COUNT=$(cat /proc/cpuinfo | grep "processor" | wc -l)
 		;;
 	[a-z0-9]*"bsd")
 		UNIBOT_OS="bsd"
 		UNIBOT_MAKE="gmake"
 		UNIBOT_CPU_COUNT=$(sysctl hw.ncpu | sed -E 's/.*(: )([:digit:]*)/\2/g')
 		;;
-	"cygwin"* | "mingw"*)
+	"cygwin"*)
 		UNIBOT_OS="windows"
-		UNIBOT_ARGS="--env cygwin"
+		UNIBOT_ARGS=${UNIBOT_ARGS}" --env cygwin"
+		UNIBOT_CPU_COUNT=$(env | grep 'NUMBER_OF_PROCESSORS' | sed -E 's/.*=([:digit:]*)/\1/g')
+		;;
+	"mingw"*)
+		UNIBOT_OS="windows"
+		UNIBOT_ARGS=${UNIBOT_ARGS}" --env mingw"
 		UNIBOT_CPU_COUNT=$(env | grep 'NUMBER_OF_PROCESSORS' | sed -E 's/.*=([:digit:]*)/\1/g')
 		;;
 	*)
@@ -39,6 +56,13 @@ case $( uname | tr [:upper:] [:lower:] ) in
 		exit
 		;;
 esac
+
+UNIBOT_PLATFORM_TEST_STRING=""
+if [ $UNIBOT_OS != "windows" ]; then
+	UNIBOT_PLATFORM_TEST_STRING=$( uname -m )
+else
+	UNIBOT_PLATFORM_TEST_STRING=$( gcc -dumpmachine | sed "s/-.*//" )
+fi
 
 case $( uname -m ) in
 	"i386"|"i486"|"i586"|"i686")
@@ -61,7 +85,7 @@ premake4 --cc=gcc --os=${UNIBOT_OS} gmake ${UNIBOT_ARGS}
 sed -i -e 's/\${MAKE}/\${MAKE} -j '${UNIBOT_CPU_COUNT}'/' Makefile
 
 if [ $UNIBOT_USE_CLANG == 1 ]; then
-	# this seems to be the most portable way of insert chars in front of a file
+	# this seems to be the most portable way of inserting chars in front of a file
 	# note that "sed -i "1i ..." file" is not portable!
 	mv Makefile Makefile.tmp
 	echo "export CC=clang" > Makefile
