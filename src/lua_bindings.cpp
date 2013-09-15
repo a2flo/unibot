@@ -21,14 +21,14 @@
 #include "core/core.hpp"
 
 //
-lua_bindings_exception::lua_bindings_exception(const string& error_str) : error_str(error_str) {}
-lua_bindings_exception::~lua_bindings_exception() throw() {}
-const char* lua_bindings_exception::what() const throw () {
+lua_bindings_exception::lua_bindings_exception(const string& error_str_) : error_str(error_str_) {}
+lua_bindings_exception::~lua_bindings_exception() noexcept {}
+const char* lua_bindings_exception::what() const noexcept {
 	return error_str.c_str();
 }
 
 invalidate_scripts_exception::invalidate_scripts_exception() {}
-invalidate_scripts_exception::~invalidate_scripts_exception() throw() {}
+invalidate_scripts_exception::~invalidate_scripts_exception() noexcept {}
 
 /////////////////////////////////////////////////////
 // helper functions
@@ -152,14 +152,14 @@ config* lua_bindings::conf = nullptr;
 lua* lua_bindings::l = nullptr;
 lua_bindings::fp_reload_scripts lua_bindings::lua_reload_scripts = nullptr;
 
-lua_bindings::lua_bindings(floor_irc_net* n, bot_handler* handler, bot_states* states, config* conf, lua* l, fp_reload_scripts lua_reload_scripts) {
-	lua_bindings::n = n;
-	lua_bindings::handler = handler;
-	lua_bindings::states = states;
-	lua_bindings::conf = conf;
-	
-	lua_bindings::l = l;
-	lua_bindings::lua_reload_scripts = lua_reload_scripts;
+lua_bindings::lua_bindings(floor_irc_net* n_, bot_handler* handler_, bot_states* states_, config* conf_,
+						   lua* l_, fp_reload_scripts lua_reload_scripts_) {
+	lua_bindings::n = n_;
+	lua_bindings::handler = handler_;
+	lua_bindings::states = states_;
+	lua_bindings::conf = conf_;
+	lua_bindings::l = l_;
+	lua_bindings::lua_reload_scripts = lua_reload_scripts_;
 }
 
 lua_bindings::~lua_bindings() {

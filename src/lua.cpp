@@ -26,7 +26,8 @@
 	__LUA_FUNCTION_BINDINGS(__REGISTER_FUNCTION);	\
 }
 
-lua::lua(floor_irc_net* n, bot_handler* handler, bot_states* states, config* conf) : n(n), handler(handler), states(states), conf(conf) {
+lua::lua(floor_irc_net* n_, bot_handler* handler_, bot_states* states_, config* conf_) :
+n(n_), handler(handler_), states(states_), conf(conf_) {
 	bindings = new lua_bindings(n, handler, states, conf, this, &lua::reload_scripts);
 	
 	reload_scripts();
@@ -94,10 +95,10 @@ void lua::reload_scripts() {
 		
 		namelist = nullptr;
 		const string folder_name = lua_script_folder(folders.front());
-		int n = scandir(folder_name.c_str(), &namelist, 0, alphasort);
+		int count = scandir(folder_name.c_str(), &namelist, 0, alphasort);
 		const string path = folders.front() + '/';
-		if(n > 0) {
-			for(int j = 1; j < n; j++) {
+		if(count > 0) {
+			for(int j = 1; j < count; j++) {
 				const string fname = namelist[j]->d_name;
 				const string full_fname = path+fname;
 				if(namelist[j]->d_type != DT_DIR && fname.length() > 4) {
@@ -114,7 +115,7 @@ void lua::reload_scripts() {
 			}
 		}
 		if(namelist != nullptr) {
-			for(int i = 0; i < n; i++) {
+			for(int i = 0; i < count; i++) {
 				free(namelist[i]);
 			}
 			free(namelist);

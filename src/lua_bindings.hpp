@@ -28,25 +28,11 @@
 #include "core/util.hpp"
 
 // lua includes
-#if defined(__APPLE__)
-extern "C" {
+#if defined(__APPLE__) || defined(__WINDOWS__)
 #include <lua/lua.hpp>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
-}
-#elif defined(__WINDOWS__) // windows
-extern "C" {
-#include <lua/lua.hpp>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
-}
-#else // unix/linux
-extern "C" {
+#else
 #include <lua.hpp>
-#include <lualib.h>
-#include <lauxlib.h>
-}
-#endif // __APPLE__
+#endif
 
 #define __LUA_FUNCTION_BINDINGS(F) \
 /* net.h bindings */ \
@@ -84,13 +70,13 @@ protected:
 	string error_str;
 public:
 	lua_bindings_exception(const string& error_str);
-	~lua_bindings_exception() throw();
-    virtual const char* what() const throw ();
+	~lua_bindings_exception() noexcept;
+	virtual const char* what() const noexcept;
 };
 class invalidate_scripts_exception : exception {
 public:
 	invalidate_scripts_exception();
-	~invalidate_scripts_exception() throw();
+	~invalidate_scripts_exception() noexcept;
 };
 
 class lua;

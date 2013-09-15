@@ -18,7 +18,7 @@
 
 #include "bot_states.hpp"
 
-bot_states::bot_states(floor_irc_net* n) : n(n) {
+bot_states::bot_states(floor_irc_net* n_) : n(n_) {
 	states["connected"] = false;
 	states["joined"] = false;
 	states["parted"] = false;
@@ -152,8 +152,8 @@ string bot_states::get_kick_user() {
 	return kick_user;
 }
 
-void bot_states::set_kick_user(string kick_user) {
-	this->kick_user = kick_user;
+void bot_states::set_kick_user(string kick_user_) {
+	this->kick_user = kick_user_;
 }
 
 bot_states::user_info* bot_states::get_user(string name) {

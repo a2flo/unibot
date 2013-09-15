@@ -16,8 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef __UNIBOT_LUA_HPP__
-#define __UNIBOT_LUA_HPP__
+#ifndef __UNIBOT_LUA_UNIBOT_HPP__
+#define __UNIBOT_LUA_UNIBOT_HPP__
 
 #include "core/platform.hpp"
 #include "net/net.hpp"
@@ -72,7 +72,7 @@ protected:
 		lua_State* state;
 		string script_filename;
 		
-		lua_script(const string& script_filename) : state(luaL_newstate()), script_filename(script_filename) {
+		lua_script(const string& script_filename_) : state(luaL_newstate()), script_filename(script_filename_) {
 			luaL_openlibs(state);
 		}
 		~lua_script() {

@@ -96,8 +96,8 @@ const char* bot_handler::IRC_COMMAND_STR[] = {
 	"433",
 };
 
-bot_handler::bot_handler(floor_irc_net* n, bot_states* states, config* conf) :
-thread_base(), n(n), states(states), conf(conf),
+bot_handler::bot_handler(floor_irc_net* n_, bot_states* states_, config* conf_) :
+thread_base(), n(n_), states(states_), conf(conf_),
 server_ping_interval((unsigned int)strtoul(conf->get_config_entry("server_ping").c_str(), 0, 10)),
 server_timeout((unsigned int)strtoul(conf->get_config_entry("server_timeout").c_str(), 0, 10))
 {
