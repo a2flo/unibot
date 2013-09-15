@@ -82,6 +82,9 @@ solution "unibot"
 			add_include("/usr/include/w32api")
 		end
 		add_include("/usr/local/include")
+		add_include("/usr/include/libxml2")
+		add_include("/usr/include/libxml")
+		add_include("/usr/local/include/libxml2")
 		buildoptions { "-std=c++11 -Wall" }
 		
 		if(clang_libcxx) then
