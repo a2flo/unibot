@@ -19,17 +19,37 @@
 #include "main.hpp"
 
 int main(int argc, char* argv[]) {
-	// init floor in console only mode
-	floor::init(argv[0],
-#if !defined(WIN_UNIXENV)
-				"/etc/unibot/",
+	// parse args + set data path and config file name
+#if !defined(__WINDOWS__)
+	string datapath ="/etc/unibot/";
 #else
-				"/c/unibot/",
+	string datapath ="/c/unibot/";
 #endif
-				true);
+	string config_name = "config.xml";
+	
+	for(int arg_pair = 0; arg_pair < ((argc - 1) / 2); arg_pair += 2) {
+		const auto arg_name = string(argv[arg_pair + 1]);
+		const auto arg_value = string(argv[arg_pair + 2]);
+		if(!arg_name.empty() && !arg_value.empty()) {
+			if(arg_name == "--datapath") {
+				datapath = arg_value;
+			}
+			else if(arg_name == "--config") {
+				config_name = arg_value;
+			}
+		}
+	}
+	
+	// init floor in console only mode
+	floor::init(argv[0], datapath.c_str(), true, config_name);
 	
 	// set lua script search path
-	const string lua_path = string(floor::get_absolute_path()+LUA_SCRIPT_FOLDER);
+	const string lua_path = lua::lua_script_folder();
+	if(!file_io::is_directory(lua_path)) {
+		log_error("lua scripts folder (%s) does not exist or is inaccessible!");
+		floor::destroy();
+		return -1;
+	}
 	setenv("LUA_PATH", string(lua_path + "include/?.lua;" + lua_path + "?.lua").c_str(), 1);
 	
 	// event handler

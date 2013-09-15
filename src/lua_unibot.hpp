@@ -42,6 +42,8 @@ public:
 	
 	void handle_message(const string& origin, const string& target, const string& msg);
 	
+	static string lua_script_folder(const string addition = "");
+	
 protected:
 	floor_irc_net* n;
 	bot_handler* handler;
@@ -52,7 +54,6 @@ protected:
 	struct lua_script;
 	void register_functions(lua_script* script);
 	void check_scripts();
-	string lua_script_folder(const string addition = "");
 	
 	template<int level> static int lua_error_handler(lua_State* state) {
 		// get debug info

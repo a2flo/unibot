@@ -47,82 +47,30 @@ void lua::register_functions(lua_script* script) {
 }
 
 void lua::reload_scripts() {
-#ifdef __WINDOWS__
-	struct _finddata_t c_file;
-	intptr_t hFile;
-	
-	deque<string> folders;
-	folders.push_back("*");
-	set<string> folder_blacklist;
-	folder_blacklist.insert("include");
+	const string main_scripts_folder = lua_script_folder();
+	deque<string> folders { main_scripts_folder };
+	set<string> folder_blacklist { "include" };
 	
 	for(;;) {
 		if(folders.size() == 0) break;
 		
-		hFile = _findfirst(lua_script_folder(folders.front()).c_str(), &c_file);
-		const string path = folders.front().substr(0, folders.front().length()-1); // trim '*'
-		if(hFile != -1L) {
-			do {
-				const string fname = c_file.name;
-				const string full_fname = path+fname;
-				if(!(c_file.attrib & _A_SUBDIR) && fname.length() > 4) {
-					string ext = fname.substr(fname.length() - 3, 3);
-					if(ext == "lua") {
-						reload_script(full_fname);
-					}
-				}
-				else if((c_file.attrib & _A_SUBDIR) &&
-						folder_blacklist.count(fname) == 0 &&
-						fname != "." && fname != "..") {
-					folders.push_back(fname+"\\*");
-				}
-			} while(_findnext(hFile, &c_file) == 0);
-			
-			_findclose(hFile);
+		const auto& cur_folder = folders.front();
+		const auto lua_files = core::get_file_list(cur_folder);
+		for(const auto& lua_file : lua_files) {
+			if(lua_file.second == file_io::FILE_TYPE::DIR &&
+			   lua_file.first != "." && lua_file.first != ".." &&
+			   folder_blacklist.count(lua_file.first) == 0) {
+				// sub-directory
+				folders.emplace_back(cur_folder + lua_file.first);
+			}
+			else if(lua_file.first.length() > 4 &&
+					lua_file.first.substr(lua_file.first.length() - 3, 3) == "lua") {
+				// lua script/file
+				reload_script(lua_file.first);
+			}
 		}
 		folders.pop_front();
 	}
-#else
-	struct dirent** namelist = nullptr;
-	
-	deque<string> folders;
-	folders.push_back(".");
-	set<string> folder_blacklist;
-	folder_blacklist.insert("./include");
-	
-	for(;;) {
-		if(folders.size() == 0) break;
-		
-		namelist = nullptr;
-		const string folder_name = lua_script_folder(folders.front());
-		int count = scandir(folder_name.c_str(), &namelist, 0, alphasort);
-		const string path = folders.front() + '/';
-		if(count > 0) {
-			for(int j = 1; j < count; j++) {
-				const string fname = namelist[j]->d_name;
-				const string full_fname = path+fname;
-				if(namelist[j]->d_type != DT_DIR && fname.length() > 4) {
-					string ext = fname.substr(fname.length() - 3, 3);
-					if(ext == "lua") {
-						reload_script(full_fname);
-					}
-				}
-				else if(namelist[j]->d_type == DT_DIR &&
-						folder_blacklist.count(full_fname) == 0 &&
-						fname != "." && fname != "..") {
-					folders.push_back(full_fname);
-				}
-			}
-		}
-		if(namelist != nullptr) {
-			for(int i = 0; i < count; i++) {
-				free(namelist[i]);
-			}
-			free(namelist);
-		}
-		folders.pop_front();
-	}
-#endif
 
 	log_debug("lua scripts loaded!");
 }
@@ -186,7 +134,7 @@ void lua::handle_message(const string& origin, const string& target, const strin
 }
 
 string lua::lua_script_folder(const string addition) {
-	return string(floor::get_absolute_path() + string(LUA_SCRIPT_FOLDER) + addition);
+	return string(floor::get_data_path() + LUA_SCRIPT_FOLDER + addition);
 }
 
 const vector<string> lua::list_scripts() const {
