@@ -45,7 +45,6 @@ public:
 	static string lua_script_folder(const string addition = "");
 	
 protected:
-	floor_irc_net* n;
 	bot_handler* handler;
 	bot_states* states;
 	config* conf;

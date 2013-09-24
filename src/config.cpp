@@ -49,6 +49,7 @@ config::config(const ssize_t& argc, const char** argv) {
 	
 	config_data["hostname"] = config_doc.get<string>("config.server.hostname", "irc.freenode.net");
 	config_data["port"] = config_doc.get<string>("config.server.port", "6667");
+	config_data["ssl"] = (config_doc.get<bool>("config.server.ssl", true) ? "true" : "false");
 	config_data["channel"] = config_doc.get<string>("config.server.channel", "#unichannel");
 	
 	config_data["server_ping"] = config_doc.get<string>("config.timeouts.server_ping", "30000");
@@ -104,6 +105,10 @@ string config::get_hostname() {
 
 unsigned short int config::get_port() {
 	return (unsigned short int)strtoul(config_data["port"].c_str(), nullptr, 10);
+}
+
+bool config::get_ssl() {
+	return (config_data["ssl"] == "true");
 }
 
 string config::get_channel() {

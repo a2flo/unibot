@@ -27,8 +27,8 @@
 }
 
 lua::lua(floor_irc_net* n_, bot_handler* handler_, bot_states* states_, config* conf_) :
-n(n_), handler(handler_), states(states_), conf(conf_) {
-	bindings = new lua_bindings(n, handler, states, conf, this, &lua::reload_scripts);
+handler(handler_), states(states_), conf(conf_) {
+	bindings = new lua_bindings(n_, handler, states, conf, this, &lua::reload_scripts);
 	
 	reload_scripts();
 }

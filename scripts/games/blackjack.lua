@@ -281,7 +281,7 @@ function handle_message(origin, target, cmd, parameters)
 				send_private_msg(blackjack_channel, "no one is playing at the moment!")
 			end
 		elseif blackjack_cmd == "rules" then
-			send_private_msg(origin, "http://en.wikipedia.org/wiki/Blackjack#Rules_of_play_against_a_casino")
+			send_private_msg(origin, "https://en.wikipedia.org/wiki/Blackjack#Rules_of_play_against_a_casino")
 		elseif blackjack_cmd == "reset" and is_owner(origin) and target == blackjack_channel then
 			reset_blackjack()
 		elseif blackjack_cmd == "help" then

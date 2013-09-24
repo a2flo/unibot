@@ -397,7 +397,11 @@
 					"-fno-elide-type",
 					"-fdiagnostics-show-template-tree",
 				);
-				OTHER_LDFLAGS = "-lfloord";
+				OTHER_LDFLAGS = (
+					"-lfloord",
+					"-lcrypto",
+					"-lssl",
+				);
 				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibotd;
 				SDKROOT = macosx;
@@ -510,7 +514,11 @@
 					"-fno-elide-type",
 					"-fdiagnostics-show-template-tree",
 				);
-				OTHER_LDFLAGS = "-lfloor";
+				OTHER_LDFLAGS = (
+					"-lfloor",
+					"-lcrypto",
+					"-lssl",
+				);
 				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibot;
 				SDKROOT = macosx;

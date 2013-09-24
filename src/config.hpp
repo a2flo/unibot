@@ -34,6 +34,7 @@ public:
 	vector<string> get_owner_names();
 	string get_hostname();
 	unsigned short int get_port();
+	bool get_ssl();
 	string get_channel();
 	logger::LOG_TYPE get_verbosity() const;
 	
@@ -47,6 +48,7 @@ protected:
 	 * owner_names
 	 * hostname
 	 * port
+	 * ssl
 	 * channel
 	 * verbosity
 	 * argc

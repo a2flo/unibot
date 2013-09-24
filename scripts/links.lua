@@ -10,11 +10,11 @@ end
 
 function handle_message(origin, target, cmd, parameters)
 	local pages = {
-		{ "g", "http://www.google.com", "http://www.google.com/search?q=" },
-		{ "w", "http://en.wikipedia.org/wiki/Mainpage", "http://en.wikipedia.org/wiki/" },
-		{ "wp", "http://en.wikipedia.org/wiki/Mainpage", "http://en.wikipedia.org/wiki/" },
-		{ "wa", "http://www.wolframalpha.com", "http://www.wolframalpha.com/input/?i=" },
-		{ "dict", "http://www.dict.cc", "http://www.dict.cc/?s=" },
+		{ "g", "https://www.google.com", "https://www.google.com/search?q=" },
+		{ "w", "https://en.wikipedia.org/wiki/Mainpage", "https://en.wikipedia.org/wiki/" },
+		{ "wp", "https://en.wikipedia.org/wiki/Mainpage", "https://en.wikipedia.org/wiki/" },
+		{ "wa", "https://www.wolframalpha.com", "https://www.wolframalpha.com/input/?i=" },
+		{ "dict", "https://dict.leo.org", "https://dict.leo.org/ende/index_en.html#search=" },
 	}
 	
 	for i = 1, #pages do

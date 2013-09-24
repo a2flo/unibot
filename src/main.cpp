@@ -65,8 +65,8 @@ int main(int argc, char* argv[]) {
 			log_debug("restarting bot ...");
 		}
 		
-		floor_irc_net* irc = new floor_irc_net();
-		if(irc->connect_to_server(conf->get_hostname().c_str(), conf->get_port())) {
+		floor_irc_net* irc = new floor_irc_net(conf->get_ssl());
+		if(irc->connect_to_server(conf->get_hostname(), conf->get_port())) {
 			bot_states* states = new bot_states(irc);
 			bot_handler* bot = new bot_handler(irc, states, conf);
 			

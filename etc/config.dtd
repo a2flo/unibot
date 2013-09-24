@@ -10,6 +10,7 @@
 <!ATTLIST server
 	hostname CDATA #REQUIRED
 	port CDATA #REQUIRED
+	ssl CDATA #REQUIRED
 	channel CDATA #REQUIRED
 >
 <!ELEMENT owner (#PCDATA)*>

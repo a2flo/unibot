@@ -33,7 +33,7 @@ function handle_message(origin, target, cmd, parameters)
 		send_private_msg(target, "config test, is owner: [flo]: "..tostring(is_owner1)..", tester: "..tostring(is_owner2))
 		
 		-- misc
-		local test_url = "http://www.google.com/?!? blah blubb /";
+		local test_url = "https://www.google.com/?!? blah blubb /";
 		send_private_msg(target, "url: "..test_url..", encoded: "..url_encode(test_url))
 		send_private_msg(target, "prev msg: "..get_prev_msg(1))
 		

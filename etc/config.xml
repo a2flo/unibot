@@ -13,9 +13,10 @@
 	<!-- irc server options
 	 hostname: irc server/host to connect to (can also be an IPv4 or IPv6 address)
 	 post: irc server port to connect to
+	 ssl: boolean, if enabled this will use ssl (tls) for all communication with the irc server
 	 channel: irc channel name
 	-->
-	<server hostname="irc.freenode.net" port="6667" channel="#unichannel" />
+	<server hostname="irc.freenode.net" port="7000" ssl="true" channel="#unichannel" />
 	
 	<!-- bot owners
 	 names (irc user names): use ',' as a separator, whitespace will be stripped

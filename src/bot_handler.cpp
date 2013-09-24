@@ -123,7 +123,7 @@ bot_handler::~bot_handler() {
 void bot_handler::run() {
 	const auto connection_timeout = server_ping_interval + server_timeout;
 	if((SDL_GetTicks() - last_server_pong) > connection_timeout) {
-		n->get_protocol().invalidate();
+		n->invalidate();
 		states->set_parted(true);
 		states->set_restart(true);
 		set_thread_should_finish();
@@ -146,16 +146,18 @@ void bot_handler::run() {
 	// if there are no messages to handle, return
 	if(!n->is_received_data()) return;
 	
-	deque<string> data = n->get_and_clear_received_data();
-	for(auto data_iter = data.begin(); data_iter != data.end(); data_iter++) {
+	auto received_data = n->get_and_clear_received_data();
+	for(const auto& data_vec : received_data) {
+		const string data(data_vec.data(), data_vec.size());
+		
 		// handle the data
 		// cmd_tokens:
 		// [0]: sender
 		// [1]: command
 		// [2]: location
 		// [3+]: data
-		IRC_COMMAND current_cmd = parse_irc_cmd(*data_iter);
-		vector<string> cmd_tokens { core::tokenize(*data_iter, ' ') };
+		IRC_COMMAND current_cmd = parse_irc_cmd(data);
+		vector<string> cmd_tokens { core::tokenize(data, ' ') };
 		
 		string cmd_sender = "", cmd_command = "", cmd_location = "", cmd_data = "", cmd_data2 = "", cmd_joined_data = "";
 		if(cmd_tokens.size() > 0) cmd_sender = cmd_tokens[0];
@@ -168,7 +170,7 @@ void bot_handler::run() {
 		if(cmd_tokens.size() > 4) {
 			cmd_data2 = cmd_tokens[4];
 			unsigned int pos = (unsigned int)(cmd_tokens[0].length()+cmd_tokens[1].length()+cmd_tokens[2].length()+3);
-			cmd_joined_data = data_iter->substr(pos, data_iter->length()-pos);
+			cmd_joined_data = data.substr(pos, data.length()-pos);
 		}
 		
 		// any received server msg == "pong"
@@ -405,10 +407,9 @@ void bot_handler::run() {
 			
 			// and finally finish both threads
 			set_thread_should_finish();
-			n->set_thread_should_finish();
 		}
 		
-		log_debug("%s", *data_iter);
+		log_debug("%s", data);
 	}
 	n->clear_received_data();
 }
