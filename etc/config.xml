@@ -12,7 +12,7 @@
 	
 	<!-- irc server options
 	 hostname: irc server/host to connect to (can also be an IPv4 or IPv6 address)
-	 post: irc server port to connect to
+	 port: irc server port to connect to
 	 ssl: boolean, if enabled this will use ssl (tls) for all communication with the irc server
 	 channel: irc channel name
 	-->
