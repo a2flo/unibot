@@ -165,7 +165,7 @@ solution "unibot"
 			end
 		end
 		links { lua_lib.name }
-									   
+		
 		links { "crypto", "ssl" }
 		if(not win_unixenv) then
 			libdirs { os.findlib("SDL2"), lua_lib.dir }

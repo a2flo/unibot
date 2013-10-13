@@ -24,7 +24,6 @@
 #include "event_handler.hpp"
 #include "net/net.hpp"
 #include "net/irc_net.hpp"
-#include "net/http_net.hpp"
 #include "bot_handler.hpp"
 #include "bot_states.hpp"
 #include "config.hpp"

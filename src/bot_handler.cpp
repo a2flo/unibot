@@ -19,6 +19,9 @@
 #include "bot_handler.hpp"
 #include "lua_unibot.hpp"
 #include "core/core.hpp"
+#include "threading/task.hpp"
+#include "net/http_net.hpp"
+#include <regex>
 
 #include "floor/floor_version.hpp"
 
@@ -542,6 +545,59 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				}
 				n->send_private_msg(target, script_list);
 			}
+		}
+		// http request testing (only temporary for now - TODO: full implementation)
+		else if(cmd == "http") {
+			const string url(core::trim(msg.substr(cmd_end + 1, msg.size() - cmd_end - 1)));
+			task::spawn([url, target, this]() {
+				try {
+					atomic<bool> received { false };
+					http_net request(url, [url, target, this, &received](http_net* http_obj floor_unused,
+																		 http_net::HTTP_STATUS ret_status,
+																		 const string& server floor_unused,
+																		 const string& data) -> bool {
+						if(ret_status == http_net::HTTP_STATUS::CODE_200) {
+							const regex title_rx("<[\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>"
+												 "([\\s\\S]*)"
+												 "<[\\s]*[/][\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>");
+							smatch match;
+							if(regex_search(data, match, title_rx) && match.size() >= 2) {
+								// title: first match + replace newlines + trim space from the beginning and end
+								string title { match.str(1) };
+								core::find_and_replace(title, "\n", " ");
+								core::find_and_replace(title, "\r", " ");
+								title = core::trim(title);
+								if(!received) n->send_private_msg(target, "title for \""+url+"\": "+title);
+							}
+							else {
+								if(!received) n->send_private_msg(target, "no title found for \"" + url + "\"!");
+							}
+						}
+						else {
+							// unsucessful request
+							const string err_msg("http request \"" + url + "\" failed: " +
+												 uint2string((unsigned int)ret_status) +
+												 (data != "" ? " (" : "") + data + (data != "" ? ")" : ""));
+							if(!received) n->send_private_msg(target, err_msg);
+							log_error("%s", err_msg);
+						}
+						// signal that the request has been handled
+						received = true;
+						return true;
+					});
+					
+					// wait until request was successful (note: http_net will timeout after 10s per default)
+					while(!received) {
+						this_thread::yield();
+					}
+				}
+				catch(floor_exception& ex) {
+					log_error("http request exception: %s", ex.what());
+				}
+				catch(...) {
+					log_error("http request exception");
+				}
+			});
 		}
 	}
 	
