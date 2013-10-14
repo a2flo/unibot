@@ -556,9 +556,9 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 																		 http_net::HTTP_STATUS ret_status,
 																		 const string& server floor_unused,
 																		 const string& data) -> bool {
-						if(ret_status == http_net::HTTP_STATUS::CODE_200) {
+						if(ret_status == http_net::HTTP_STATUS::CODE_200 && data != "timeout") {
 							const regex title_rx("<[\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>"
-												 "([\\s\\S]*)"
+												 "([\\s\\S]*)" // also matches newlines (. doesn't)
 												 "<[\\s]*[/][\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>");
 							smatch match;
 							if(regex_search(data, match, title_rx) && match.size() >= 2) {
