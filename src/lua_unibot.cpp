@@ -34,8 +34,8 @@ handler(handler_), states(states_), conf(conf_) {
 }
 
 lua::~lua() {
-	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
-		delete (script_iter->second);
+	for(const auto& script : script_store) {
+		delete script.second;
 	}
 	script_store.clear();
 	
@@ -90,9 +90,9 @@ void lua::reload_script(const string& filename) {
 }
 
 void lua::check_scripts() {
-	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
-		if(lua_status(script_iter->second->state) != 0) {
-			log_error("erroneous status of script/state \"%s\"!", script_iter->first);
+	for(const auto& script : script_store) {
+		if(lua_status(script.second->state) != 0) {
+			log_error("erroneous status of script/state \"%s\"!", script.first);
 		}
 	}
 }
@@ -106,21 +106,21 @@ void lua::handle_message(const string& origin, const string& target, const strin
 	check_scripts();
 	
 	try {
-		for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
-			lua_getglobal(script_iter->second->state, "handle_message");
-			if(!lua_isfunction(script_iter->second->state, -1)) {
-				lua_pop(script_iter->second->state, 1);
-				log_error("handle_message is no function in script \"%s\"!", script_iter->first);
+		for(const auto& script : script_store) {
+			lua_getglobal(script.second->state, "handle_message");
+			if(!lua_isfunction(script.second->state, -1)) {
+				lua_pop(script.second->state, 1);
+				log_error("handle_message is no function in script \"%s\"!", script.first);
 				continue;
 			}
 			
-			lua_pushstring(script_iter->second->state, origin.c_str());
-			lua_pushstring(script_iter->second->state, target.c_str());
-			lua_pushstring(script_iter->second->state, cmd.c_str());
-			lua_pushstring(script_iter->second->state, parameters.c_str());
-			int err = lua_pcall(script_iter->second->state, 4, 1, -lua_gettop(script_iter->second->state)); // error handler @index #0
+			lua_pushstring(script.second->state, origin.c_str());
+			lua_pushstring(script.second->state, target.c_str());
+			lua_pushstring(script.second->state, cmd.c_str());
+			lua_pushstring(script.second->state, parameters.c_str());
+			int err = lua_pcall(script.second->state, 4, 1, -lua_gettop(script.second->state)); // error handler @index #0
 			if(err > 0) {
-				log_error("lua error #%i while running script \"%s\"!", err, script_iter->first);
+				log_error("lua error #%i while running script \"%s\"!", err, script.first);
 			}
 		}
 	}
@@ -139,8 +139,8 @@ string lua::lua_script_folder(const string addition) {
 
 const vector<string> lua::list_scripts() const {
 	vector<string> script_list;
-	for(auto script_iter = script_store.begin(); script_iter != script_store.end(); script_iter++) {
-		script_list.push_back(script_iter->first);
+	for(const auto& script : script_store) {
+		script_list.emplace_back(script.first);
 	}
 	return script_list;
 }

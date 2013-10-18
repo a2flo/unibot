@@ -36,16 +36,16 @@ bot_states::bot_states(floor_irc_net* n_) : n(n_) {
 bot_states::~bot_states() {
 }
 
-bool bot_states::is_connected() {
-	return states["connected"];
+bool bot_states::is_connected() const {
+	return states.at("connected");
 }
 
 void bot_states::set_connected(bool connected) {
 	states["connected"] = connected;
 }
 
-bool bot_states::is_joined() {
-	return states["joined"];
+bool bot_states::is_joined() const {
+	return states.at("joined");
 }
 
 void bot_states::set_joined(bool joined) {
@@ -53,7 +53,7 @@ void bot_states::set_joined(bool joined) {
 }
 
 bool bot_states::is_parted() {
-	if(states["parted"]) {
+	if(states.at("parted")) {
 		states["parted"] = false;
 		return true;
 	}
@@ -65,7 +65,7 @@ void bot_states::set_parted(bool parted) {
 }
 
 bool bot_states::is_kicked() {
-	if(states["kicked"]) {
+	if(states.at("kicked")) {
 		states["kicked"] = false;
 		return true;
 	}
@@ -76,31 +76,31 @@ void bot_states::set_kicked(bool kicked) {
 	states["kicked"] = kicked;
 }
 
-bool bot_states::is_op() {
-	return states["op"];
+bool bot_states::is_op() const {
+	return states.at("op");
 }
 
 void bot_states::set_op(bool op) {
 	states["op"] = op;
 }
 
-bool bot_states::is_quit() {
-	return states["quit"];
+bool bot_states::is_quit() const {
+	return states.at("quit");
 }
 
 void bot_states::set_quit(bool quit) {
 	states["quit"] = quit;
 }
 
-bool bot_states::is_identified() {
-	return states["identified"];
+bool bot_states::is_identified() const {
+	return states.at("identified");
 }
 
 void bot_states::set_identified(bool identified) {
 	states["identified"] = identified;
 }
 
-void bot_states::add_user(string name) {
+void bot_states::add_user(const string& name) {
 	user_list[name] = new user_info(name, "", "", "", "no", "no", "");
 	
 	// request user information (WHO and ctcp VERSION)
@@ -109,7 +109,8 @@ void bot_states::add_user(string name) {
 	n->send_ctcp_request(name, "VERSION");
 }
 
-void bot_states::update_user_info(string name, string real_name, string host, string host_user, string registered, string ctcp_support, string client) {
+void bot_states::update_user_info(const string& name, const string real_name, const string host, const string host_user,
+								  const string registered, const string ctcp_support, const string client) {
 	if(user_list.count(name) == 0) return;
 	
 	// only update info if string isn't empty
@@ -122,7 +123,7 @@ void bot_states::update_user_info(string name, string real_name, string host, st
 	if(client != "") user_list[name]->client = client;
 }
 
-void bot_states::update_user_name(string from, string to) {
+void bot_states::update_user_name(const string& from, const string& to) {
 	if(user_list.count(from) > 0) {
 		user_list[to] = user_list[from];
 		user_list.erase(user_list.find(from));
@@ -133,7 +134,7 @@ void bot_states::update_user_name(string from, string to) {
 	}
 }
 
-void bot_states::delete_user(string name) {
+void bot_states::delete_user(const string& name) {
 	if(user_list.count(name) > 0) {
 		delete user_list[name];
 		user_list.erase(name);
@@ -144,46 +145,46 @@ void bot_states::delete_all_users() {
 	user_list.clear();
 }
 
-map<string, bot_states::user_info*>* bot_states::get_users() {
-	return &user_list;
+const unordered_map<string, bot_states::user_info*>& bot_states::get_users() const {
+	return user_list;
 }
 
-string bot_states::get_kick_user() {
+string bot_states::get_kick_user() const {
 	return kick_user;
 }
 
-void bot_states::set_kick_user(string kick_user_) {
+void bot_states::set_kick_user(const string& kick_user_) {
 	this->kick_user = kick_user_;
 }
 
-bot_states::user_info* bot_states::get_user(string name) {
+bot_states::user_info* bot_states::get_user(const string& name) const {
 	if(user_list.count(name) == 0) return nullptr;
-	return user_list[name];
+	return user_list.at(name);
 }
 
-bool bot_states::is_user(string name) {
+bool bot_states::is_user(string name) const {
 	return (user_list.count(name) > 0);
 }
 
-bool bot_states::is_user_registered(string name) {
+bool bot_states::is_user_registered(const string& name) const {
 	bot_states::user_info* user = get_user(name);
 	return (user != nullptr && user->registered == "yes");
 }
 
-bool bot_states::is_silenced() {
-	return states["silenced"];
+bool bot_states::is_silenced() const {
+	return states.at("silenced");
 }
 
 void bot_states::set_silenced(bool silenced) {
 	states["silenced"] = silenced;
 }
 
-bool bot_states::is(const string& state_name) {
+bool bot_states::is(const string& state_name) const {
 	if(states.count(state_name) == 0) {
 		log_error("unknown state name \"%s\"!", state_name);
 		return false;
 	}
-	return states[state_name];
+	return states.at(state_name);
 }
 
 void bot_states::set(const string& state_name, bool new_state) {
@@ -194,8 +195,8 @@ void bot_states::set(const string& state_name, bool new_state) {
 	states[state_name] = new_state;
 }
 
-bool bot_states::is_restart() {
-	return states["restart"];
+bool bot_states::is_restart() const {
+	return states.at("restart");
 }
 
 void bot_states::set_restart(bool restart) {

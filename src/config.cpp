@@ -57,77 +57,73 @@ config::config(const ssize_t& argc, const char** argv) {
 	
 	// owner names handling
 	config_data["owner_names"] = config_doc.get<string>("config.owner.names", "[flo]");
-	owner_names = core::tokenize(config_data["owner_names"], ',');
-	for(auto& owner : owner_names) {
+	auto owner_names_vec = core::tokenize(config_data["owner_names"], ',');
+	for(auto& owner : owner_names_vec) {
 		// trim each (array) value
 		owner = core::trim(owner);
 	}
 	
 	// remove empty names
-	for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end();) {
+	for(auto owner_iter = owner_names_vec.begin(); owner_iter != owner_names_vec.end();) {
 		if(owner_iter->length() == 0) {
-			owner_iter = owner_names.erase(owner_iter);
+			owner_iter = owner_names_vec.erase(owner_iter);
 		}
 		else owner_iter++;
 	}
 	
-	// remove duplicates
-	sort(owner_names.begin(), owner_names.end());
-	owner_names.resize(unique(owner_names.begin(), owner_names.end()) - owner_names.begin());
+	// insert into configs owner_names set (remove duplicates)
+	owner_names.insert(begin(owner_names_vec), end(owner_names_vec));
 }
 
 config::~config() {
 }
 
-string config::get_bot_name() {
-	return config_data["bot_name"];
+string config::get_bot_name() const {
+	return config_data.at("bot_name");
 }
 
-string config::get_bot_alt_add() {
-	return config_data["bot_alt_add"];
+string config::get_bot_alt_add() const {
+	return config_data.at("bot_alt_add");
 }
 
-string config::get_bot_realname() {
-	return config_data["bot_realname"];
+string config::get_bot_realname() const {
+	return config_data.at("bot_realname");
 }
 
-string config::get_bot_password() {
+string config::get_bot_password() const {
 	return bot_password;
 }
 
-vector<string> config::get_owner_names() {
+const unordered_set<string>& config::get_owner_names() const {
 	return owner_names;
 }
 
-string config::get_hostname() {
-	return config_data["hostname"];
+string config::get_hostname() const {
+	return config_data.at("hostname");
 }
 
-unsigned short int config::get_port() {
-	return (unsigned short int)strtoul(config_data["port"].c_str(), nullptr, 10);
+unsigned short int config::get_port() const {
+	return (unsigned short int)strtoul(config_data.at("port").c_str(), nullptr, 10);
 }
 
-bool config::get_ssl() {
-	return (config_data["ssl"] == "true");
+bool config::get_ssl() const {
+	return (config_data.at("ssl") == "true");
 }
 
-string config::get_channel() {
-	return config_data["channel"];
+string config::get_channel() const {
+	return config_data.at("channel");
 }
 
-string config::get_config_entry(const string& name) {
+string config::get_config_entry(const string& name) const {
 	if(config_data.count(name) == 0) {
 		log_error("unknown config entry name \"%s\"!", name);
 		return "";
 	}
-	return config_data[name];
+	return config_data.at(name);
 }
 
-bool config::is_owner(string user) {
-	for(auto owner_iter = owner_names.begin(); owner_iter != owner_names.end(); owner_iter++) {
-		if(*owner_iter == user) return true;
-	}
-	return false;
+bool config::is_owner(const string& user) const {
+	return (owner_names.count(user) > 0);
 }
 
 logger::LOG_TYPE config::get_verbosity() const {

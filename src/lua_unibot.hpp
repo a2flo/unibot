@@ -125,7 +125,7 @@ protected:
 		}
 	};
 	// <filename, pointer to script object>
-	map<string, lua_script*> script_store;
+	unordered_map<string, lua_script*> script_store;
 	
 };
 

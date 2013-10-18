@@ -113,7 +113,7 @@ public:
 	
 protected:
 	floor_irc_net* n;
-	map<string, IRC_COMMAND> irc_commands;
+	unordered_map<string, IRC_COMMAND> irc_commands;
 	bot_states* states;
 	config* conf;
 	locale loc;

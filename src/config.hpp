@@ -26,19 +26,19 @@ public:
 	config(const ssize_t& argc, const char** argv);
 	~config();
 	
-	string get_config_entry(const string& name);
-	string get_bot_name();
-	string get_bot_alt_add();
-	string get_bot_realname();
-	string get_bot_password();
-	vector<string> get_owner_names();
-	string get_hostname();
-	unsigned short int get_port();
-	bool get_ssl();
-	string get_channel();
+	string get_config_entry(const string& name) const;
+	string get_bot_name() const;
+	string get_bot_alt_add() const;
+	string get_bot_realname() const;
+	string get_bot_password() const;
+	const unordered_set<string>& get_owner_names() const;
+	string get_hostname() const;
+	unsigned short int get_port() const;
+	bool get_ssl() const;
+	string get_channel() const;
 	logger::LOG_TYPE get_verbosity() const;
 	
-	bool is_owner(string user);
+	bool is_owner(const string& user) const;
 	
 protected:
 	/* available config settings:
@@ -58,7 +58,7 @@ protected:
 	 * server_timeout
 	 */
 	unordered_map<string, string> config_data;
-	vector<string> owner_names;
+	unordered_set<string> owner_names;
 	string bot_password;
 	
 };

@@ -269,31 +269,31 @@ int lua_bindings::set_bot_state(lua_State* state) {
 int lua_bindings::get_users(lua_State* state) {
 	try {
 		check_lua_stack(state, 0);
-		map<string, bot_states::user_info*>* users = states->get_users();
+		auto users = states->get_users();
 		
 		// create user table and add all users to it
 		// table format: { nickname = { realname, host }, ... }
-		lua_createtable(state, (int)users->size(), 0);
-		for(auto user_iter = users->begin(); user_iter != users->end(); user_iter++) {
+		lua_createtable(state, (int)users.size(), 0);
+		for(const auto& user : users) {
 			// key
-			lua_pushstring(state, user_iter->first.c_str());
+			lua_pushstring(state, user.first.c_str());
 			
 			// value (-> new table, containing two strings)
 			int arg = 0;
 			lua_createtable(state, 2, arg++);
-			lua_pushstring(state, user_iter->second->nick.c_str());
+			lua_pushstring(state, user.second->nick.c_str());
 			lua_rawseti(state, -2, arg++);
-			lua_pushstring(state, user_iter->second->real_name.c_str());
+			lua_pushstring(state, user.second->real_name.c_str());
 			lua_rawseti(state, -2, arg++);
-			lua_pushstring(state, user_iter->second->host.c_str());
+			lua_pushstring(state, user.second->host.c_str());
 			lua_rawseti(state, -2, arg++);
-			lua_pushstring(state, user_iter->second->host_user.c_str());
+			lua_pushstring(state, user.second->host_user.c_str());
 			lua_rawseti(state, -2, arg++);
-			lua_pushstring(state, user_iter->second->registered.c_str());
+			lua_pushstring(state, user.second->registered.c_str());
 			lua_rawseti(state, -2, arg++);
-			lua_pushstring(state, user_iter->second->ctcp_support.c_str());
+			lua_pushstring(state, user.second->ctcp_support.c_str());
 			lua_rawseti(state, -2, arg++);
-			lua_pushstring(state, user_iter->second->client.c_str());
+			lua_pushstring(state, user.second->client.c_str());
 			lua_rawseti(state, -2, arg++);
 			
 			// add key + value table to users table
@@ -301,7 +301,7 @@ int lua_bindings::get_users(lua_State* state) {
 		}
 		
 		// push size of users table
-		lua_pushinteger(state, (int)users->size());
+		lua_pushinteger(state, (int)users.size());
 	}
 	HANDLE_LUA_BINDINGS_EXCEPTION;
 	return 2;
