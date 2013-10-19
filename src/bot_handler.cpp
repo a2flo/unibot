@@ -577,6 +577,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 							// unsucessful request
 							const string err_msg("http request \"" + url + "\" failed: " +
 												 uint2string((unsigned int)ret_status) +
+												 " " + http_net::status_code_to_string(ret_status) +
 												 (data != "" ? " (" : "") + data + (data != "" ? ")" : ""));
 							if(!received) n->send_private_msg(target, err_msg);
 							log_error("%s", err_msg);
