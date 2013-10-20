@@ -547,6 +547,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			}
 		}
 		// http request testing (only temporary for now - TODO: full implementation)
+		// TODO: without the cmd http; parse the whole message, split for spaces, do a request for each part with http/https/www at the beginning
 		else if(cmd == "http") {
 			const string url(core::trim(msg.substr(cmd_end + 1, msg.size() - cmd_end - 1)));
 			task::spawn([url, target, this]() {
@@ -567,10 +568,11 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 								core::find_and_replace(title, "\n", " ");
 								core::find_and_replace(title, "\r", " ");
 								title = core::trim(title);
-								if(!received) n->send_private_msg(target, "title for \""+url+"\": "+title);
+								// TODO: html to text (i.e. &#39; to ')
+								if(!received) n->send_private_msg(target, "> "+title);
 							}
 							else {
-								if(!received) n->send_private_msg(target, "no title found for \"" + url + "\"!");
+								if(!received) n->send_private_msg(target, "> no title found!");
 							}
 						}
 						else {
