@@ -70,13 +70,12 @@ protected:
 	string error_str;
 public:
 	lua_bindings_exception(const string& error_str);
-	~lua_bindings_exception() noexcept;
 	virtual const char* what() const noexcept;
 };
 class invalidate_scripts_exception : exception {
 public:
 	invalidate_scripts_exception();
-	~invalidate_scripts_exception() noexcept;
+	virtual const char* what() const noexcept;
 };
 
 class lua;

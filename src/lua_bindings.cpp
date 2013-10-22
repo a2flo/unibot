@@ -22,13 +22,14 @@
 
 //
 lua_bindings_exception::lua_bindings_exception(const string& error_str_) : error_str(error_str_) {}
-lua_bindings_exception::~lua_bindings_exception() noexcept {}
 const char* lua_bindings_exception::what() const noexcept {
 	return error_str.c_str();
 }
 
 invalidate_scripts_exception::invalidate_scripts_exception() {}
-invalidate_scripts_exception::~invalidate_scripts_exception() noexcept {}
+const char* invalidate_scripts_exception::what() const noexcept {
+	return "scripts invalidated";
+}
 
 /////////////////////////////////////////////////////
 // helper functions
