@@ -29,7 +29,7 @@ fi
 case $( uname | tr [:upper:] [:lower:] ) in
 	"darwin")
 		UNIBOT_OS="macosx"
-		UNIBOT_CPU_COUNT=$(sysctl 'machdep.cpu.thread_count' | sed -E 's/.*(: )([:digit:]*)/\2/g')
+		UNIBOT_CPU_COUNT=$(sysctl -n hw.ncpu)
 		;;
 	"linux")
 		UNIBOT_OS="linux"
@@ -39,7 +39,7 @@ case $( uname | tr [:upper:] [:lower:] ) in
 	[a-z0-9]*"bsd")
 		UNIBOT_OS="bsd"
 		UNIBOT_MAKE="gmake"
-		UNIBOT_CPU_COUNT=$(sysctl hw.ncpu | sed -E 's/.*(: )([:digit:]*)/\2/g')
+		UNIBOT_CPU_COUNT=$(sysctl -n hw.ncpu)
 		;;
 	"cygwin"*)
 		UNIBOT_OS="windows"
