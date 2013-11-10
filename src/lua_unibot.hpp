@@ -88,11 +88,15 @@ protected:
 			script.open(script_filename.c_str(), ios::in);
 			if(script.is_open()) {
 				script.seekg(0, ios::end);
-				const size_t script_size = (size_t)script.tellg();
+				const streamsize script_size = script.tellg();
 				
 				if(script_size > UNIBOT_MAX_LUA_SCRIPT_SIZE) {
 					load_error = true;
 					log_error("lua script %s is too large (size: %u, allowed: %u)!", script_filename, script_size, UNIBOT_MAX_LUA_SCRIPT_SIZE);
+				}
+				else if(script_size < 0) {
+					load_error = true;
+					log_error("invalid lua script size for %s (size: %u)!", script_filename, script_size);
 				}
 				else {
 					script.seekg(0, ios::beg);

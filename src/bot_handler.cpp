@@ -307,7 +307,7 @@ void bot_handler::run() {
 							
 							log_debug("kicking: %s", states->get_kick_user());
 							n->send_kick(conf->get_channel(), states->get_kick_user(),
-										 kick_messages[core::rand((int)kick_messages.size())]);
+										 kick_messages[core::rand((unsigned int)kick_messages.size())]);
 						}
 					}
 					// if another user joined the channel, greet him
@@ -647,8 +647,8 @@ string bot_handler::handle_args_chronological(const string& msg, const size_t& o
 		string args = msg.substr(offset, msg.length()-offset);
 		vector<string> arg_tokens { core::tokenize(args, ' ') };
 		int msg_offset = 0, word_offset = 0;
-		if(arg_tokens.size() > 0) msg_offset = (unsigned int)strtoul(arg_tokens[0].c_str(), nullptr, 10);
-		if(arg_tokens.size() > 1) word_offset = (unsigned int)strtoul(arg_tokens[1].c_str(), nullptr, 10);
+		if(arg_tokens.size() > 0) msg_offset = (int)strtoul(arg_tokens[0].c_str(), nullptr, 10);
+		if(arg_tokens.size() > 1) word_offset = (int)strtoul(arg_tokens[1].c_str(), nullptr, 10);
 		
 		if(msg_offset != 0) {
 			ret_msg = extract_word(msg_offset, word_offset);
@@ -665,13 +665,13 @@ string bot_handler::handle_args_chronological(const string& msg, const size_t& o
 	return ret_msg;
 }
 
-string bot_handler::extract_word(ssize_t msg_offset, ssize_t word_offset) {
-	msg_offset = abs(msg_offset);
-	size_t abs_word_offset = abs(word_offset);
+string bot_handler::extract_word(ssize_t msg_offset_, ssize_t word_offset) {
+	size_t msg_offset = (size_t)abs(msg_offset_);
+	size_t abs_word_offset = (size_t)abs(word_offset);
 	
-	ssize_t msg_number = (ssize_t)msg_store.size() - msg_offset;
-	if(msg_number >= 0 && msg_number < (int)msg_store.size()) {
-		string msg = msg_store[msg_number];
+	ssize_t msg_number = (ssize_t)msg_store.size() - (ssize_t)msg_offset;
+	if(msg_number >= 0 && msg_number < (ssize_t)msg_store.size()) {
+		string msg = msg_store[(size_t)msg_number];
 		
 		if(word_offset == 0) return msg;
 		
@@ -680,7 +680,7 @@ string bot_handler::extract_word(ssize_t msg_offset, ssize_t word_offset) {
 		if(word_offset > (ssize_t)msg_tokens.size()) return msg_tokens.back();
 		if(abs_word_offset > msg_tokens.size()) return msg_tokens[0];
 		
-		ssize_t word_number = word_offset > 0 ? word_offset-1 : ((int)msg_tokens.size() + word_offset);
+		size_t word_number = (size_t)(word_offset > 0 ? word_offset-1 : ((ssize_t)msg_tokens.size() + word_offset));
 		return msg_tokens[word_number];
 	}
 	
