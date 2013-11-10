@@ -72,7 +72,7 @@ solution "unibot"
 	end
 
 	configurations { "Release", "Debug" }
-	defines { "FLOOR_NET_PROTOCOL=TCP_protocol", "TCC_LIB_ONLY=1" }
+	defines { "TCC_LIB_ONLY=1" }
 
 	-- os specifics
 	if(not os.is("windows") or win_unixenv) then
@@ -85,16 +85,15 @@ solution "unibot"
 		add_include("/usr/include/libxml2")
 		add_include("/usr/include/libxml")
 		add_include("/usr/local/include/libxml2")
-		buildoptions { "-std=c++11 -Wall" }
+		buildoptions { "-std=c++11" }
 		
 		if(clang_libcxx) then
 			buildoptions { "-stdlib=libc++" }
 			buildoptions { "-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c99-extensions -Wno-header-hygiene" }
 			buildoptions { "-Wno-gnu -Wno-documentation -Wno-system-headers -Wno-global-constructors -Wno-padded -Wno-packed" }
-			buildoptions { "-Wno-switch-enum -Wno-exit-time-destructors -Wno-unknown-warning-option -Wno-nested-anon-type" }
+			buildoptions { "-Wno-switch-enum -Wno-exit-time-destructors -Wno-unknown-warning-option -Wno-nested-anon-types" }
 			linkoptions { "-fvisibility=default" }
 			if(not win_unixenv) then
-				buildoptions { "-integrated-as" }
 				defines { "FLOOR_EXPORT=1" }
 				linkoptions { "-stdlib=libc++" }
 				if(os.is("linux")) then
@@ -109,7 +108,7 @@ solution "unibot"
 		end
 		
 		if(gcc_compat) then
-			buildoptions { "-Wno-trigraphs -Wreturn-type -Wunused-variable -Wno-strict-aliasing" }
+			buildoptions { "-Wall -Wno-trigraphs -Wreturn-type -Wunused-variable -Wno-strict-aliasing" }
 		end
 	end
 	
