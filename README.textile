@@ -9,7 +9,7 @@ You can also specify the config location relative from the "/etc" folder when st
 
 *Build Instructions:*
 on Linux:
-* install all dependencies (clang 3.2+, libc++, SDL2, boost, lua)
+* install all dependencies (clang 3.3+, libc++, SDL2, boost, lua)
 * run ./premake.sh
 * make
 
