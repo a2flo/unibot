@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 	// set lua script search path
 	const string lua_path = lua::lua_script_folder();
 	if(!file_io::is_directory(lua_path)) {
-		log_error("lua scripts folder (%s) does not exist or is inaccessible!");
+		log_error("lua scripts folder (%s) does not exist or is inaccessible!", lua_path);
 		floor::destroy();
 		return -1;
 	}

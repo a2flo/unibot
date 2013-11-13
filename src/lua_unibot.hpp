@@ -100,7 +100,7 @@ protected:
 				}
 				else {
 					script.seekg(0, ios::beg);
-					char* script_data = new char[script_size+1];
+					char* script_data = new char[(size_t)script_size + 1];
 					script.read(script_data, script_size);
 					script_data[script_size] = 0;
 					
