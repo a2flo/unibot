@@ -14,8 +14,6 @@
 		5C580988130CBD6C002D56DF /* lua_bindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580971130CBD6C002D56DF /* lua_bindings.cpp */; };
 		5C58098A130CBD6C002D56DF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C580975130CBD6C002D56DF /* main.cpp */; };
 		5C81C43217E5B2FF00FE6791 /* lua_unibot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */; };
-		5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8906F517984FA70075DC99 /* SDL2.framework */; };
-		5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CA2C5DE11258F32007EC336 /* lua.framework */; };
 		5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4AB100E514F00CEA98D /* Cocoa.framework */; };
 		5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CFAD4B1100E519700CEA98D /* AppKit.framework */; };
 /* End PBXBuildFile section */
@@ -94,10 +92,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C8906F717984FA70075DC99 /* SDL2.framework in Frameworks */,
 				5CFAD4AC100E514F00CEA98D /* Cocoa.framework in Frameworks */,
 				5CFAD4B2100E519700CEA98D /* AppKit.framework in Frameworks */,
-				5CA2C5DF11258F32007EC336 /* lua.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +342,7 @@
 				CONFIGURATION_BUILD_DIR = bin;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -385,6 +382,7 @@
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
+					/usr/local/opt/openssl/lib,
 					/usr/local/lib,
 					/usr/lib,
 					/usr/X11/lib,
@@ -400,6 +398,10 @@
 					/usr/include/libxml2,
 					"-isystem",
 					/usr/local/include,
+					"-isystem",
+					/usr/local/opt/openssl/include,
+					"-iframework",
+					/Library/Frameworks,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -411,6 +413,10 @@
 					"-lfloord",
 					"-lcrypto",
 					"-lssl",
+					"-framework",
+					SDL2,
+					"-framework",
+					lua,
 				);
 				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibotd;
@@ -460,6 +466,7 @@
 				CONFIGURATION_BUILD_DIR = bin;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
@@ -497,6 +504,7 @@
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
+					/usr/local/opt/openssl/lib,
 					/usr/local/lib,
 					/usr/lib,
 					/usr/X11/lib,
@@ -511,6 +519,10 @@
 					/usr/include/libxml2,
 					"-isystem",
 					/usr/local/include,
+					"-isystem",
+					/usr/local/opt/openssl/include,
+					"-iframework",
+					/Library/Frameworks,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -522,6 +534,10 @@
 					"-lfloor",
 					"-lcrypto",
 					"-lssl",
+					"-framework",
+					SDL2,
+					"-framework",
+					lua,
 				);
 				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibot;
