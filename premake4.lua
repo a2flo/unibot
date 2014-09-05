@@ -85,7 +85,7 @@ solution "unibot"
 		add_include("/usr/include/libxml2")
 		add_include("/usr/include/libxml")
 		add_include("/usr/local/include/libxml2")
-		buildoptions { "-std=c++1y" }
+		buildoptions { "-std=gnu++1y" }
 		
 		if(clang_libcxx) then
 			buildoptions { "-stdlib=libc++" }
