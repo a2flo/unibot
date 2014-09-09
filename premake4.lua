@@ -92,6 +92,7 @@ solution "unibot"
 			buildoptions { "-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c99-extensions -Wno-header-hygiene" }
 			buildoptions { "-Wno-gnu -Wno-documentation -Wno-system-headers -Wno-global-constructors -Wno-padded -Wno-packed" }
 			buildoptions { "-Wno-switch-enum -Wno-exit-time-destructors -Wno-unknown-warning-option -Wno-nested-anon-types" }
+			buildoptions { "-Wno-old-style-cast -Wno-date-time" }
 			linkoptions { "-fvisibility=default" }
 			if(not win_unixenv) then
 				defines { "FLOOR_EXPORT=1" }
