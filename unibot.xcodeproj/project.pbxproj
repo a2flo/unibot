@@ -33,6 +33,8 @@
 /* Begin PBXFileReference section */
 		5C0545391300236700E61960 /* exttable.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = exttable.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		5C05453B1301AEF000E61960 /* lua_bindings.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = lua_bindings.html; sourceTree = "<group>"; };
+		5C1573AA19BF8CD00089D5A2 /* config.dtd */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.dtd; sourceTree = "<group>"; };
+		5C1573AB19BF8CD00089D5A2 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		5C23366E11A8779100B69FFD /* reply.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = reply.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		5C24681117DCECB0007F2D16 /* bot_handler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = bot_handler.hpp; path = src/bot_handler.hpp; sourceTree = "<group>"; };
 		5C24681217DCECB0007F2D16 /* bot_states.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = bot_states.hpp; path = src/bot_states.hpp; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				5C9369B810125A0B0059AF48 /* premake4.lua */,
 				5C98D84713113FE400D359FE /* premake.sh */,
 				5C8CA29E1304B0EC00F1A706 /* build_version.sh */,
+				5C1573A919BF8CD00089D5A2 /* etc */,
 				5C05453A1301AEEF00E61960 /* doc */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				5CA2C6091125929D007EC336 /* scripts */,
@@ -150,6 +153,15 @@
 				5C05453B1301AEF000E61960 /* lua_bindings.html */,
 			);
 			path = doc;
+			sourceTree = "<group>";
+		};
+		5C1573A919BF8CD00089D5A2 /* etc */ = {
+			isa = PBXGroup;
+			children = (
+				5C1573AA19BF8CD00089D5A2 /* config.dtd */,
+				5C1573AB19BF8CD00089D5A2 /* config.xml */,
+			);
+			path = etc;
 			sourceTree = "<group>";
 		};
 		5C4776F61183CA0D003EB8BB /* games */ = {

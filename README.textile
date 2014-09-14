@@ -14,5 +14,5 @@ on Linux:
 * make
 
 on OS X:
-* install "floor":https://github.com/a2flo/floor, Xcode 6.0+, Xquartz, SDL2, boost (headers suffice), openssl and lua
+* install "floor":https://github.com/a2flo/floor, Xcode 6.1+, Xquartz, SDL2, boost (headers suffice), openssl and lua
 * open unibot.xcodeproj and build
