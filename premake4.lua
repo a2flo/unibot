@@ -73,7 +73,7 @@ solution "unibot"
 
 	configurations { "Release", "Debug" }
 	defines { "TCC_LIB_ONLY=1" }
-	defines { "FLOOR_SSL_CIPHER_LIST=\"aRSA+HIGH !3DES +kEDH +kRSA !kSRP !kPSK !SSLv3\"" }
+	defines { "FLOOR_SSL_CIPHER_LIST=\"aRSA+HIGH !3DES +kEDH +kRSA !kSRP !kPSK !SSLv3 !AESGCM\"" }
 
 	-- os specifics
 	if(not os.is("windows") or win_unixenv) then
