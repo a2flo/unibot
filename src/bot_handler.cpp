@@ -602,6 +602,16 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				}
 			});
 		}
+		else if(cmd == "ssl_info") {
+			if(!n->is_ssl()) {
+				n->send_private_msg(target, "tls/ssl is not in use!");
+			}
+			else {
+				n->send_private_msg(target, ("using tls/ssl with cipher \""s +
+											 n->get_ssl_protocol().get_protocol().get_protocol_details().get_current_cipher() +
+											 "\"!"));
+			}
+		}
 	}
 	
 	// handle ctcp messages that start and end with 0x01 (these can come from everywhere)
