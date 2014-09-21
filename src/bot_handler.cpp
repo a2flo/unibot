@@ -610,6 +610,13 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 				n->send_private_msg(target, ("using tls/ssl with cipher \""s +
 											 n->get_ssl_protocol().get_protocol().get_protocol_details().get_current_cipher() +
 											 "\"!"));
+				auto cipher_stack = SSL_get_ciphers(n->get_ssl_protocol().get_protocol().get_protocol_details().socket.native_handle());
+				const int cipher_count = sk_SSL_CIPHER_num(cipher_stack);
+				stringstream cipher_list;
+				for(int i = 0; i < cipher_count; ++i) {
+					cipher_list << SSL_CIPHER_get_name(sk_SSL_CIPHER_value(cipher_stack, i)) << " ";
+				}
+				n->send_private_msg(target, "supported ciphers: " + cipher_list.str());
 			}
 		}
 	}
@@ -625,7 +632,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(stripped_msg == "PING") {
 			time_t timestamp;
 			time(&timestamp);
-			n->send_ctcp_msg(target, "PING", size_t2string(timestamp));
+			n->send_ctcp_msg(target, "PING", to_string(timestamp));
 		}
 		else if(stripped_msg == "TIME") {
 			stringstream local_time;
