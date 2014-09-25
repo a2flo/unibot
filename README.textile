@@ -8,7 +8,7 @@ The configuration file (etc/unibot.conf) must reside in the system "/etc" folder
 You can also specify the config location relative from the "/etc" folder when starting the bot: "$ unibot somefolder/unibot.conf".
 
 *Build Instructions:*
-on Linux/FreeBSD/MinGW:
+on Linux/FreeBSD/MinGW (or OS X/iOS as well):
 * install all dependencies ("floor":https://github.com/a2flo/floor, clang 3.5+, libc++, SDL2, boost, openssl, lua)
 * run ./build.sh
 * make
