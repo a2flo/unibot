@@ -260,6 +260,13 @@ if [ $BUILD_OS != "mingw" ]; then
 	fi
 fi
 
+# link against floor (note: floor debug lib is suffixed by "d")
+if [ $BUILD_MODE == "debug" ]; then
+	LDFLAGS="${LDFLAGS} -lfloord"
+else
+	LDFLAGS="${LDFLAGS} -lfloor"
+fi
+
 # use pkg-config (and some manual libs/includes) on all platforms except osx/ios
 if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 	# strip some symbols
@@ -296,12 +303,6 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 	fi
 	if [ ${BUILD_CONF_CUDA} -gt 0 ]; then
 		UNCHECKED_LIBS="${UNCHECKED_LIBS} cuda cudart"
-	fi
-	# floor debug lib is suffixed by "d"
-	if [ $BUILD_MODE == "debug" ]; then
-		UNCHECKED_LIBS="${UNCHECKED_LIBS} floord"
-	else
-		UNCHECKED_LIBS="${UNCHECKED_LIBS} floor"
 	fi
 
 	# add os specific libs
@@ -407,12 +408,6 @@ else
 	LDFLAGS="${LDFLAGS} -fobjc-link-runtime"
 	
 	# frameworks and libs
-	# floor debug lib is suffixed by "d"
-	if [ $BUILD_MODE == "debug" ]; then
-		LDFLAGS="${LDFLAGS} -lfloord"
-	else
-		LDFLAGS="${LDFLAGS} -lfloor"
-	fi
 	LDFLAGS="${LDFLAGS} -framework SDL2 -framework SDL2_image"
 	LDFLAGS="${LDFLAGS} -framework lua"
 	LDFLAGS="${LDFLAGS} -lcrypto -lssl"
