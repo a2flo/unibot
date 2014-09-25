@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 	init_event_handler();
 	
 	// config
-	config* conf = new config((ssize_t)argc, (const char**)argv);
+	config* conf = new config(argc, (const char**)argv);
 	
 	// initialize net
 	bool restart_bot = false;

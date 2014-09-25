@@ -19,7 +19,7 @@
 #include "config.hpp"
 #include <floor/floor/floor.hpp>
 
-config::config(const ssize_t& argc, const char** argv) {
+config::config(const int& argc, const char** argv) {
 	// default values
 	config_data["verbosity"] = size_t2string((size_t)logger::LOG_TYPE::SIMPLE_MSG);
 #if !defined(WIN_UNIXENV)
@@ -32,10 +32,10 @@ config::config(const ssize_t& argc, const char** argv) {
 	const size_t slash_pos = binary.rfind('/');
 	if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
 	
-	config_data["argc"] = ssize_t2string(argc);
+	config_data["argc"] = int2string(argc);
 	config_data["arg_0"] = core::strip_path(floor::get_absolute_path()+binary);
-	for(ssize_t i = 1; i < argc; i++) {
-		config_data["arg_"+ssize_t2string(i)] = argv[i];
+	for(int i = 1; i < argc; i++) {
+		config_data["arg_"+int2string(i)] = argv[i];
 	}
 	
 	// get config entries from the xml config doc

@@ -23,7 +23,7 @@
 
 class config {
 public:
-	config(const ssize_t& argc, const char** argv);
+	config(const int& argc, const char** argv);
 	~config();
 	
 	string get_config_entry(const string& name) const;
