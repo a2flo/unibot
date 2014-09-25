@@ -43,20 +43,26 @@ template<> bool check_lua_type<string>(lua_State* state, const size_t& arg_num) 
 	return (lua_isstring(state, (int)arg_num) == 1);
 }
 
-#ifndef PLATFORM_X86
-template<> bool check_lua_type<int>(lua_State* state, const size_t& arg_num) {
+template<> bool check_lua_type<int32_t>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
-template<> bool check_lua_type<unsigned int>(lua_State* state, const size_t& arg_num) {
+template<> bool check_lua_type<uint32_t>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
-#endif
+template<> bool check_lua_type<int64_t>(lua_State* state, const size_t& arg_num) {
+	return (lua_isnumber(state, (int)arg_num) == 1);
+}
+template<> bool check_lua_type<uint64_t>(lua_State* state, const size_t& arg_num) {
+	return (lua_isnumber(state, (int)arg_num) == 1);
+}
+#if defined(__APPLE__)
 template<> bool check_lua_type<size_t>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
 template<> bool check_lua_type<ssize_t>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
+#endif
 template<> bool check_lua_type<float>(lua_State* state, const size_t& arg_num) {
 	return (lua_isnumber(state, (int)arg_num) == 1);
 }
@@ -77,20 +83,26 @@ template<> string get_lua_arg<string>(lua_State* state, const size_t& arg_num) {
 	return string(lua_tostring(state, (int)arg_num));
 }
 
-#ifndef PLATFORM_X86
-template<> int get_lua_arg<int>(lua_State* state, const size_t& arg_num) {
-	return int(lua_tointeger(state, (int)arg_num));
+template<> int32_t get_lua_arg<int32_t>(lua_State* state, const size_t& arg_num) {
+	return (int32_t)(lua_tointeger(state, (int)arg_num));
 }
-template<> unsigned int get_lua_arg<unsigned int>(lua_State* state, const size_t& arg_num) {
-	return (unsigned int)(lua_tointeger(state, (int)arg_num));
+template<> uint32_t get_lua_arg<uint32_t>(lua_State* state, const size_t& arg_num) {
+	return (uint32_t)(lua_tointeger(state, (int)arg_num));
 }
-#endif
+template<> int64_t get_lua_arg<int64_t>(lua_State* state, const size_t& arg_num) {
+	return (int64_t)(lua_tointeger(state, (int)arg_num));
+}
+template<> uint64_t get_lua_arg<uint64_t>(lua_State* state, const size_t& arg_num) {
+	return (uint64_t)(lua_tointeger(state, (int)arg_num));
+}
+#if defined(__APPLE__)
 template<> size_t get_lua_arg<size_t>(lua_State* state, const size_t& arg_num) {
 	return size_t(lua_tointeger(state, (int)arg_num));
 }
 template<> ssize_t get_lua_arg<ssize_t>(lua_State* state, const size_t& arg_num) {
 	return ssize_t(lua_tointeger(state, (int)arg_num));
 }
+#endif
 template<> float get_lua_arg<float>(lua_State* state, const size_t& arg_num) {
 	return float(lua_tonumber(state, (int)arg_num));
 }

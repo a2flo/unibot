@@ -19,9 +19,9 @@
 #ifndef __UNIBOT_BOT_STATES_HPP__
 #define __UNIBOT_BOT_STATES_HPP__
 
-#include <floor/core/platform.hpp>
 #include <floor/net/net.hpp>
 #include <floor/net/irc_net.hpp>
+#include <floor/core/platform.hpp>
 
 class bot_states {
 public:

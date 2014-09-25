@@ -19,16 +19,16 @@
 #ifndef __UNIBOT_LUA_BINDINGS_HPP__
 #define __UNIBOT_LUA_BINDINGS_HPP__
 
-#include <floor/core/platform.hpp>
 #include <floor/net/net.hpp>
 #include <floor/net/irc_net.hpp>
+#include <floor/core/platform.hpp>
 #include "bot_states.hpp"
 #include "bot_handler.hpp"
 #include "config.hpp"
 #include <floor/core/util.hpp>
 
 // lua includes
-#if defined(__APPLE__) || defined(__WINDOWS__)
+#if defined(__APPLE__)
 #include <lua/lua.hpp>
 #else
 #include <lua.hpp>

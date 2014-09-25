@@ -19,11 +19,11 @@
 #ifndef __UNIBOT_MAIN_HPP__
 #define __UNIBOT_MAIN_HPP__
 
+#include <floor/net/net.hpp>
+#include <floor/net/irc_net.hpp>
 #include <floor/floor/floor.hpp>
 #include <floor/core/platform.hpp>
 #include "event_handler.hpp"
-#include <floor/net/net.hpp>
-#include <floor/net/irc_net.hpp>
 #include "bot_handler.hpp"
 #include "bot_states.hpp"
 #include "config.hpp"

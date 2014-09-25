@@ -19,9 +19,9 @@
 #ifndef __UNIBOT_LUA_UNIBOT_HPP__
 #define __UNIBOT_LUA_UNIBOT_HPP__
 
-#include <floor/core/platform.hpp>
 #include <floor/net/net.hpp>
 #include <floor/net/irc_net.hpp>
+#include <floor/core/platform.hpp>
 #include "bot_states.hpp"
 #include "bot_handler.hpp"
 #include "config.hpp"
@@ -88,7 +88,7 @@ protected:
 			script.open(script_filename.c_str(), ios::in);
 			if(script.is_open()) {
 				script.seekg(0, ios::end);
-				const streamsize script_size = script.tellg();
+				const streamsize script_size = (streamsize)script.tellg();
 				
 				if(script_size > UNIBOT_MAX_LUA_SCRIPT_SIZE) {
 					load_error = true;
@@ -105,11 +105,11 @@ protected:
 					script_data[script_size] = 0;
 					
 					string script_string = script_data;
-#ifdef __WINDOWS__
+/*#ifdef __WINDOWS__
 					string script_path = get_absolute_path() + LUA_SCRIPT_FOLDER + "include\\?.lua";
 					script_path = find_and_replace(script_path, "\\", "\\\\");
 					script_string = "package.path = package.path .. \";" + script_path + "\"\n" + script_string;
-#endif
+#endif*/
 					luaL_loadstring(state, script_string.c_str());
 					delete [] script_data;
 				}

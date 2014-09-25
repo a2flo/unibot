@@ -19,10 +19,10 @@
 #ifndef __UNIBOT_BOT_HANDLER_HPP__
 #define __UNIBOT_BOT_HANDLER_HPP__
 
-#include <floor/core/platform.hpp>
-#include "event_handler.hpp"
 #include <floor/net/net.hpp>
 #include <floor/net/irc_net.hpp>
+#include <floor/core/platform.hpp>
+#include "event_handler.hpp"
 #include "bot_states.hpp"
 #include "config.hpp"
 #include "build_version.hpp"

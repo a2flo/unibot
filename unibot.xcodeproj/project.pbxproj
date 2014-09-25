@@ -63,16 +63,15 @@
 		5C713C40117679E7001B6645 /* ticket.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ticket.lua; sourceTree = "<group>"; };
 		5C749B691125BBEF0079A57A /* system.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = system.lua; sourceTree = "<group>"; };
 		5C749B6A1125BBEF0079A57A /* time.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = time.lua; sourceTree = "<group>"; };
+		5C7800FC19D4A62100853135 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_unibot.cpp; path = src/lua_unibot.cpp; sourceTree = "<group>"; };
 		5C81C43117E5B2FF00FE6791 /* lua_unibot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lua_unibot.hpp; path = src/lua_unibot.hpp; sourceTree = "<group>"; };
 		5C8906F517984FA70075DC99 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Library/Frameworks/SDL2.framework; sourceTree = SDKROOT; };
 		5C8906F617984FA70075DC99 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = Library/Frameworks/SDL2_net.framework; sourceTree = SDKROOT; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
-		5C9369B810125A0B0059AF48 /* premake4.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = premake4.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.python; };
 		5C95C40F1184EDEF005864D0 /* bindings_test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bindings_test.lua; sourceTree = "<group>"; };
 		5C95C4131184EE58005864D0 /* test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.lua; sourceTree = "<group>"; };
 		5C95C482118628BB005864D0 /* texasholdem.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = texasholdem.lua; sourceTree = "<group>"; };
-		5C98D84713113FE400D359FE /* premake.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = premake.sh; sourceTree = "<group>"; };
 		5CA2C5DE11258F32007EC336 /* lua.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lua.framework; path = Library/Frameworks/lua.framework; sourceTree = SDKROOT; };
 		5CA2C60B112592C9007EC336 /* help.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = help.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		5CAD48761188837F00CA1EED /* game_framework.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = game_framework.lua; sourceTree = "<group>"; };
@@ -105,8 +104,7 @@
 		08FB7794FE84155DC02AAC07 /* unibot */ = {
 			isa = PBXGroup;
 			children = (
-				5C9369B810125A0B0059AF48 /* premake4.lua */,
-				5C98D84713113FE400D359FE /* premake.sh */,
+				5C7800FC19D4A62100853135 /* build.sh */,
 				5C8CA29E1304B0EC00F1A706 /* build_version.sh */,
 				5C1573A919BF8CD00089D5A2 /* etc */,
 				5C05453A1301AEEF00E61960 /* doc */,
