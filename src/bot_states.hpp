@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2013 Florian Ziesche
+ *  Copyright (C) 2009 - 2014 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #ifndef __UNIBOT_BOT_STATES_HPP__
 #define __UNIBOT_BOT_STATES_HPP__
 
-#include "core/platform.hpp"
-#include "net/net.hpp"
-#include "net/irc_net.hpp"
+#include <floor/core/platform.hpp>
+#include <floor/net/net.hpp>
+#include <floor/net/irc_net.hpp>
 
 class bot_states {
 public:

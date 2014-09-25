@@ -394,7 +394,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					.,
-					/usr/local/include/floor,
+					/usr/local/include,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
@@ -522,7 +522,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					.,
-					/usr/local/include/floor,
+					/usr/local/include,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";

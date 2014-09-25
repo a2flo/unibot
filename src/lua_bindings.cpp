@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2013 Florian Ziesche
+ *  Copyright (C) 2009 - 2014 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #include "lua_bindings.hpp"
 #include "lua_unibot.hpp"
-#include "core/core.hpp"
+#include <floor/core/core.hpp>
 
 //
 lua_bindings_exception::lua_bindings_exception(const string& error_str_) : error_str(error_str_) {}

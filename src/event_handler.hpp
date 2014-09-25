@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2013 Florian Ziesche
+ *  Copyright (C) 2009 - 2014 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 #ifndef __UNIBOT_EVENT_HANDLER_HPP__
 #define __UNIBOT_EVENT_HANDLER_HPP__
 
-#include "core/platform.hpp"
-#include "threading/thread_base.hpp"
+#include <floor/core/platform.hpp>
+#include <floor/threading/thread_base.hpp>
 
 void init_event_handler();
 void destroy_event_handler();

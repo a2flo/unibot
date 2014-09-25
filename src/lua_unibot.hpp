@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2013 Florian Ziesche
+ *  Copyright (C) 2009 - 2014 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 #ifndef __UNIBOT_LUA_UNIBOT_HPP__
 #define __UNIBOT_LUA_UNIBOT_HPP__
 
-#include "core/platform.hpp"
-#include "net/net.hpp"
-#include "net/irc_net.hpp"
+#include <floor/core/platform.hpp>
+#include <floor/net/net.hpp>
+#include <floor/net/irc_net.hpp>
 #include "bot_states.hpp"
 #include "bot_handler.hpp"
 #include "config.hpp"
-#include "core/util.hpp"
+#include <floor/core/util.hpp>
 #include "lua_bindings.hpp"
 
 #define LUA_SCRIPT_FOLDER "scripts" FLOOR_OS_DIR_SLASH

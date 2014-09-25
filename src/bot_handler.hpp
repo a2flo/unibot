@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2013 Florian Ziesche
+ *  Copyright (C) 2009 - 2014 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,14 +19,14 @@
 #ifndef __UNIBOT_BOT_HANDLER_HPP__
 #define __UNIBOT_BOT_HANDLER_HPP__
 
-#include "core/platform.hpp"
+#include <floor/core/platform.hpp>
 #include "event_handler.hpp"
-#include "net/net.hpp"
-#include "net/irc_net.hpp"
+#include <floor/net/net.hpp>
+#include <floor/net/irc_net.hpp>
 #include "bot_states.hpp"
 #include "config.hpp"
 #include "build_version.hpp"
-#include "threading/thread_base.hpp"
+#include <floor/threading/thread_base.hpp>
 
 #define UNIBOT_MAJOR_VERSION "0"
 #define UNIBOT_MINOR_VERSION "5"

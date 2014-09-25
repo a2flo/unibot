@@ -1,6 +1,6 @@
 /*
  *  UniBot
- *  Copyright (C) 2009 - 2013 Florian Ziesche
+ *  Copyright (C) 2009 - 2014 Florian Ziesche
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  */
 
 #include "lua_unibot.hpp"
-#include "floor/floor.hpp"
+#include <floor/floor/floor.hpp>
 
 #define __REGISTER_FUNCTION(func_name) lua_register(__current_lua_state, #func_name, &lua_bindings::func_name);
 
