@@ -27,10 +27,12 @@
 	 verbosity: 0 = none, 1 = +error, 2 = +warning, 3 = +debug, 4 = +msg, 5 = +undecorated output
 	 append_mode: boolean, if enabled, this will, for each logging operation, open the log file in append mode, write to it and close it again
 	 separate_msg_file: boolean, if enabled and verbosity >= 3, this will log msgs into a separate file
+	 use_time: boolean, if enabled prints the current time in each log msg (format: [%H:%M:%S.usecs])
+	 use_color: boolean, if enabled prints the log type in color (error = red, debug = green, ...)
 	 log_filename: relative filename of the log file, relative to the current working directory
 	 msg_filename: relative filename of the msg log file, only used/created if separate_msg_file = true
 	-->
-	<logging verbosity="5" append_mode="true" separate_msg_file="true" log_filename="log.txt" msg_filename="msg.txt" />
+	<logging verbosity="5" append_mode="true" separate_msg_file="true" use_time="true" use_color="true" log_filename="log.txt" msg_filename="msg.txt" />
 	
 	<!-- irc server timeouts
 	 server_ping (in ms): time interval after which the bot will ping the irc server (default: 30s)
