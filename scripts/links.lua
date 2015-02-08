@@ -15,6 +15,7 @@ function handle_message(origin, target, cmd, parameters)
 		{ "wp", "https://en.wikipedia.org/wiki/Mainpage", "https://en.wikipedia.org/wiki/" },
 		{ "wa", "https://www.wolframalpha.com", "https://www.wolframalpha.com/input/?i=" },
 		{ "dict", "https://dict.leo.org", "https://dict.leo.org/ende/index_en.html#search=" },
+		{ "u", "https://www.urbandictionary.com", "https://www.urbandictionary.com/define.php?term=" }
 	}
 	
 	for i = 1, #pages do
