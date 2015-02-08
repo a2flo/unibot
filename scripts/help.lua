@@ -62,6 +62,8 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(origin, " g [<term>]: outputs a link to google.com [or to the given term]")
 		elseif parameters == "dict" then
 			send_private_msg(origin, " dict [<term>]: outputs a link to dict.cc [or to the given term]")
+		elseif parameters == "u" then
+			send_private_msg(origin, " u [<term>]: outputs a link to urbandictionary.com [or to the given term]")
 		-- Owner Cmds
 		elseif parameters == "cmd" and is_owner(origin) then
 			send_private_msg(origin, " cmd <irc cmd>: executes the given command, i.e. \"!cmd PRIVMSG #unichannel :bla\"")
@@ -92,7 +94,7 @@ function handle_message(origin, target, cmd, parameters)
 			send_private_msg(origin, "* \002Bot Info\002: who's your daddy?, system, time, uptime, src, spec, version, ping, bug <report>, ticket <summary>")
 			send_private_msg(origin, "* \002Channel\002: users, roulette, slap <user>, dice <range>, identify")
 			send_private_msg(origin, "* \002Misc\002: paste")
-			send_private_msg(origin, "* \002Links\002: w, wa, g, dict")
+			send_private_msg(origin, "* \002Links\002: w, wa, g, dict, u")
 			send_private_msg(origin, "  \002+options\002: <message offset> <word offset>, extracts the word (given by word offset) or whole msg (if no word offset) of the msg specified by message offset (in reverse)")
 
 			-- TODO: clean up add2file and add command here
