@@ -9,7 +9,7 @@
 		// add the specified character(s) to the bots name until it can connect
 		"alt_add": "_",
 		// the bots password (used to authenticate/identify to the irc server/nickserv)
-		"password": "PASSWORD",
+		"password": "PASSWORD"
 	},
 	
 	// irc server options
@@ -21,13 +21,13 @@
 		// if enabled this will use ssl (tls 1.2) for all communication with the irc server
 		"ssl": true,
 		// irc channel name
-		"channel": "#unichannel",
+		"channel": "#unichannel"
 	},
 	
 	// bot owners
 	"owner": {
 		// names (irc user names): use ',' as a separator, whitespace will be stripped
-		"name": "[flo],[flos_bot],benjo",
+		"name": "[flo],[flos_bot],benjo"
 	},
 	
 	// logging options (apply to both console and file logging)
@@ -53,12 +53,12 @@
 		// time interval in ms after which the bot will ping the irc server (default: 30s)
 		"server_ping": 30000,
 		// after a server ping, if the server doesn't answer during the specified amount of time (30s), the bot will restart
-		"server_timeout": 30000,
+		"server_timeout": 30000
 	},
 
 	// don't change this
 	"compute": {
 		// don't want to rely on cuda/opencl/metal here (or need them)
-		"backend": "host",
+		"backend": "host"
 	}
 }
