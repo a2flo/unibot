@@ -304,7 +304,7 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 	COMMON_FLAGS="${COMMON_FLAGS} -fPIC"
 	
 	# pkg-config: required libraries/packages and optional libraries/packages
-	PACKAGES="sdl2"
+	PACKAGES="sdl2 lua"
 	PACKAGES_OPT=""
 	if [ ${BUILD_CONF_XML} -gt 0 ]; then
 		PACKAGES_OPT="${PACKAGES_OPT} libxml-2.0"
@@ -440,6 +440,7 @@ else
 	
 	# frameworks and libs
 	LDFLAGS="${LDFLAGS} -framework SDL2"
+	LDFLAGS="${LDFLAGS} -framework lua"
 	if [ ${BUILD_CONF_XML} -gt 0 ]; then
 		LDFLAGS="${LDFLAGS} -lxml2"
 	fi
