@@ -570,6 +570,7 @@ if [ $BUILD_OS == "osx" -o $BUILD_OS == "ios" ]; then
 fi
 
 # defines:
+COMMON_FLAGS="${COMMON_FLAGS} -DFLOOR_SSL_CIPHER_LIST=\"aRSA+HIGH !3DES +kEDH +kRSA !kSRP !kPSK !SSLv3 !AESGCM !RC4\""
 # set platform size define
 if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
 	COMMON_FLAGS="${COMMON_FLAGS} -DPLATFORM_X32"

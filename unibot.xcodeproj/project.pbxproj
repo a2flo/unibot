@@ -65,6 +65,7 @@
 		5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_unibot.cpp; path = src/lua_unibot.cpp; sourceTree = "<group>"; };
 		5C81C43117E5B2FF00FE6791 /* lua_unibot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lua_unibot.hpp; path = src/lua_unibot.hpp; sourceTree = "<group>"; };
 		5C8280D91B6CE5D7001F9BFE /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
+		5C8280DA1B6CEFE7001F9BFE /* README.textile */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.textile; sourceTree = "<group>"; };
 		5C8906F517984FA70075DC99 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Library/Frameworks/SDL2.framework; sourceTree = SDKROOT; };
 		5C8906F617984FA70075DC99 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = Library/Frameworks/SDL2_net.framework; sourceTree = SDKROOT; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
@@ -105,6 +106,7 @@
 			children = (
 				5C7800FC19D4A62100853135 /* build.sh */,
 				5C8CA29E1304B0EC00F1A706 /* build_version.sh */,
+				5C8280DA1B6CEFE7001F9BFE /* README.textile */,
 				5C1573A919BF8CD00089D5A2 /* etc */,
 				5C05453A1301AEEF00E61960 /* doc */,
 				08FB7795FE84155DC02AAC07 /* Source */,
