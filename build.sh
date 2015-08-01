@@ -36,9 +36,9 @@ CXX_VERSION=$(${CXX} -v 2>&1)
 if expr "${CXX_VERSION}" : ".*clang" >/dev/null; then
 	# also check the clang version
 	if expr "${CXX_VERSION}" : "Apple.*" >/dev/null; then
-		# apple xcode/llvm/clang versioning scheme -> at least 6.1 is required
-		if expr "$(echo ${CXX_VERSION} | head -n 1 | sed -E "s/Apple LLVM version ([0-9.]+) .*/\1/")" \< "6.1" >/dev/null; then
-			error "at least Xcode/LLVM/clang 6.1 is required to compile this project!"
+		# apple xcode/llvm/clang versioning scheme -> at least 6.1.0 is required (ships with Xcode 6.3)
+		if expr "$(echo ${CXX_VERSION} | head -n 1 | sed -E "s/Apple LLVM version ([0-9.]+) .*/\1/")" \< "6.1.0" >/dev/null; then
+			error "at least Xcode 6.3 / clang/LLVM 6.1.0 is required to compile this project!"
 		fi
 	else
 		# standard clang versioning scheme -> at least 3.5.0 is required
@@ -56,14 +56,18 @@ BUILD_MODE="release"
 BUILD_VERBOSE=0
 BUILD_JOB_COUNT=0
 
-# TODO: read floor_conf.hpp to know which libraries are necessary (i.e. if no opencl/cuda/openal should be used)
-# for now, assume all are used:
-BUILD_CONF_OPENCL=1
-BUILD_CONF_CUDA=1
-BUILD_CONF_OPENAL=1
-BUILD_CONF_NO_CL_PROFILING=1
+# read/evaluate floor_conf.hpp to know which build configuration should be used (must match the floor one!)
+eval $(printf "" | ${CXX} -E -dM -isystem /usr/include -isystem /usr/local/include -include floor/floor/floor_conf.hpp - 2>&1 | grep -E "define FLOOR_" | sed -E "s/.*define (.*) [\"]*([^ \"]*)[\"]*/export \1=\2/g")
+BUILD_CONF_OPENCL=$((1 - $((${FLOOR_NO_OPENCL}))))
+BUILD_CONF_CUDA=$((1 - $((${FLOOR_NO_CUDA}))))
+BUILD_CONF_OPENAL=$((1 - $((${FLOOR_NO_OPENAL}))))
+BUILD_CONF_HOST_COMPUTE=$((1 - $((${FLOOR_NO_HOST_COMPUTE}))))
+BUILD_CONF_METAL=$((1 - $((${FLOOR_NO_METAL}))))
+BUILD_CONF_NET=$((1 - $((${FLOOR_NO_NET}))))
+BUILD_CONF_XML=$((1 - $((${FLOOR_NO_XML}))))
+BUILD_CONF_EXCEPTIONS=$((1 - $((${FLOOR_NO_EXCEPTIONS}))))
+BUILD_CONF_NO_CL_PROFILING=$((1 - $((${FLOOR_CL_PROFILING}))))
 BUILD_CONF_POCL=0
-
 BUILD_CONF_LIBSTDCXX=0
 
 BUILD_ARCH_SIZE="x64"
@@ -87,20 +91,20 @@ for arg in "$@"; do
 			info "build script usage:"
 			echo ""
 			echo "build mode options:"
-			echo "	<default>	builds this project in release mode"
-			echo "	opt		builds this project in release mode + additional optimizations that take longer to compile (lto)"
-			echo "	debug		builds this project in debug mode"
-			echo "	clean		cleans all build binaries and intermediate build files"
+			echo "	<default>          builds this project in release mode"
+			echo "	opt                builds this project in release mode + additional optimizations that take longer to compile (lto)"
+			echo "	debug              builds this project in debug mode"
+			echo "	clean              cleans all build binaries and intermediate build files"
 			echo ""
 			echo "build configuration:"
-			#echo "	libstdc++	use the libstdc++ library instead of libc++ (unsupported)"
-			echo "	x32		build a 32-bit binary "$(if [ "${BUILD_ARCH_SIZE}" == "x32" ]; then printf "(default on this platform)"; fi)
-			echo "	x64		build a 64-bit binary "$(if [ "${BUILD_ARCH_SIZE}" == "x64" ]; then printf "(default on this platform)"; fi)
+			#echo "	libstdc++          use the libstdc++ library instead of libc++ (unsupported)"
+			echo "	x32                build a 32-bit binary "$(if [ "${BUILD_ARCH_SIZE}" == "x32" ]; then printf "(default on this platform)"; fi)
+			echo "	x64                build a 64-bit binary "$(if [ "${BUILD_ARCH_SIZE}" == "x64" ]; then printf "(default on this platform)"; fi)
 			echo ""
 			echo "misc flags:"
-			echo "	-v		verbose output (prints all executed compiler and linker commands, and some other information)"
-			echo "	-vv		very verbose output (same as -v + runs all compiler and linker commands with -v)"
-			echo "	-j#		explicitly use # amount of build jobs (instead of automatically using #logical-cpus jobs)"
+			echo "	-v                 verbose output (prints all executed compiler and linker commands, and some other information)"
+			echo "	-vv                very verbose output (same as -v + runs all compiler and linker commands with -v)"
+			echo "	-j#                explicitly use # amount of build jobs (instead of automatically using #logical-cpus jobs)"
 			echo ""
 			echo ""
 			echo "example:"
@@ -143,6 +147,15 @@ for arg in "$@"; do
 			;;
 	esac
 done
+
+# sanity check
+if [ ${BUILD_CONF_EXCEPTIONS} -eq 0 ]; then
+	error "can't build without exception support!"
+fi
+
+if [ ${BUILD_CONF_NET} -eq 0 ]; then
+	error "can't build without net support!"
+fi
 
 ##########################################
 # target and build environment setup
@@ -213,6 +226,11 @@ if [ $BUILD_OS == "mingw" -o $BUILD_OS == "cygwin" ]; then
 fi
 # all else: no file ending
 
+# disable metal support on non-iOS targets
+if [ $BUILD_OS != "ios" ]; then
+	BUILD_CONF_METAL=0
+fi
+
 ##########################################
 # directory setup
 # note that all paths are relative
@@ -263,23 +281,37 @@ fi
 
 # link against floor (note: floor debug lib is suffixed by "d")
 if [ $BUILD_MODE == "debug" ]; then
-	LDFLAGS="${LDFLAGS} -lfloord"
+	if [ $BUILD_OS == "mingw" ]; then
+		LDFLAGS="${LDFLAGS} -lfloord_static"
+	else
+		LDFLAGS="${LDFLAGS} -lfloord"
+	fi
 else
-	LDFLAGS="${LDFLAGS} -lfloor"
+	if [ $BUILD_OS == "mingw" ]; then
+		LDFLAGS="${LDFLAGS} -lfloor_static"
+	else
+		LDFLAGS="${LDFLAGS} -lfloor"
+	fi
 fi
 
 # use pkg-config (and some manual libs/includes) on all platforms except osx/ios
 if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
-	# strip some symbols
-	LDFLAGS="${LDFLAGS} -s"
+	# need to make kernel symbols visible for dlsym
+	LDFLAGS="${LDFLAGS} -rdynamic"
 	
 	# use PIC
 	LDFLAGS="${LDFLAGS} -fPIC"
 	COMMON_FLAGS="${COMMON_FLAGS} -fPIC"
 	
 	# pkg-config: required libraries/packages and optional libraries/packages
-	PACKAGES="sdl2 SDL2_image libcrypto libssl libxml-2.0 lua"
+	PACKAGES="sdl2"
 	PACKAGES_OPT=""
+	if [ ${BUILD_CONF_XML} -gt 0 ]; then
+		PACKAGES_OPT="${PACKAGES_OPT} libxml-2.0"
+	fi
+	if [ ${BUILD_CONF_NET} -gt 0 ]; then
+		PACKAGES_OPT="${PACKAGES_OPT} libcrypto libssl"
+	fi
 	if [ ${BUILD_CONF_OPENAL} -gt 0 ]; then
 		PACKAGES_OPT="${PACKAGES_OPT} openal"
 	fi
@@ -303,7 +335,7 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 		UNCHECKED_LIBS="${UNCHECKED_LIBS} OpenCL"
 	fi
 	if [ ${BUILD_CONF_CUDA} -gt 0 ]; then
-		UNCHECKED_LIBS="${UNCHECKED_LIBS} cuda cudart"
+		UNCHECKED_LIBS="${UNCHECKED_LIBS} cuda"
 	fi
 
 	# add os specific libs
@@ -315,36 +347,18 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 	
 	# linux:
 	#  * must also link against c++abi when using libc++
-	#  * need to explicitly add the cuda lib + include folder on linux
 	#  * need to add the /lib folder
 	if [ $BUILD_OS == "linux" ]; then
 		if [ ${BUILD_CONF_LIBSTDCXX} -eq 0 ]; then
 			UNCHECKED_LIBS="${UNCHECKED_LIBS} c++abi"
 		fi
 		LDFLAGS="${LDFLAGS} -L/lib"
-		if [ ${BUILD_CONF_CUDA} -gt 0 ]; then
-			if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
-				LDFLAGS="${LDFLAGS} -L/opt/cuda/lib"
-			else
-				LDFLAGS="${LDFLAGS} -L/opt/cuda/lib64"
-			fi
-		fi
-		INCLUDES="${INCLUDES} -isystem /opt/cuda/include"
 	fi
 	
 	# windows/mingw opencl and cuda handling
 	if [ $BUILD_OS == "mingw" ]; then
 		if [ ${BUILD_CONF_OPENCL} -gt 0 ]; then
-			if [ ! -z "${INTELOCLSDKROOT}" ]; then
-				# use intel opencl sdk
-				INTELOCLSDKROOT_FIXED=$(echo ${INTELOCLSDKROOT} | sed -E "s/\\\\/\//g")
-				if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
-					OPENCL_LIB_PATH="${INTELOCLSDKROOT_FIXED}lib/x86"
-				else
-					OPENCL_LIB_PATH="${INTELOCLSDKROOT_FIXED}lib/x64"
-				fi
-				INCLUDES="${INCLUDES} -isystem \"${INTELOCLSDKROOT_FIXED}include\""
-			elif [ ! -z "${AMDAPPSDKROOT}" ]; then
+			if [ ! -z "${AMDAPPSDKROOT}" ]; then
 				# use amd opencl sdk
 				AMDAPPSDKROOT_FIXED=$(echo ${AMDAPPSDKROOT} | sed -E "s/\\\\/\//g")
 				if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
@@ -353,6 +367,15 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 					OPENCL_LIB_PATH="${AMDAPPSDKROOT_FIXED}lib/x86_64"
 				fi
 				INCLUDES="${INCLUDES} -isystem \"${AMDAPPSDKROOT_FIXED}include\""
+			elif [ ! -z "${INTELOCLSDKROOT}" ]; then
+				# use intel opencl sdk
+				INTELOCLSDKROOT_FIXED=$(echo ${INTELOCLSDKROOT} | sed -E "s/\\\\/\//g")
+				if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
+					OPENCL_LIB_PATH="${INTELOCLSDKROOT_FIXED}lib/x86"
+				else
+					OPENCL_LIB_PATH="${INTELOCLSDKROOT_FIXED}lib/x64"
+				fi
+				INCLUDES="${INCLUDES} -isystem \"${INTELOCLSDKROOT_FIXED}include\""
 			elif [ ! -z "${CUDA_PATH}" ]; then
 				# use nvidia opencl/cuda sdk
 				if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
@@ -391,13 +414,20 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 else
 	# on osx/ios: assume everything is installed, pkg-config doesn't really exist
 	INCLUDES="${INCLUDES} -isystem /opt/X11/include"
-	INCLUDES="${INCLUDES} -isystem /usr/include/libxml2"
-	INCLUDES="${INCLUDES} -isystem /usr/local/opt/openssl/include"
+	if [ ${BUILD_CONF_XML} -gt 0 ]; then
+		INCLUDES="${INCLUDES} -isystem /usr/include/libxml2"
+	fi
+	if [ ${BUILD_CONF_NET} -gt 0 ]; then
+		INCLUDES="${INCLUDES} -isystem /usr/local/opt/openssl/include"
+	fi
 	INCLUDES="${INCLUDES} -iframework /Library/Frameworks"
 	
 	# additional lib paths
-	LDFLAGS="${LDFLAGS} -L/opt/X11/lib -L/usr/local/opt/openssl/lib"
-	
+	LDFLAGS="${LDFLAGS} -L/opt/X11/lib"
+	if [ ${BUILD_CONF_NET} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -L/usr/local/opt/openssl/lib"
+	fi
+
 	# rpath voodoo
 	LDFLAGS="${LDFLAGS} -Xlinker -rpath -Xlinker /usr/local/lib"
 	LDFLAGS="${LDFLAGS} -Xlinker -rpath -Xlinker /usr/lib"
@@ -409,10 +439,13 @@ else
 	LDFLAGS="${LDFLAGS} -fobjc-link-runtime"
 	
 	# frameworks and libs
-	LDFLAGS="${LDFLAGS} -framework SDL2 -framework SDL2_image"
-	LDFLAGS="${LDFLAGS} -framework lua"
-	LDFLAGS="${LDFLAGS} -lcrypto -lssl"
-	LDFLAGS="${LDFLAGS} -lxml2"
+	LDFLAGS="${LDFLAGS} -framework SDL2"
+	if [ ${BUILD_CONF_XML} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -lxml2"
+	fi
+	if [ ${BUILD_CONF_NET} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -lcrypto -lssl"
+	fi
 	if [ ${BUILD_CONF_CUDA} -gt 0 ]; then
 		LDFLAGS="${LDFLAGS} -weak_framework CUDA"
 	fi
@@ -425,23 +458,32 @@ else
 	if [ ${BUILD_CONF_OPENCL} -gt 0 ]; then
 		LDFLAGS="${LDFLAGS} -framework OpenCL"
 	fi
+	if [ ${BUILD_CONF_METAL} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -framework Metal"
+	fi
 fi
 
 # just in case, also add these rather default ones (should also go after all previous libs/includes,
 # in case a local or otherwise set up lib is overwriting a system lib and should be used instead)
 LDFLAGS="${LDFLAGS} -L/usr/lib -L/usr/local/lib"
-INCLUDES="${INCLUDES} -isystem /usr/include -isystem /usr/local/include"
+INCLUDES="${INCLUDES}"
+# don't automatically add /usr/include and /usr/local/include on mingw/msys (these will lead to the wrong headers being included)
+if [ $BUILD_OS != "mingw" ]; then
+    INCLUDES="${INCLUDES} -isystem /usr/include -isystem /usr/local/include"
+fi
 
-# checks if any source files have updated (are newer than the target binary)
-# if so, this increments the build version by one (updates the header file)
-info "build version update ..."
-. ./build_version.sh
-
-# version of the target (preprocess the floor version header, grep the version defines, transform them to exports and eval)
-eval $(${CXX} -E -dM -Isrc src/bot_handler.hpp 2>&1 | grep -E "define (UNIBOT_(MAJOR|MINOR|REVISION|DEV_STAGE|BUILD)_VERSION) " | sed -E "s/.*define (.*) [\"]*([^ \"]*)[\"]*/export \1=\2/g")
-TARGET_VERSION="${UNIBOT_MAJOR_VERSION}.${UNIBOT_MINOR_VERSION}.${UNIBOT_REVISION_VERSION}"
-TARGET_FULL_VERSION="${TARGET_VERSION}${UNIBOT_DEV_STAGE_VERSION}-${UNIBOT_BUILD_VERSION}"
-info "building ${TARGET_NAME} v${TARGET_FULL_VERSION}"
+# on linux: need to explicitly add the cuda lib + include folder and must do this _after_ /usr/{include,lib},
+# because its obsolete CL folder and lib conflict with the system ones
+if [ $BUILD_OS == "linux" ]; then
+	if [ ${BUILD_CONF_CUDA} -gt 0 ]; then
+		INCLUDES="${INCLUDES} -isystem /opt/cuda/include"
+		if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
+			LDFLAGS="${LDFLAGS} -L/opt/cuda/lib"
+		else
+			LDFLAGS="${LDFLAGS} -L/opt/cuda/lib64"
+		fi
+	fi
+fi
 
 ##########################################
 # flags
@@ -454,6 +496,11 @@ else
 	CXXFLAGS="${CXXFLAGS} -stdlib=libc++"
 fi
 CFLAGS="${CFLAGS} -std=gnu11"
+
+# disable exception support
+if [ ${BUILD_CONF_EXCEPTIONS} -eq 0 ]; then
+	CXXFLAGS="${CXXFLAGS} -fno-exceptions"
+fi
 
 # arch handling (use -arch on osx/ios and -m32/-m64 everywhere else, except for mingw)
 if [ $BUILD_OS == "osx" -o $BUILD_OS == "ios" ]; then
@@ -496,13 +543,17 @@ fi
 COMMON_FLAGS="${COMMON_FLAGS} -ffast-math -fstrict-aliasing"
 
 # debug flags, only used in the debug target
-DEBUG_FLAGS="-O0 -gdwarf-2 -DFLOOR_DEBUG=1 -DDEBUG"
+DEBUG_FLAGS="-O0 -DFLOOR_DEBUG=1 -DDEBUG"
+if [ $BUILD_OS != "mingw" ]; then
+	DEBUG_FLAGS="${DEBUG_FLAGS} -gdwarf-2"
+else
+	DEBUG_FLAGS="${DEBUG_FLAGS} -g"
+fi
 
 # release mode flags/optimizations
 # TODO: sse/avx selection/config? default to sse4.1 for now (core2)
 # TODO: also add -mtune option
 REL_FLAGS="-Ofast -funroll-loops -msse4.1"
-REL_FLAGS="${REL_FLAGS} -mllvm -force-vector-width=4 -mllvm -force-vector-unroll=4"
 
 # additional optimizations (used in addition to REL_CXX_FLAGS)
 REL_OPT_FLAGS="-flto"
@@ -511,16 +562,13 @@ REL_OPT_LD_FLAGS="-flto"
 # osx/ios: set min version
 if [ $BUILD_OS == "osx" -o $BUILD_OS == "ios" ]; then
 	if [ $BUILD_OS == "osx" ]; then
-		COMMON_FLAGS="${COMMON_FLAGS} -mmacosx-version-min=10.7"
+		COMMON_FLAGS="${COMMON_FLAGS} -mmacosx-version-min=10.9"
 	else
-		COMMON_FLAGS="${COMMON_FLAGS} -miphoneos-version-min=7.0"
+		COMMON_FLAGS="${COMMON_FLAGS} -miphoneos-version-min=8.0"
 	fi
 fi
 
 # defines:
-# use tcc/tccpp in lib-only mode (no main)
-COMMON_FLAGS="${COMMON_FLAGS} -DTCC_LIB_ONLY=1"
-COMMON_FLAGS="${COMMON_FLAGS} -DFLOOR_SSL_CIPHER_LIST=\"aRSA+HIGH !3DES +kEDH +kRSA !kSRP !kPSK !SSLv3 !AESGCM\""
 # set platform size define
 if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
 	COMMON_FLAGS="${COMMON_FLAGS} -DPLATFORM_X32"
@@ -543,13 +591,15 @@ if [ $BUILD_OS == "mingw" -o $BUILD_OS == "cygwin" ]; then
 fi
 
 # hard-mode c++ ;) TODO: clean this up + explanations
-WARNINGS="${WARNINGS} -Weverything -Wno-gnu -Wno-c++98-compat"
+WARNINGS="${WARNINGS} -Weverything -Wthread-safety -Wthread-safety-negative -Wthread-safety-beta -Wthread-safety-verbose"
+WARNINGS="${WARNINGS} -Wno-gnu -Wno-c++98-compat"
 WARNINGS="${WARNINGS} -Wno-c++98-compat-pedantic -Wno-c99-extensions"
 WARNINGS="${WARNINGS} -Wno-header-hygiene -Wno-documentation"
 WARNINGS="${WARNINGS} -Wno-system-headers -Wno-global-constructors -Wno-padded"
 WARNINGS="${WARNINGS} -Wno-packed -Wno-switch-enum -Wno-exit-time-destructors"
 WARNINGS="${WARNINGS} -Wno-unknown-warning-option -Wno-nested-anon-types"
-WARNINGS="${WARNINGS} -Wno-old-style-cast -Wno-date-time"
+WARNINGS="${WARNINGS} -Wno-old-style-cast -Wno-date-time -Wno-reserved-id-macro"
+WARNINGS="${WARNINGS} -Wno-documentation-unknown-command"
 if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
 	# ignore warnings about required alignment increases on 32-bit platforms (won't and can't fix)
 	WARNINGS="${WARNINGS} -Wno-cast-align"

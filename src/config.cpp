@@ -21,7 +21,7 @@
 
 config::config(const int& argc, const char** argv) {
 	// default values
-	config_data["verbosity"] = size_t2string((size_t)logger::LOG_TYPE::SIMPLE_MSG);
+	config_data["verbosity"] = to_string((size_t)logger::LOG_TYPE::SIMPLE_MSG);
 #if !defined(WIN_UNIXENV)
 	config_data["environment"] = "unix";
 #else
@@ -32,31 +32,31 @@ config::config(const int& argc, const char** argv) {
 	const size_t slash_pos = binary.rfind('/');
 	if(slash_pos != string::npos) binary = binary.substr(slash_pos+1, binary.length()-slash_pos-1);
 	
-	config_data["argc"] = int2string(argc);
+	config_data["argc"] = to_string(argc);
 	config_data["arg_0"] = core::strip_path(floor::get_absolute_path()+binary);
 	for(int i = 1; i < argc; i++) {
-		config_data["arg_"+int2string(i)] = argv[i];
+		config_data["arg_"+to_string(i)] = argv[i];
 	}
 	
-	// get config entries from the xml config doc
+	// get config entries from the json config doc
 	const auto& config_doc = floor::get_config_doc();
 	
-	config_data["bot_name"] = config_doc.get<string>("config.unibot.name", "[unibot]");
-	config_data["bot_realname"] = config_doc.get<string>("config.unibot.realname", "UniBot");
-	config_data["bot_alt_add"] = config_doc.get<string>("config.unibot.alt_add", "_");
+	config_data["bot_name"] = config_doc.get<string>("unibot.name", "[unibot]");
+	config_data["bot_realname"] = config_doc.get<string>("unibot.realname", "UniBot");
+	config_data["bot_alt_add"] = config_doc.get<string>("unibot.alt_add", "_");
 	config_data["password"] = "";
-	bot_password = config_doc.get<string>("config.unibot.password", "");
+	bot_password = config_doc.get<string>("unibot.password", "");
 	
-	config_data["hostname"] = config_doc.get<string>("config.server.hostname", "irc.freenode.net");
-	config_data["port"] = config_doc.get<string>("config.server.port", "6667");
-	config_data["ssl"] = (config_doc.get<bool>("config.server.ssl", true) ? "true" : "false");
-	config_data["channel"] = config_doc.get<string>("config.server.channel", "#unichannel");
+	config_data["hostname"] = config_doc.get<string>("server.hostname", "irc.freenode.net");
+	config_data["port"] = to_string(config_doc.get<uint64_t>("server.port", 7000));
+	config_data["ssl"] = (config_doc.get<bool>("server.ssl", true) ? "true" : "false");
+	config_data["channel"] = config_doc.get<string>("server.channel", "#unichannel");
 	
-	config_data["server_ping"] = config_doc.get<string>("config.timeouts.server_ping", "30000");
-	config_data["server_timeout"] = config_doc.get<string>("config.timeouts.server_timeout", "30000");
+	config_data["server_ping"] = to_string(config_doc.get<uint64_t>("timeouts.server_ping", 30000));
+	config_data["server_timeout"] = to_string(config_doc.get<uint64_t>("timeouts.server_timeout", 30000));
 	
 	// owner names handling
-	config_data["owner_names"] = config_doc.get<string>("config.owner.names", "[flo]");
+	config_data["owner_names"] = config_doc.get<string>("owner.names", "[flo]");
 	auto owner_names_vec = core::tokenize(config_data["owner_names"], ',');
 	for(auto& owner : owner_names_vec) {
 		// trim each (array) value

@@ -35,7 +35,7 @@ const char* invalidate_scripts_exception::what() const noexcept {
 // helper functions
 
 template<typename T> bool check_lua_type(lua_State* state floor_unused, const size_t& arg_num) {
-	throw lua_bindings_exception(string("unknown argument type, argument #"+size_t2string(arg_num)+", user data types are not supported yet!"));
+	throw lua_bindings_exception(string("unknown argument type, argument #"+to_string(arg_num)+", user data types are not supported yet!"));
 	return false;
 }
 
@@ -75,7 +75,7 @@ template<> bool check_lua_type<bool>(lua_State* state, const size_t& arg_num) {
 }
 
 template<typename T> T get_lua_arg(lua_State* state floor_unused, const size_t& arg_num) {
-	throw lua_bindings_exception(string("unknown argument type, argument #"+size_t2string(arg_num)+", user data types are not supported yet!"));
+	throw lua_bindings_exception(string("unknown argument type, argument #"+to_string(arg_num)+", user data types are not supported yet!"));
 	return (T)0;
 }
 
@@ -116,7 +116,7 @@ template<> bool get_lua_arg<bool>(lua_State* state, const size_t& arg_num) {
 
 static void check_lua_stack(lua_State* state, const size_t& expected_size) {
 	if(lua_gettop(state) != (int)expected_size) {
-		throw lua_bindings_exception(string("invalid lua stack size, expected "+size_t2string(expected_size)+"!"));
+		throw lua_bindings_exception(string("invalid lua stack size, expected "+to_string(expected_size)+"!"));
 	}
 }
 
@@ -124,11 +124,11 @@ template<size_t arg_num, typename T> T get_and_check_lua_arg(lua_State* state) {
 	// get and check number of arguments
 	int argc = lua_gettop(state);
 	if((int)arg_num > argc) {
-		throw lua_bindings_exception(string("invalid argument count "+int2string(argc)+", should be >= "+size_t2string(arg_num)+"!"));
+		throw lua_bindings_exception(string("invalid argument count "+to_string(argc)+", should be >= "+to_string(arg_num)+"!"));
 	}
 	
 	if(!check_lua_type<T>(state, arg_num)) {
-		throw lua_bindings_exception(string("invalid argument type, argument #"+size_t2string(arg_num)+", should be "+typeid(T).name()+"!"));
+		throw lua_bindings_exception(string("invalid argument type, argument #"+to_string(arg_num)+", should be "+typeid(T).name()+"!"));
 	}
 	
 	return get_lua_arg<T>(state, arg_num);

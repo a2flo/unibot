@@ -26,7 +26,7 @@
 #include <floor/floor/floor_version.hpp>
 
 #define UNIBOT_VERSION_STRING (string("UniBot ")+FLOOR_PLATFORM+FLOOR_DEBUG_STR \
-" v"+(UNIBOT_MAJOR_VERSION)+"."+(UNIBOT_MINOR_VERSION)+"."+(UNIBOT_REVISION_VERSION)+(UNIBOT_DEV_STAGE_VERSION)+"-"+size_t2string(UNIBOT_BUILD_VERSION)+\
+" v"+(UNIBOT_MAJOR_VERSION)+"."+(UNIBOT_MINOR_VERSION)+"."+(UNIBOT_REVISION_VERSION)+(UNIBOT_DEV_STAGE_VERSION)+"-"+to_string(UNIBOT_BUILD_VERSION)+\
 " ("+UNIBOT_BUILD_DATE+" "+UNIBOT_BUILD_TIME+") built with "+string(FLOOR_COMPILER+FLOOR_LIBCXX))+" and floor v"+FLOOR_FULL_VERSION
 
 #define UNIBOT_SOURCE_URL "https://github.com/a2flo/unibot"
@@ -492,13 +492,13 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 			constexpr unsigned long long int t_hour = 60ULL * 60ULL;
 			constexpr unsigned long long int t_minute = 60ULL;
 			
-			uptime_str += ull2string(uptime / t_day) + "d ";
+			uptime_str += to_string(uptime / t_day) + "d ";
 			uptime %= t_day;
-			uptime_str += ull2string(uptime / t_hour) + "h ";
+			uptime_str += to_string(uptime / t_hour) + "h ";
 			uptime %= t_hour;
-			uptime_str += ull2string(uptime / t_minute) + "m ";
+			uptime_str += to_string(uptime / t_minute) + "m ";
 			uptime %= t_minute;
-			uptime_str += ull2string(uptime) + "s";
+			uptime_str += to_string(uptime) + "s";
 			
 			n->send_private_msg(target, uptime_str);
 		}
@@ -578,7 +578,7 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 						else {
 							// unsucessful request
 							const string err_msg("http request \"" + url + "\" failed: " +
-												 uint2string((unsigned int)ret_status) +
+												 to_string((unsigned int)ret_status) +
 												 " " + http_net::status_code_to_string(ret_status) +
 												 (data != "" ? " (" : "") + data + (data != "" ? ")" : ""));
 							if(!received) n->send_private_msg(target, err_msg);

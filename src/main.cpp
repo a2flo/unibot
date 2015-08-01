@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 #else
 	string datapath ="/c/unibot/";
 #endif
-	string config_name = "config.xml";
+	string config_name = "config.json";
 	
 	for(int arg_pair = 0; arg_pair < ((argc - 1) / 2); arg_pair += 2) {
 		const auto arg_name = string(argv[arg_pair + 1]);

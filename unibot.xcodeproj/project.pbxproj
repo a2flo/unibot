@@ -33,8 +33,6 @@
 /* Begin PBXFileReference section */
 		5C0545391300236700E61960 /* exttable.lua */ = {isa = PBXFileReference; lastKnownFileType = text; path = exttable.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		5C05453B1301AEF000E61960 /* lua_bindings.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = lua_bindings.html; sourceTree = "<group>"; };
-		5C1573AA19BF8CD00089D5A2 /* config.dtd */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.dtd; sourceTree = "<group>"; };
-		5C1573AB19BF8CD00089D5A2 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		5C23366E11A8779100B69FFD /* reply.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = reply.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		5C24681117DCECB0007F2D16 /* bot_handler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = bot_handler.hpp; path = src/bot_handler.hpp; sourceTree = "<group>"; };
 		5C24681217DCECB0007F2D16 /* bot_states.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = bot_states.hpp; path = src/bot_states.hpp; sourceTree = "<group>"; };
@@ -66,6 +64,7 @@
 		5C7800FC19D4A62100853135 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		5C81C43017E5B2FF00FE6791 /* lua_unibot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lua_unibot.cpp; path = src/lua_unibot.cpp; sourceTree = "<group>"; };
 		5C81C43117E5B2FF00FE6791 /* lua_unibot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = lua_unibot.hpp; path = src/lua_unibot.hpp; sourceTree = "<group>"; };
+		5C8280D91B6CE5D7001F9BFE /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
 		5C8906F517984FA70075DC99 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Library/Frameworks/SDL2.framework; sourceTree = SDKROOT; };
 		5C8906F617984FA70075DC99 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = Library/Frameworks/SDL2_net.framework; sourceTree = SDKROOT; };
 		5C8CA29E1304B0EC00F1A706 /* build_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_version.sh; sourceTree = "<group>"; };
@@ -156,8 +155,7 @@
 		5C1573A919BF8CD00089D5A2 /* etc */ = {
 			isa = PBXGroup;
 			children = (
-				5C1573AA19BF8CD00089D5A2 /* config.dtd */,
-				5C1573AB19BF8CD00089D5A2 /* config.xml */,
+				5C8280D91B6CE5D7001F9BFE /* config.json */,
 			);
 			path = etc;
 			sourceTree = "<group>";
@@ -391,16 +389,20 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					.,
+					"$(inherited)",
+					/usr/include,
 					/usr/local/include,
+					.,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/X11/lib,
 					/usr/local/opt/openssl/lib,
 					/usr/local/lib,
 					/usr/lib,
-					/usr/X11/lib,
+					/usr/include/floor/bin,
 				);
 				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -408,9 +410,15 @@
 				OTHER_CFLAGS = (
 					"-fparse-all-comments",
 					"-isystem",
-					/usr/X11/include,
+					"$(DT_TOOLCHAIN_DIR)/usr/include",
 					"-isystem",
-					/usr/include/libxml2,
+					"$(DT_TOOLCHAIN_DIR)/usr/lib/c++/v1",
+					"-isystem",
+					"$(SDK_DIR)/usr/include/libxml2",
+					"-isystem",
+					/opt/X11/include,
+					"-isystem",
+					/usr/include,
 					"-isystem",
 					/usr/local/include,
 					"-isystem",
@@ -440,6 +448,10 @@
 				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = (
 					"-Weverything",
+					"-Wthread-safety",
+					"-Wthread-safety-negative",
+					"-Wthread-safety-beta",
+					"-Wthread-safety-verbose",
 					"-Wno-c++98-compat",
 					"-Wno-c++98-compat-pedantic",
 					"-Wno-c99-extensions",
@@ -456,6 +468,8 @@
 					"-Wno-nested-anon-types",
 					"-Wno-old-style-cast",
 					"-Wno-date-time",
+					"-Wno-reserved-id-macro",
+					"-Wno-documentation-unknown-command",
 				);
 			};
 			name = Debug;
@@ -519,16 +533,20 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					.,
+					"$(inherited)",
+					/usr/include,
 					/usr/local/include,
+					.,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/X11/lib,
 					/usr/local/opt/openssl/lib,
 					/usr/local/lib,
 					/usr/lib,
-					/usr/X11/lib,
+					/usr/include/floor/bin,
 				);
 				LLVM_LTO = YES;
 				LLVM_VECTORIZE_LOOPS = YES;
@@ -536,9 +554,15 @@
 				OTHER_CFLAGS = (
 					"-fparse-all-comments",
 					"-isystem",
-					/usr/X11/include,
+					"$(DT_TOOLCHAIN_DIR)/usr/include",
 					"-isystem",
-					/usr/include/libxml2,
+					"$(DT_TOOLCHAIN_DIR)/usr/lib/c++/v1",
+					"-isystem",
+					"$(SDK_DIR)/usr/include/libxml2",
+					"-isystem",
+					/opt/X11/include,
+					"-isystem",
+					/usr/include,
 					"-isystem",
 					/usr/local/include,
 					"-isystem",
@@ -568,6 +592,10 @@
 				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = (
 					"-Weverything",
+					"-Wthread-safety",
+					"-Wthread-safety-negative",
+					"-Wthread-safety-beta",
+					"-Wthread-safety-verbose",
 					"-Wno-c++98-compat",
 					"-Wno-c++98-compat-pedantic",
 					"-Wno-c99-extensions",
@@ -584,6 +612,8 @@
 					"-Wno-nested-anon-types",
 					"-Wno-old-style-cast",
 					"-Wno-date-time",
+					"-Wno-reserved-id-macro",
+					"-Wno-documentation-unknown-command",
 				);
 			};
 			name = Release;
