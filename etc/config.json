@@ -27,7 +27,7 @@
 	// bot owners
 	"owner": {
 		// names (irc user names): use ',' as a separator, whitespace will be stripped
-		"name": "[flo],[flos_bot],benjo"
+		"names": "[flo],[flos_bot],benjo"
 	},
 	
 	// logging options (apply to both console and file logging)
