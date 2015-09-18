@@ -551,54 +551,46 @@ void bot_handler::handle_message(string sender, string location, string msg) {
 		else if(cmd == "http") {
 			const string url(core::trim(msg.substr(cmd_end + 1, msg.size() - cmd_end - 1)));
 			task::spawn([url, target, this]() {
-				try {
-					atomic<bool> received { false };
-					http_net request(url, [url, target, this, &received](http_net* http_obj floor_unused,
-																		 http_net::HTTP_STATUS ret_status,
-																		 const string& server floor_unused,
-																		 const string& data) -> bool {
-						if(ret_status == http_net::HTTP_STATUS::CODE_200 && data != "timeout") {
-							const regex title_rx("<[\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>"
-												 "([\\s\\S]*)" // also matches newlines (. doesn't)
-												 "<[\\s]*[/][\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>");
-							smatch match;
-							if(regex_search(data, match, title_rx) && match.size() >= 2) {
-								// title: first match + replace newlines + trim space from the beginning and end
-								string title { match.str(1) };
-								core::find_and_replace(title, "\n", " ");
-								core::find_and_replace(title, "\r", " ");
-								title = core::trim(title);
-								// TODO: html to text (i.e. &#39; to ')
-								if(!received) n->send_private_msg(target, "> "+title);
-							}
-							else {
-								if(!received) n->send_private_msg(target, "> no title found!");
-							}
+				atomic<bool> received { false };
+				http_net request(url, [url, target, this, &received](http_net* http_obj floor_unused,
+																	 http_net::HTTP_STATUS ret_status,
+																	 const string& server floor_unused,
+																	 const string& data) -> bool {
+					if(ret_status == http_net::HTTP_STATUS::CODE_200 && data != "timeout") {
+						const regex title_rx("<[\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>"
+											 "([\\s\\S]*)" // also matches newlines (. doesn't)
+											 "<[\\s]*[/][\\s]*[Tt][Ii][Tt][Ll][Ee][\\s]*>");
+						smatch match;
+						if(regex_search(data, match, title_rx) && match.size() >= 2) {
+							// title: first match + replace newlines + trim space from the beginning and end
+							string title { match.str(1) };
+							core::find_and_replace(title, "\n", " ");
+							core::find_and_replace(title, "\r", " ");
+							title = core::trim(title);
+							// TODO: html to text (i.e. &#39; to ')
+							if(!received) n->send_private_msg(target, "> "+title);
 						}
 						else {
-							// unsucessful request
-							const string err_msg("http request \"" + url + "\" failed: " +
-												 to_string((unsigned int)ret_status) +
-												 " " + http_net::status_code_to_string(ret_status) +
-												 (data != "" ? " (" : "") + data + (data != "" ? ")" : ""));
-							if(!received) n->send_private_msg(target, err_msg);
-							log_error("%s", err_msg);
+							if(!received) n->send_private_msg(target, "> no title found!");
 						}
-						// signal that the request has been handled
-						received = true;
-						return true;
-					});
-					
-					// wait until request was successful (note: http_net will timeout after 10s per default)
-					while(!received) {
-						this_thread::yield();
 					}
-				}
-				catch(floor_exception& ex) {
-					log_error("http request exception: %s", ex.what());
-				}
-				catch(...) {
-					log_error("http request exception");
+					else {
+						// unsucessful request
+						const string err_msg("http request \"" + url + "\" failed: " +
+											 to_string((unsigned int)ret_status) +
+											 " " + http_net::status_code_to_string(ret_status) +
+											 (data != "" ? " (" : "") + data + (data != "" ? ")" : ""));
+						if(!received) n->send_private_msg(target, err_msg);
+						log_error("%s", err_msg);
+					}
+					// signal that the request has been handled
+					received = true;
+					return true;
+				});
+				
+				// wait until request was successful (note: http_net will timeout after 10s per default)
+				while(!received) {
+					this_thread::yield();
 				}
 			});
 		}

@@ -394,22 +394,23 @@
 					"$(inherited)",
 					/usr/include,
 					/usr/local/include,
+					/opt/floor/include,
 					.,
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "/opt/floor/lib /usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/X11/lib,
 					/usr/local/opt/openssl/lib,
 					/usr/local/lib,
-					/usr/lib,
-					/usr/include/floor/bin,
+					/opt/floor/lib,
 				);
 				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-fparse-all-comments",
 					"-isystem",
 					"$(DT_TOOLCHAIN_DIR)/usr/include",
@@ -442,7 +443,6 @@
 					"-framework",
 					lua,
 				);
-				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibotd;
 				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
@@ -538,22 +538,23 @@
 					"$(inherited)",
 					/usr/include,
 					/usr/local/include,
+					/opt/floor/include,
 					.,
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "/opt/floor/lib /usr/local/lib /usr/lib @loader_path/../Resources @loader_path/../Frameworks /Library/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/X11/lib,
 					/usr/local/opt/openssl/lib,
 					/usr/local/lib,
-					/usr/lib,
-					/usr/include/floor/bin,
+					/opt/floor/lib,
 				);
 				LLVM_LTO = YES;
 				LLVM_VECTORIZE_LOOPS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-fparse-all-comments",
 					"-isystem",
 					"$(DT_TOOLCHAIN_DIR)/usr/include",
@@ -586,7 +587,6 @@
 					"-framework",
 					lua,
 				);
-				PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include;
 				PRODUCT_NAME = unibot;
 				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
