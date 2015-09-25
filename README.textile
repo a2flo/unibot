@@ -9,10 +9,10 @@ You can also specify the config location relative from the "/etc" folder when st
 
 *Build Instructions:*
 on Linux/FreeBSD/MinGW (or OS X/iOS as well):
-* install all dependencies ("floor":https://github.com/a2flo/floor, clang 3.5+, libc++, SDL2, asio, openssl, lua)
+* install all dependencies ("floor v0.2.0":https://github.com/a2flo/floor/tree/v0.2.0, clang 3.5+, libc++, SDL2, asio (headers suffice), openssl, lua)
 * run ./build.sh
 * make
 
 on OS X/iOS:
-* install "floor":https://github.com/a2flo/floor, Xcode 6.3+, Xquartz, SDL2, asio (headers suffice), openssl and lua
+* install "floor v0.2.0":https://github.com/a2flo/floor/tree/v0.2.0, Xcode 7.0+, Xquartz, SDL2, asio (headers suffice), openssl and lua
 * open unibot.xcodeproj and build
