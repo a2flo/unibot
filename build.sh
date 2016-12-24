@@ -547,14 +547,9 @@ else
 	fi
 fi
 
-# just in case, also add these rather default ones (should also go after all previous libs/includes,
+# just in case, also add these rather default ones (should also go after all previous libs,
 # in case a local or otherwise set up lib is overwriting a system lib and should be used instead)
 LDFLAGS="${LDFLAGS} -L/usr/lib -L/usr/local/lib -L/opt/floor/lib"
-INCLUDES="${INCLUDES}"
-# don't automatically add /usr/include and /usr/local/include on mingw/msys (these will lead to the wrong headers being included)
-if [ $BUILD_OS != "mingw" ]; then
-    INCLUDES="${INCLUDES} -isystem /usr/include -isystem /usr/local/include"
-fi
 
 ##########################################
 # flags
