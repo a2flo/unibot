@@ -41,7 +41,16 @@ int main(int argc, char* argv[]) {
 	}
 	
 	// init floor in console only mode
-	floor::init(argv[0], datapath.c_str(), true, config_name);
+	if(!floor::init(floor::init_state {
+		.call_path = argv[0],
+		.data_path = datapath.c_str(),
+		.config_name = config_name.c_str(),
+		.app_name = "unibot",
+		.console_only = true,
+		.renderer = floor::RENDERER::NONE,
+	})) {
+		return -1;
+	}
 	
 	// set lua script search path
 	const string lua_path = lua::lua_script_folder();

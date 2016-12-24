@@ -1,16 +1,28 @@
-#!/bin/sh
+#!/bin/bash
 
 ##########################################
 # helper functions
 error() {
-	printf "\033[1;31m>> $@ \033[m\n"
+	if [ -z "$NO_COLOR" ]; then
+		printf "\033[1;31m>> $@ \033[m\n"
+	else
+		printf "error: $@\n"
+	fi
 	exit 1
 }
 warning() {
-	printf "\033[1;33m>> $@ \033[m\n"
+	if [ -z "$NO_COLOR" ]; then
+		printf "\033[1;33m>> $@ \033[m\n"
+	else
+		printf "warning: $@\n"
+	fi
 }
 info() {
-	printf "\033[1;32m>> $@ \033[m\n"
+	if [ -z "$NO_COLOR" ]; then
+		printf "\033[1;32m>> $@ \033[m\n"
+	else
+		printf ">> $@\n"
+	fi
 }
 verbose() {
 	if [ ${BUILD_VERBOSE} -gt 0 ]; then
@@ -25,23 +37,31 @@ verbose() {
 if [ -z "${CXX}" ]; then
 	CXX=clang++
 fi
+command -v ${CXX} >/dev/null 2>&1 || error "clang++ binary not found, please set CXX to a valid clang++ binary"
+
 if [ -z "${CC}" ]; then
 	CC=clang
 fi
+command -v ${CC} >/dev/null 2>&1 || error "clang binary not found, please set CC to a valid clang binary"
 
 # check if clang is the compiler, fail if not
 CXX_VERSION=$(${CXX} -v 2>&1)
+CXX17_CAPABLE=0
 if expr "${CXX_VERSION}" : ".*clang" >/dev/null; then
 	# also check the clang version
+	eval $(${CXX} -E -dM - < /dev/null 2>&1 | grep -E "clang_major|clang_minor" | tr [:lower:] [:upper:] | sed -E "s/.*DEFINE __(.*)__ [\"]*([^ \"]*)[\"]*/export \1=\2/g")
 	if expr "${CXX_VERSION}" : "Apple.*" >/dev/null; then
 		# apple xcode/llvm/clang versioning scheme -> at least 6.1.0 is required (ships with Xcode 6.3)
-		if expr "$(echo ${CXX_VERSION} | head -n 1 | sed -E "s/Apple LLVM version ([0-9.]+) .*/\1/")" \< "6.1.0" >/dev/null; then
+		if [ $CLANG_MAJOR -lt 6 ] || [ $CLANG_MAJOR -eq 6 -a $CLANG_MINOR -lt 1 ]; then
 			error "at least Xcode 6.3 / clang/LLVM 6.1.0 is required to compile this project!"
 		fi
 	else
 		# standard clang versioning scheme -> at least 3.5.0 is required
-		if expr "$(echo ${CXX_VERSION} | head -n 1 | sed -E "s/.*clang version ([0-9.]+) .*/\1/")" \< "3.5.0" >/dev/null; then
+		if [ $CLANG_MAJOR -lt 3 ] || [ $CLANG_MAJOR -eq 3 -a $CLANG_MINOR -lt 5 ]; then
 			error "at least clang 3.5.0 is required to compile this project!"
+		fi
+		if [ $CLANG_MAJOR -gt 3 ] || [ $CLANG_MAJOR -eq 3 -a $CLANG_MINOR -ge 9 ]; then
+			CXX17_CAPABLE=1
 		fi
 	fi
 else
@@ -61,11 +81,23 @@ BUILD_CONF_CUDA=$((1 - $((${FLOOR_NO_CUDA}))))
 BUILD_CONF_OPENAL=$((1 - $((${FLOOR_NO_OPENAL}))))
 BUILD_CONF_HOST_COMPUTE=$((1 - $((${FLOOR_NO_HOST_COMPUTE}))))
 BUILD_CONF_METAL=$((1 - $((${FLOOR_NO_METAL}))))
+BUILD_CONF_VULKAN=$((1 - $((${FLOOR_NO_VULKAN}))))
 BUILD_CONF_NET=$((1 - $((${FLOOR_NO_NET}))))
-BUILD_CONF_XML=$((1 - $((${FLOOR_NO_XML}))))
 BUILD_CONF_EXCEPTIONS=$((1 - $((${FLOOR_NO_EXCEPTIONS}))))
 BUILD_CONF_POCL=0
 BUILD_CONF_LIBSTDCXX=0
+BUILD_CONF_CXX17=$((${FLOOR_CXX17}))
+BUILD_CONF_NATIVE=0
+
+BUILD_CONF_SANITIZERS=0
+BUILD_CONF_ASAN=0
+BUILD_CONF_MSAN=0
+BUILD_CONF_TSAN=0
+BUILD_CONF_UBSAN=0
+
+if [ ${BUILD_CONF_CXX17} -gt ${CXX17_CAPABLE} ]; then
+	error "libfloor was compiled with C++17 support, but the current compiler is not C++17 capable"
+fi
 
 BUILD_ARCH_SIZE="x64"
 BUILD_ARCH=$(${CC} -dumpmachine | sed "s/-.*//")
@@ -96,6 +128,13 @@ for arg in "$@"; do
 			echo "	libstdc++          use libstdc++ instead of libc++ (highly discouraged unless building on mingw)"
 			echo "	x32                build a 32-bit binary "$(if [ "${BUILD_ARCH_SIZE}" == "x32" ]; then printf "(default on this platform)"; fi)
 			echo "	x64                build a 64-bit binary "$(if [ "${BUILD_ARCH_SIZE}" == "x64" ]; then printf "(default on this platform)"; fi)
+			echo "	native             optimize and specifically build for the host cpu"
+			echo ""
+			echo "sanitizers:"
+			echo "	asan               build with address sanitizer"
+			echo "	msan               build with memory sanitizer"
+			echo "	tsan               build with thread sanitizer"
+			echo "	ubsan              build with undefined behavior sanitizer"
 			echo ""
 			echo "misc flags:"
 			echo "	-v                 verbose output (prints all executed compiler and linker commands, and some other information)"
@@ -137,6 +176,25 @@ for arg in "$@"; do
 			;;
 		"x64")
 			BUILD_ARCH_SIZE="x64"
+			;;
+		"native")
+			BUILD_CONF_NATIVE=1
+			;;
+		"asan")
+			BUILD_CONF_SANITIZERS=1
+			BUILD_CONF_ASAN=1
+			;;
+		"msan")
+			BUILD_CONF_SANITIZERS=1
+			BUILD_CONF_MSAN=1
+			;;
+		"tsan")
+			BUILD_CONF_SANITIZERS=1
+			BUILD_CONF_TSAN=1
+			;;
+		"ubsan")
+			BUILD_CONF_SANITIZERS=1
+			BUILD_CONF_UBSAN=1
 			;;
 		*)
 			warning "unknown argument: ${arg}"
@@ -275,6 +333,26 @@ if [ $BUILD_OS != "mingw" ]; then
 	fi
 fi
 
+# handle clang/llvm sanitizers
+if [ ${BUILD_CONF_SANITIZERS} -gt 0 ]; then
+	if [ ${BUILD_CONF_ASAN} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -fsanitize=address"
+		COMMON_FLAGS="${COMMON_FLAGS} -fsanitize=address -fno-omit-frame-pointer"
+	fi
+	if [ ${BUILD_CONF_MSAN} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -fsanitize=memory"
+		COMMON_FLAGS="${COMMON_FLAGS} -fsanitize=memory -fno-omit-frame-pointer"
+	fi
+	if [ ${BUILD_CONF_TSAN} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -fsanitize=thread"
+		COMMON_FLAGS="${COMMON_FLAGS} -fsanitize=thread -fno-omit-frame-pointer"
+	fi
+	if [ ${BUILD_CONF_UBSAN} -gt 0 ]; then
+		LDFLAGS="${LDFLAGS} -fsanitize=undefined-trap -fsanitize-undefined-trap-on-error"
+		COMMON_FLAGS="${COMMON_FLAGS} -fsanitize=undefined-trap -fsanitize-undefined-trap-on-error -fno-omit-frame-pointer"
+	fi
+fi
+
 # link against floor (note: floor debug lib is suffixed by "d")
 if [ $BUILD_MODE == "debug" ]; then
 	if [ $BUILD_OS == "mingw" ]; then
@@ -293,7 +371,9 @@ fi
 # use pkg-config (and some manual libs/includes) on all platforms except osx/ios
 if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 	# need to make kernel symbols visible for dlsym
-	LDFLAGS="${LDFLAGS} -rdynamic"
+	if [ $BUILD_OS != "mingw" ]; then
+		LDFLAGS="${LDFLAGS} -rdynamic"
+	fi
 
 	# find libfloor*.so, w/o the need to have it in PATH/"LD PATH"
 	if [ $BUILD_OS != "mingw" ]; then
@@ -304,14 +384,11 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 
 	# use PIC
 	LDFLAGS="${LDFLAGS} -fPIC"
-	COMMON_FLAGS="${COMMON_FLAGS} -fPIC"
+	COMMON_FLAGS="${COMMON_FLAGS} -Xclang -mrelocation-model -Xclang pic -Xclang -pic-level -Xclang 2"
 	
 	# pkg-config: required libraries/packages and optional libraries/packages
 	PACKAGES="sdl2 lua"
 	PACKAGES_OPT=""
-	if [ ${BUILD_CONF_XML} -gt 0 ]; then
-		PACKAGES_OPT="${PACKAGES_OPT} libxml-2.0"
-	fi
 	if [ ${BUILD_CONF_NET} -gt 0 ]; then
 		PACKAGES_OPT="${PACKAGES_OPT} libcrypto libssl"
 	fi
@@ -344,6 +421,13 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 	if [ ${BUILD_CONF_OPENCL} -gt 0 -a ${BUILD_CONF_POCL} -eq 0 ]; then
 		UNCHECKED_LIBS="${UNCHECKED_LIBS} OpenCL"
 	fi
+	if [ ${BUILD_CONF_VULKAN} -gt 0 ]; then
+		if [ $BUILD_OS != "mingw" ]; then
+			UNCHECKED_LIBS="${UNCHECKED_LIBS} vulkan"
+		else
+			UNCHECKED_LIBS="${UNCHECKED_LIBS} vulkan-1"
+		fi
+	fi
 
 	# add os specific libs
 	if [ $BUILD_OS == "linux" -o $BUILD_OS == "freebsd" -o $BUILD_OS == "openbsd" ]; then
@@ -362,7 +446,7 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 		LDFLAGS="${LDFLAGS} -L/lib"
 	fi
 	
-	# windows/mingw opencl handling
+	# windows/mingw opencl and vulkan handling
 	if [ $BUILD_OS == "mingw" ]; then
 		if [ ${BUILD_CONF_OPENCL} -gt 0 ]; then
 			if [ ! -z "${AMDAPPSDKROOT}" ]; then
@@ -385,6 +469,20 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 				INCLUDES="${INCLUDES} -isystem \"${INTELOCLSDKROOT_FIXED}include\""
 			else
 				error "building with OpenCL support, but no OpenCL SDK was found - please install the Intel or AMD OpenCL SDK!"
+			fi
+		fi
+
+		if [ ${BUILD_CONF_VULKAN} -gt 0 ]; then
+			if [ ! -z "${VK_SDK_PATH}" ]; then
+				VK_SDK_PATH_FIXED=$(echo ${VK_SDK_PATH} | sed -E "s/\\\\/\//g")
+				if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
+					LDFLAGS="${LDFLAGS} -L\"${VK_SDK_PATH_FIXED}/Bin32\""
+				else
+					LDFLAGS="${LDFLAGS} -L\"${VK_SDK_PATH_FIXED}/Bin\""
+				fi
+				INCLUDES="${INCLUDES} -isystem \"${VK_SDK_PATH_FIXED}/Include\""
+			else
+				error "Vulkan SDK not installed (VK_SDK_PATH not set)"
 			fi
 		fi
 	fi
@@ -410,9 +508,6 @@ if [ $BUILD_OS != "osx" -a $BUILD_OS != "ios" ]; then
 else
 	# on osx/ios: assume everything is installed, pkg-config doesn't really exist
 	INCLUDES="${INCLUDES} -isystem /opt/X11/include"
-	if [ ${BUILD_CONF_XML} -gt 0 ]; then
-		INCLUDES="${INCLUDES} -isystem /usr/include/libxml2"
-	fi
 	if [ ${BUILD_CONF_NET} -gt 0 ]; then
 		INCLUDES="${INCLUDES} -isystem /usr/local/opt/openssl/include"
 	fi
@@ -438,9 +533,6 @@ else
 	# frameworks and libs
 	LDFLAGS="${LDFLAGS} -framework SDL2"
 	LDFLAGS="${LDFLAGS} -framework lua"
-	if [ ${BUILD_CONF_XML} -gt 0 ]; then
-		LDFLAGS="${LDFLAGS} -lxml2"
-	fi
 	if [ ${BUILD_CONF_NET} -gt 0 ]; then
 		LDFLAGS="${LDFLAGS} -lcrypto -lssl"
 	fi
@@ -450,9 +542,6 @@ else
 	
 	# system frameworks
 	LDFLAGS="${LDFLAGS} -framework ApplicationServices -framework AppKit -framework Cocoa -framework OpenGL"
-	if [ ${BUILD_CONF_OPENCL} -gt 0 ]; then
-		LDFLAGS="${LDFLAGS} -framework OpenCL"
-	fi
 	if [ ${BUILD_CONF_METAL} -gt 0 ]; then
 		LDFLAGS="${LDFLAGS} -framework Metal"
 	fi
@@ -471,7 +560,11 @@ fi
 # flags
 
 # set up initial c++ and c flags
-CXXFLAGS="${CXXFLAGS} -std=gnu++14"
+if [ ${BUILD_CONF_CXX17} -eq 0 ]; then
+	CXXFLAGS="${CXXFLAGS} -std=gnu++14"
+else
+	CXXFLAGS="${CXXFLAGS} -std=gnu++1z"
+fi
 if [ ${BUILD_CONF_LIBSTDCXX} -gt 0 ]; then
 	CXXFLAGS="${CXXFLAGS} -stdlib=libstdc++"
 else
@@ -479,7 +572,7 @@ else
 fi
 CFLAGS="${CFLAGS} -std=gnu11"
 
-OBJCFLAGS="${OBJCFLAGS}"
+OBJCFLAGS="${OBJCFLAGS} -fno-objc-exceptions"
 if [ $BUILD_OS == "osx" -o $BUILD_OS == "ios" ]; then
 	OBJCFLAGS="${OBJCFLAGS} -fobjc-arc"
 fi
@@ -534,6 +627,11 @@ fi
 # c++ and c flags that apply to all build configurations
 COMMON_FLAGS="${COMMON_FLAGS} -ffast-math -fstrict-aliasing"
 
+# set flags when building for the native/host cpu
+if [ $BUILD_CONF_NATIVE -gt 0 ]; then
+	COMMON_FLAGS="${COMMON_FLAGS} -march=native -mtune=native"
+fi
+
 # debug flags, only used in the debug target
 DEBUG_FLAGS="-O0 -DFLOOR_DEBUG=1 -DDEBUG"
 if [ $BUILD_OS != "mingw" ]; then
@@ -543,9 +641,12 @@ else
 fi
 
 # release mode flags/optimizations
-# TODO: sse/avx selection/config? default to sse4.1 for now (core2)
-# TODO: also add -mtune option
-REL_FLAGS="-Ofast -funroll-loops -msse4.1"
+REL_FLAGS="-Ofast -funroll-loops"
+# if we're building for the native/host cpu, the appropriate sse/avx flags will already be set/used
+if [ $BUILD_CONF_NATIVE -eq 0 ]; then
+	# TODO: sse/avx selection/config? default to sse4.1 for now (core2)
+	REL_FLAGS="${REL_FLAGS} -msse4.1"
+fi
 
 # additional optimizations (used in addition to REL_CXX_FLAGS)
 REL_OPT_FLAGS="-flto"
@@ -554,14 +655,14 @@ REL_OPT_LD_FLAGS="-flto"
 # osx/ios: set min version
 if [ $BUILD_OS == "osx" -o $BUILD_OS == "ios" ]; then
 	if [ $BUILD_OS == "osx" ]; then
-		COMMON_FLAGS="${COMMON_FLAGS} -mmacosx-version-min=10.9"
-	else
-		COMMON_FLAGS="${COMMON_FLAGS} -miphoneos-version-min=8.0"
+		COMMON_FLAGS="${COMMON_FLAGS} -mmacosx-version-min=10.11"
+	else # ios
+		COMMON_FLAGS="${COMMON_FLAGS} -miphoneos-version-min=9.0"
 	fi
 fi
 
 # defines:
-COMMON_FLAGS="${COMMON_FLAGS} -DFLOOR_SSL_CIPHER_LIST=\"aRSA+HIGH !3DES +kEDH +kRSA !kSRP !kPSK !SSLv3 !AESGCM !RC4\""
+COMMON_FLAGS="${COMMON_FLAGS} -DFLOOR_SSL_CIPHER_LIST=\"aRSA+HIGH !3DES +kEDH +kRSA !kSRP !kPSK !SSLv3 !RC4\""
 # set platform size define
 if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
 	COMMON_FLAGS="${COMMON_FLAGS} -DPLATFORM_X32"
@@ -581,16 +682,29 @@ if [ $BUILD_OS == "mingw" -o $BUILD_OS == "cygwin" ]; then
 	fi
 fi
 
-# hard-mode c++ ;) TODO: clean this up + explanations
-WARNINGS="${WARNINGS} -Weverything -Wthread-safety -Wthread-safety-negative -Wthread-safety-beta -Wthread-safety-verbose"
-WARNINGS="${WARNINGS} -Wno-gnu -Wno-c++98-compat"
-WARNINGS="${WARNINGS} -Wno-c++98-compat-pedantic -Wno-c99-extensions"
-WARNINGS="${WARNINGS} -Wno-header-hygiene -Wno-documentation"
-WARNINGS="${WARNINGS} -Wno-system-headers -Wno-global-constructors -Wno-padded"
-WARNINGS="${WARNINGS} -Wno-packed -Wno-switch-enum -Wno-exit-time-destructors"
-WARNINGS="${WARNINGS} -Wno-unknown-warning-option -Wno-nested-anon-types"
-WARNINGS="${WARNINGS} -Wno-old-style-cast -Wno-date-time -Wno-reserved-id-macro"
-WARNINGS="${WARNINGS} -Wno-documentation-unknown-command"
+# hard-mode c++ ;)
+# let's start with everything
+WARNINGS="-Weverything ${WARNINGS}"
+# in case we're using warning options that aren't supported by other clang versions
+WARNINGS="${WARNINGS} -Wno-unknown-warning-option"
+# remove std compat warnings (c++14 with gnu and clang extensions is required)
+WARNINGS="${WARNINGS} -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-c++11-compat -Wno-c99-extensions -Wno-c11-extensions"
+WARNINGS="${WARNINGS} -Wno-gnu -Wno-gcc-compat"
+# don't be too pedantic
+WARNINGS="${WARNINGS} -Wno-header-hygiene -Wno-documentation -Wno-documentation-unknown-command -Wno-old-style-cast"
+WARNINGS="${WARNINGS} -Wno-global-constructors -Wno-exit-time-destructors -Wno-reserved-id-macro -Wno-date-time"
+# suppress warnings in system headers
+WARNINGS="${WARNINGS} -Wno-system-headers"
+# these two are only useful in certain situations, but are quite noisy
+WARNINGS="${WARNINGS} -Wno-packed -Wno-padded"
+# this conflicts with the other switch/case warning
+WARNINGS="${WARNINGS} -Wno-switch-enum"
+# quite useful feature/extension
+WARNINGS="${WARNINGS} -Wno-nested-anon-types"
+# this should be taken care of in a different way
+WARNINGS="${WARNINGS} -Wno-partial-availability"
+# enable thread-safety warnings
+WARNINGS="${WARNINGS} -Wthread-safety -Wthread-safety-negative -Wthread-safety-beta -Wthread-safety-verbose"
 if [ ${BUILD_ARCH_SIZE} == "x32" ]; then
 	# ignore warnings about required alignment increases on 32-bit platforms (won't and can't fix)
 	WARNINGS="${WARNINGS} -Wno-cast-align"
@@ -627,7 +741,7 @@ CFLAGS="${CFLAGS} ${COMMON_FLAGS}"
 
 # get all source files (c++/c/objective-c++/objective-c) and create build folders
 for dir in ${SRC_SUB_DIRS}; do
-	# hanlde paths correctly (don't want /./ or //)
+	# handle paths correctly (don't want /./ or //)
 	if [ ${dir} == "." ]; then
 		dir=""
 	else
@@ -635,10 +749,10 @@ for dir in ${SRC_SUB_DIRS}; do
 	fi
 
 	# source files
-	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.cpp')"
-	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.c')"
-	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.mm')"
-	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.m')"
+	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.cpp' | grep -v "\._")"
+	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.c' | grep -v "\._")"
+	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.mm' | grep -v "\._")"
+	SRC_FILES="${SRC_FILES} $(find ${SRC_DIR}${dir} -maxdepth 1 -type f -name '*.m' | grep -v "\._")"
 	
 	# create resp. build folder
 	mkdir -p ${BUILD_DIR}/${SRC_DIR}${dir}
